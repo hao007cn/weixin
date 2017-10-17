@@ -1,0 +1,64 @@
+﻿<@p.header csshref="" />
+<style>
+/*根据分辨率改变按钮字体大小*/
+@media ( max-width : 350px) {
+	#seting {
+		font-size: 13px;
+	}
+}
+</style>
+<div class="titleallnews">科室/专家介绍(${departmentName!})</div>
+<div style="padding: 15px;">
+	<table class="table">
+		<tbody>
+			<tr style="border-top: none; margin-bottom: 20px;">
+				<td style="border-top: none; width: 30%;"><div style="margin-bottom: 10px; float: left;">
+						<img src="${base}/file/doctor/${doctor.poid}" width="131" class="img-rounded">
+					</div></td>
+				<td style="border-top: none;">
+					<table id="seting">
+						<tr>
+							<td style="text-align: left;line-height:20px">
+							<span style="color: #21B7C6;font-size:24px;">${doctor.name!}</span></td>			
+						</tr>
+<!-- 						<tr>
+							<td><span
+									style="color: #21B7C6; text-align:left; line-height: 28px;">职务：</span>
+								<span style="text-align:left;">${doctor.position!}</span></td>
+						</tr> -->
+						<tr>
+							<td><span
+									style="color: #21B7C6; text-align:left; line-height: 28px;">职称：</span>
+								<span style="text-align:left;">${doctor.jobTitle!}</span></td>
+						</tr>
+						<tr>
+							<td><span
+									style="color: #21B7C6; text-align:left; line-height: 28px;">出诊时间：</span>
+								<br/><span style="text-align:left;">${doctor.outCallTime!}</span></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr style="padding-top: 10px;">
+				<td colspan="2">
+					<div style="margin-top: 10px;">
+						<table>
+							<tr>
+								<td style="width: 30%; vertical-align: top;"><p
+										style="color: #21B7C6;">专家介绍：</p></td>
+							</tr>
+							<tr>
+								<td><p
+										style="line-height: 20px; vertical-align: top; line-height: 24px; color: #424242;">&nbsp;&nbsp;&nbsp;&nbsp;<#if doctor.desc??>${doctor.desc!}</#if></p></td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<@p.footer scriptsrc=""/>
+
+
+

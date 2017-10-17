@@ -1,0 +1,32 @@
+<@p.header csshref="${base}/assets/css/jqgrid/ui.jqgrid.css" />
+<div class="row">
+	<div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">今日微信用户报告查询访问量</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info">Lis：${lisCount!}<br/>Pacs：${pacsCount!}<br/>合计：${todayCount!}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">微信用户报告查询访问总量</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info">Lis：${lisSum!}<br/>Pacs：${pacsSum!}<br/>合计：${totalCount!}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<@p.footer
+scriptsrc="${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js"
+/>

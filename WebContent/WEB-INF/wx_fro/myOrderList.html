@@ -1,0 +1,21 @@
+<#if orderList??>
+	<#list orderList as order>
+		<a class="list-group-item" style="margin:10px" href="${base}/myorders/detail/${order.poid}">
+			<table>
+				<tr>
+					<td>
+						<div style="margin:10px">就诊人：${order.patientName!}</div>
+						<div style="margin:10px"><h4><small>科室：${order.departmentName!}</small></h4></div>
+						<div style="margin:10px"><h4><small>医生：${order.doctorName!}</small></h4></div>
+						<div style="margin:10px"><h4><small>就诊时间：${order.aplTime!string('yyyy-MM-dd HH:mm')}</small></h4></div>
+						<div style="margin:10px"><h4><small>状态：${order.stateLabel}</small></h4></div>
+					</td>
+					<td class="text-right">
+						<span style="float: right" class="glyphicon glyphicon-chevron-right">
+     					 </span>
+					</td>
+				</tr>
+			</table>
+		</a>
+	</#list>
+</#if>

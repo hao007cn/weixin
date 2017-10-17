@@ -1,0 +1,21 @@
+﻿<@p.header />
+<div class="imgautowidth">
+  <img src="${base}/static/image/bannerhos.jpg">
+</div>
+<!-- 正文内容 -->
+<div style="padding: 25px;">
+  <#if about??>
+    <h6>
+      <span style="text-align: left; color: #398ffc; font-size: 16px;">
+      </span>
+      <br />
+      <span style="font-size: 14px; line-height: 24px; color: #a0a0a0;">
+        日期：${about.updateDate!}
+      </span>
+    </h6>
+    <p class="text-left" style="color: #585858; line-height: 26px;">
+      ${about.hospitalContent!}
+    </p>
+  </#if>
+</div>
+<@p.footer/>

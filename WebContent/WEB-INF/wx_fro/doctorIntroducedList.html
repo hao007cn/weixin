@@ -1,0 +1,67 @@
+﻿<@p.header csshref="" />
+<!-- 正文内容 -->
+<div class="titleallnews">科室/专家介绍(${departmentName!})</div>
+<div data-role="content" style="margin: 10px">
+	<section style="margin-top: 15px">
+		<ul class="nav nav-tabs" role="tablist" style="padding-left:10px;">
+			<li role="presentation" class="active"><a data-toggle="tab" href="#bookSchedule" style="padding:8px 10px;font-size:14px" disload="true"> 专家列表</a></li>
+			<li role="presentation" class=""><a data-toggle="tab" href="#docDesc" style="padding:8px 10px;font-size:14px; " disload="true">科室详细</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane" id="docDesc" style="padding:10px;">
+				
+				<p class="text-left" style=" color:#585858; line-height:26px;" class="list-group-item ">
+					
+				</p>
+				
+				<div style="margin-top: 10px;">
+						<table>
+						
+							<tr>
+								<td style="width: 30%; vertical-align: top;">
+								<#if departmentDesc??>
+								<p style="color: #21B7C6;">科室介绍：</p>
+								</#if>
+								</td>
+							</tr>
+						
+							<tr>
+								<td >
+								<#if departmentDesc??>
+									<p style="line-height: 20px; vertical-align: top; line-height: 24px; color: #424242;">
+										${departmentDesc!}
+									</p>
+								<#else>
+									<div style="font-size: 16px;color:#4096f0;margin:23px 0 0 10px">暂时没有相关信息哦！</div>
+								</#if>
+								</td>
+							</tr>
+						</table>
+					</div>
+				
+			</div>
+			<div class="tab-pane active" id="bookSchedule" style="padding-top:10px; padding-left: 10px;">
+				<p class="text-left" style=" color:#585858; line-height:26px;" id = "newContent">
+					
+				</p>
+			</div>
+		</div>
+	</section>
+</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+	var listsize=0;
+	<#if datasum??>
+		listsize=${datasum};
+	</#if>
+	
+	$(function(){
+		//执行分页方法
+		ajaxScrollPage("#newContent",'${base}/introduction/append?',listsize,{
+			id : ${departmentId}			
+		})	   
+	});
+</script>
+
+
+

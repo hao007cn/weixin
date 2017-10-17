@@ -1,0 +1,59 @@
+<@p.header csshref="" />
+<div class="titleallnews">
+  预约挂号
+</div>
+<div>
+	<table class="table">
+		<tbody>
+			<tr>
+				<td>
+					<h6>&nbsp;</h6>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center">
+					<button style="font-weight: 100" class="btn my-btn-primary" onclick="showDeptList('1')">
+						一部
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center">
+					<button style="font-weight: 100" class="btn my-btn-primary" onclick="showDeptList('2')">
+						二部
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center">
+					<button style="font-weight: 100" class="btn my-btn-primary" onclick="showDeptList('3')">
+						三部
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-center">
+					<button style="font-weight: 100" class="btn my-btn-primary" onclick="showDeptList('4')">
+						四部(泉涌)
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<!-- form doctorlist -->
+<form action="" method="post" id = "listForm">
+  <input type="hidden" name ="area"/>
+</form>
+<@p.footer scriptsrc=""/>
+
+<script>
+    function showDeptList(area){
+      $("input[name='area']").val(area);
+      $("#listForm").attr("action","${base}/vintroduction/deptList").submit();
+    }
+  </script>
+
+
+
+

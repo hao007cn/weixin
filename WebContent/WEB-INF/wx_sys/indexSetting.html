@@ -1,0 +1,223 @@
+<@p.header csshref=""/>
+
+<div class="row">
+	<div class="col-xs-12">
+		<h4 class="header smaller lighter green">
+			<i
+				class="ace-icon fa fa-file-image-o icon-animated-hand-pointer green"></i>
+			首页轮播图片
+		</h4>
+	</div>
+	<div class="row">
+		<#if indexlist??> <#list indexlist as item>
+		<div class="col-sm-4">
+			<div class="widget-box">
+				<div class="widget-header">
+					<h4 class="widget-title">轮播画面</h4>
+					<span class="widget-toolbar"> <#if item.img_view=='off'> <a
+						id="btn_delete" href="#" style="color: red"
+						onclick="seeImg('on','${item.poid}');" data-action="settings">
+							<i class="fa fa-eye-slash"></i>
+					</a> </#if> <#if item.img_view=='on'> <a id="btn_delete" href="#"
+						onclick="seeImg('off','${item.poid}');" data-action="settings">
+							<i class="fa fa-eye"></i>
+					</a> </#if> <a href="#" data-action="settings"
+						onclick="leftMove('${item.img_sequence}')"> <i
+							class="glyphicon glyphicon-chevron-left"></i>
+					</a> <a href="#" data-action="settings"
+						onclick="rightMove('${item.img_sequence}')"> <i
+							class="glyphicon glyphicon-chevron-right"></i>
+					</a> <a id="btn_delete" href="#" onclick="deletePoid('${item.poid}');"
+						data-action="settings"> <i class="glyphicon glyphicon-trash"></i>
+					</a>
+
+					</span>
+				</div>
+
+				<div class="widget-body center">
+					<div class="widget-main no-padding">
+						<fieldset>
+							<div>
+								<img alt="画面1" class="col-xs-12" src="${item.img_url}">
+							</div>
+						</fieldset>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		</#list> </#if>
+		<div data-toggle="modal" data-target="#myModal" class="col-sm-4"
+			style="padding-top: 60px; cursor: pointer;">
+			<div class="widget-box">
+				<div class="widget-body center">
+					<div class="widget-main no-padding">
+						<span style="font-size: 40px; margin: 50px; color: #629b58"
+							class="glyphicon glyphicon-plus"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title">轮播画面</h4>
+			</div>
+			<div class="modal-body">
+				<form id="indexSettingForm" enctype="multipart/form-data"
+					class="form-horizontal" method="post">
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right"
+							for="img_title">轮播标题：</label>
+						<div class="col-sm-9">
+							<input type="text" id="img_title" name="img_title"
+								placeholder="请填写标题"
+								class="col-xs-10 col-sm-5 input-sm form-control" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right"
+							for="img_url">图片：</label>
+						<div class="col-sm-5">
+							<input type="file" id="img_url" name="img_url"
+								class="col-xs-5 col-sm-5" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right"
+							for="img_view">是否显示：</label>
+						<div class="col-sm-9">
+							<label> <input id="img_view" name="img_view"
+								class="ace ace-switch ace-switch-6" type="checkbox"
+								checked="checked"> <span class="lbl"></span>
+							</label>
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right"
+							for="img_content">备注：</label>
+						<div class="col-sm-9">
+							<input type="text" id="img_content" name="img_content"
+								placeholder="备注信息"
+								class="col-xs-10 col-sm-5 input-sm form-control" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save();">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<@p.footer scriptsrc=""/>
+<script type="text/javascript">
+	jQuery(function($) {
+		$('#img_url').ace_file_input({
+			style : 'well',
+			btn_choose : '点击上传图片',
+			btn_change : null,
+			no_icon : 'ace-icon fa fa-picture-o',
+			droppable : true,
+			thumbnail : 'small'//large | fit
+			//,icon_remove:null//set null, to hide remove/reset button
+			//,before_change:function(files, dropped) {
+			//Check an example below
+			//or examples/file-upload.html
+			//return true;
+			//b}
+			/**,before_remove : function() {
+				return true;
+			}*/
+			,
+			preview_error : function(filename, error_code) {
+				//name of the file that failed
+				//error_code values
+				//1 = 'FILE_LOAD_FAILED',
+				//2 = 'IMAGE_LOAD_FAILED',
+				//3 = 'THUMBNAIL_FAILED'
+				//alert(error_code);
+			}
+
+		}).on('change', function() {
+			//console.log($(this).data('ace_input_files'));
+			//console.log($(this).data('ace_input_method'));
+		});
+		var file_input = $('#img_url');
+		var whitelist_ext = [ "jpeg", "jpg", "png", "gif", "bmp" ];
+		var whitelist_mime = [ "image/jpg", "image/jpeg", "image/png",
+				"image/gif", "image/bmp" ];
+		file_input.ace_file_input('update_settings', {
+			'allowExt' : whitelist_ext,
+			'allowMime' : whitelist_mime
+		})
+		file_input.ace_file_input('reset_input');
+		file_input.off('file.error.ace').on('file.error.ace',
+				function(e, info) {
+				});
+
+	});
+	//保存方法
+	function save() {
+		$("#indexSettingForm")
+				.attr("action", "${base}/admin/indexSetting/save");
+		$("#indexSettingForm").submit();
+	}
+	//打开修改窗口
+	function openUpdate(id) {
+
+	}
+	//删除方法
+	function deletePoid(id) {
+		bootbox.confirm("确定删除？", function(result) {
+			if (result === true) {
+				$("#indexSettingForm").attr("action",
+						"${base}/admin/indexSetting/del?poid=" + id);
+				$("#indexSettingForm").submit();
+			} else {
+
+			}
+		});
+	}
+	//向左移动
+	function leftMove(sqe) {
+		var move = 0;
+		$("#indexSettingForm").attr(
+				"action",
+				"${base}/admin/indexSetting/leftRightMove?sqe=" + sqe
+						+ "&move=" + move);
+		$("#indexSettingForm").submit();
+	}
+	//向右移动
+	function rightMove(sqe) {
+		var move = 1;
+		$("#indexSettingForm").attr(
+				"action",
+				"${base}/admin/indexSetting/leftRightMove?sqe=" + sqe
+						+ "&move=" + move);
+		$("#indexSettingForm").submit();
+	}
+	//是否可见
+	function seeImg(flag, poid) {
+		$("#indexSettingForm").attr(
+				"action",
+				"${base}/admin/indexSetting/updateView?flag=" + flag + "&poid="
+						+ poid);
+		$("#indexSettingForm").submit();
+	}
+</script>

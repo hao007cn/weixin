@@ -1,0 +1,49 @@
+﻿<@p.header csshref=" ${base}/static/bootstrap/css/bootstrap.min.css,
+${base}/static/css/matrix-media.css,
+${base}/static/css/matrix-style.css,
+${base}/static/css/bootstrap-responsive.min.css,
+${base}/static/bootstrap/font-awesome/4.2/css/font-awesome.min.css,
+${base}/static/css/stylesenyint.css" />
+
+	<div class="titleallnews">健康百科
+	<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button></div>
+		<div data-role="content" style="margin-left: -16px; padding: 0px">
+			<div class="container-fluid">
+				<div class="quick-actions_homepage">
+					<ul class="quick-actions">
+						<!--                             <li style="background: #ffad46"> <a href="healthyList.html"  style="color:white"> <i class="icon-dashboard"></i>疾病知识</a> </li> -->
+						<!--                             <li class="bg_lg"> <a href="healthyList.html"  style="color:white"> <i class="icon-signal"></i>医学护理</a> </li> -->
+						<!--                             <li class="bg_ly"> <a href="healthyList.html"  style="color:white"> <i class="icon-inbox"></i>中医药</a> </li> -->
+						<!--                             <li class="bg_lo"> <a href="healthyList.html"  style="color:white"> <i class="icon-th"></i>健康咨询</a> </li> -->
+						<!--                             <li class="bg_ls"> <a href="healthyList.html"  style="color:white"> <i class="icon-fullscreen"></i>疾病库</a> </li> -->
+						<!--                             <li class="bg_lo"> <a href="healthyList.html"  style="color:white"> <i class="icon-th-list"></i>药物库</a> </li> -->
+						<!--                             <li class="bg_lg"> <a href="healthyList.html"  style="color:white"> <i class="icon-tint"></i>急救箱</a> </li> -->
+						<!--                             <li class="bg_lb"> <a href="healthyList.html"  style="color:white"> <i class="icon-pencil"></i>读懂检验单</a> </li> -->
+						<#if healthyTypeList??> 
+							<#list healthyTypeList as healthyType>
+								<li style="background: ${healthyType.backColor}">
+									<a href="${base}/healthy/healthylist?id=${healthyType.poid}" style="color: white">
+										<span style="font-size: 30px">
+										<span class="${healthyType.icon}"> </span>
+										</span>
+										<span style="display:block;">${healthyType.name!}</span>
+									</a>
+								</li> 
+							</#list> 
+					 	</#if>
+					 	<#if wikisType??>
+					 			<div style="font-size: 16px;text-align:left; color:#21B7C6;margin:30px 10px">暂时没有相关信息哦！</div>
+					 		<#else>
+					 	</#if>
+					</ul>
+				</div>
+			</div>
+		</div>
+<@p.footer scriptsrc=""/>
+

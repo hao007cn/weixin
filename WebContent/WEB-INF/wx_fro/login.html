@@ -1,0 +1,84 @@
+<@p.header/>
+<style>
+
+  .btn-default.active { color: #fff; background-color: #21B7C6; border-color: #21B7C6; -webkit-box-shadow: none;
+  box-shadow: none; } .btn-default { color: #21B7C6; background-color: #fff; border-color: #21B7C6; -webkit-box-shadow:
+  none; box-shadow: none; }
+</style>
+<div class="titleallnews">
+  手机登录
+</div>
+<div data-role="content">
+  <form id="loginForm" class="form-horizontal" method="post" role="form">
+    <table width="100%">
+      <tbody>
+        <tr>
+          <td  style="color: #21B7C6;vertical-align: middle; height: 100%;">
+            <div style="float: right;margin-right: 20px">
+              手机号:
+            </div>
+          </td>
+          <td>
+            <div style="margin: 0px; padding: 0px; float: left" class="col-xs-13">
+              <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机号">
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="color: #21B7C6; vertical-align: middle; height: 100%;">
+            <div class="col-xs-13" style="margin: 0 10px;">
+              <div class="center-block">
+                <button 
+                    type="button"
+                    class="btn btn-block"
+                    disload=true
+                    style="background: #21B7C6; color: #fff; border: none; border: 1px solid #21B7C6; line-height: 30px;"
+                    onclick="doSubmit()">
+
+
+                  登 录
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+<@p.footer/>
+<script type="text/javascript">
+  function doSubmit() {
+    var mobile = $("input[name='mobile']").val();
+    if (mobile == "") {
+      $("input[name='mobile']").attr("placeholder", "请输入手机号");
+      $("input[name='mobile']").focus();
+      return;
+    } else {
+      $
+      .ajax({
+        type : "post",
+        url : "${base}/login/login",
+        data : {
+          'mobile' : mobile
+          },
+          contentType : "application/x-www-form-urlencoded;charset=utf-8",
+          dataType : "json",
+          success : function(data) {
+            if (data.flag==1) {
+              $("input[name='mobile']").val('');
+              $("input[name='mobile']").attr("placeholder",
+              "用户不存在,请重新输入");
+              $("input[name='mobile']").focus();
+              return;
+              }else
+              {
+                location.href="${base}/";
+              }
+              },
+              error : function(xmlReq, err, c) {
+              }
+              });
+            }
+          }
+        </script>

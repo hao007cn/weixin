@@ -1,0 +1,113 @@
+<@p.header />
+<style>
+  .firstline { border-top-left-radius: 4px; border-top-right-radius: 4px; } .lastline { border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px; } .well { min-height: 20px; padding: 19px; margin-bottom: 8px; background-color:
+  #fff; border: 1px solid #e3e3e3; border-radius: 4px; -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05); } .tablejjj tr { line-height: 30px; } .list-group-item { padding:
+  15px; }
+</style>
+<div class="titleallnews">
+  个人中心
+</div>
+<#if foregroundUser??>
+  <div data-role="content" style="margin: 20px">
+    <a 
+        href="${base}/persona/personawith"
+        style="font-weight: 100; margin-bottom: 7px;"
+        class="list-group-item firstline lastline ">
+
+
+      <table class="tablejjj" style="margin-bottom: 0;">
+        <tbody>
+          <tr>
+            <td style="color: #21B7C6; vertical-align: middle; height: 100%; border-top: none; padding-right: 10px;">
+              姓&nbsp;&nbsp;名:
+            </td>
+            <td style="border-top: none; width: 100%;">
+              <div style="margin: 0px; padding: 0px; float: left">
+                ${foregroundUser.name!}
+              </div>
+            </td>
+            <td rowspan="2">
+              <span style="float: right;" class="glyphicon glyphicon-chevron-right">
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #21B7C6; vertical-align: middle; height: 100%;">
+              身份证:
+            </td>
+            <td style="border-top: none">
+              <span style="margin: 0px; padding: 0px; width: 100%; text-align: left;">
+                ${foregroundUser.cardid!}
+              </span>
+            </td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </a>
+
+    <a 
+        href="${base}/homemember"
+        style="font-weight: 100; margin-bottom: 7px;"
+        class="list-group-item firstline lastline ">
+      <span style="color: #5ba0f5; margin-right: 10px" class="glyphicon glyphicon-user">
+      </span>
+      常用就诊人
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+    <a href="${base}/myorders" style="font-weight: 100" class="list-group-item firstline">
+      <span style="color: rgb(255, 140, 60); margin-right: 10px" class="glyphicon glyphicon-time">
+      </span>
+      我的预约
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+    <a href="${base}/report" style="font-weight: 100" class="list-group-item ">
+      <span style="color: rgb(112, 206, 189); margin-right: 10px" class="glyphicon glyphicon-edit">
+      </span>
+      报告查询
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+    <!-- <a href="${base}/report" style="font-weight: 100" class="list-group-item lastline">
+      <span style="color: #cf89ef; margin-right: 10px" class="glyphicon glyphicon-search">
+      </span>
+      叫号查询
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a> -->
+     <a href="${base}/outpatient" style="font-weight: 100; margin-bottom: 7px;" class="list-group-item lastline">
+      <span style="color: #84c665; margin-right: 10px" class="glyphicon glyphicon-heart-empty">
+      </span>
+     看诊记录
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+     <!--<a href="${base}/report" style="font-weight: 100; margin-bottom: 7px;" class="list-group-item lastline">
+      <span style="color: rgb(112, 206, 189); margin-right: 10px" class="glyphicon glyphicon-edit">
+      </span>
+      报告查询
+      <span style="float: right" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>-->
+    <a href="${base}/about" style="font-weight: 100" class="list-group-item firstline">
+      <span style=" margin-right: 10px" class="glyphicon glyphicon-info-sign text-info">
+      </span>
+      关于我们
+      <span style="float: right;" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+    <a href="${base}/feedback" style="font-weight: 100;" class="list-group-item ">
+      <span style="color: red; margin-right: 10px" class="glyphicon glyphicon-comment">
+      </span>
+      意见反馈
+      <span style="float: right;" class="glyphicon glyphicon-chevron-right">
+      </span>
+    </a>
+  </div>
+</#if>
+<@p.footer />

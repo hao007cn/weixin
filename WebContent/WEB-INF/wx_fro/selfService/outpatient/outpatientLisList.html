@@ -1,0 +1,53 @@
+﻿<@p.header csshref="" />
+<style>
+.btn-default.active{
+color: #fff;
+background-color: #21B7C6;
+border-color: #21B7C6;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+.btn-default{
+color: #21B7C6;
+background-color: #fff;
+border-color: #21B7C6;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+
+</style>
+<div class="titleallnews">看诊查询结果
+<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+  	</div>
+<div style="margin-left: 10px;margin-top: 10px;margin-bottom: 10px">
+	<div class="btn-group" data-toggle="buttons">
+		<label class="btn btn-default active" onclick="href('${base}/report/lisList?cardid=${cardid}')"> <input type="radio"
+			name="put1" checked value="1" >生化检验单
+		</label> <label class="btn btn-default" onclick="href('${base}/pacsreport?cardid=${cardid}')"> <input type="radio"
+			name="put1"  value="2" >影像检验单
+		</label>
+	</div>
+</div>
+	<div id="lisContent" style="margin: 0 10px">
+		
+	</div>
+	<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+	<script type="text/javascript">
+	var listsize=0;
+	<#if pageSum??>
+		listsize=${pageSum};
+	</#if>
+	$(function(){
+	//执行分页方法
+		ajaxScrollPage("#lisContent",'${base}/outpatient/append',listsize,{
+			"cardid" : '${cardid}',"fuName" : '${fuName}'
+		}); 
+	});
+</script>
+

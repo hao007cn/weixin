@@ -1,0 +1,453 @@
+<@p.header csshref="${base}/assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css
+" csscode=""/>
+<a id="addBtnT" class="text-danger"  data-toggle="modal" onclick="add()">
+	+添加
+</a>
+
+<div id="menutable" class="dd dd-draghandle">
+<#if resList??>
+	<@p.sysmenu resources=resList />
+</#if>
+</div>
+
+<a id="addBtnB" class="text-danger"  data-toggle="modal" onclick="add()">
+	+添加
+</a>
+
+<div id="url_help_modal" class="modal fade" tabindex="1" role="dialog" aria-labelledby="urlHelpModalLabel"
+	 aria-hidden="true" remote="false" style="z-index:9999">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="urlHelpModalLabel">菜单填写说明</h4>
+			</div>
+			<div class="modal-body">
+				<p class="well">
+					1.菜单分为两类：分组和最终菜单。分组是指点击时只显示出其下子菜单而不跳转页面的菜单项目。如：“系统管理”。最终菜单是带有连接的，点击里会跳转到某个页。
+				</p>
+				<p class="well">
+					2.分组不需要填写url及key。最终菜单必须填写url和key，否则菜单会不正常。
+				</p>
+				<p class="well">
+					3.url填写规则：url必须是有效的连接，必须以“/”号开头。url不要重复，否则显示不正常。
+				</p>
+				<p class="well">
+					4.key填写规则：key必须由英文字母组成，且不重复。重复时会影响权限设置。
+				</p>
+				<p class="well">
+					5.icon填写说明：此处仅采用<a href="${base}/admin/icons" class="text-danger" target="_blank" title="查看所有字体">font awesome字体</a>，只需要填写fa-xxx即可。例如：填写“fa-bell-slash-o”即可显示一个铃声禁止的图标。
+				</p>
+				<p class="well">
+					6.更多图标，<a href="${base}/admin/icons" class="text-danger" target="_blank" title="查看所有字体">点击此处查看</a>。
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 新增弹出dialog -->
+<div class="modal fade" id="addFormModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel1"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用于新增、编辑菜单">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				
+				<h4 class="modal-title" id="menuModalLabel1">
+					<span id="menuModalLabel">新增</span>
+					<a data-toggle="modal" data-target="#url_help_modal">
+						<img src="${base}/assets/images/ico_help.png" title="查看帮助"/>
+					</a>
+				</h4>
+			</div>
+			<form id="addForm" class="form-horizontal" role="form" action="${base}/admin/sysmenu/save" method="post">
+				<div class="modal-body">
+					<input type="hidden" name="poid" id="d-poid"/>
+					<!-- <input type="hidden" name="type" id="d-type" value="0"/> -->
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq" for="d-parent-id">上级菜单</label>
+						
+						<div class="col-sm-9">
+							<div class="input-group">
+								<div id="d-btn-group-parent" class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-search"></i> <span class="caret"></span>
+									</button>
+									<div class="dropdown-menu" role="menu">
+										<ul id="treeMenu" class="ztree" style="margin-top:0;"></ul>
+									</div>
+								</div><!-- /btn-group -->
+								<input type="text" id="d-parent-name" name="parentName" value="" data-placeholder="选择上级菜单..." readonly="readonly" class="form-control required" data-validation-engine="validate[required]"/>
+								<input type="hidden" id="d-parent-id" name="parentId" value=""/>
+							</div><!-- /input-group -->
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="d-position"> 显示位置 </label>
+				
+						<div class="col-sm-9">
+							位于
+							<select id="d-position" name="position">
+							</select>
+							之后
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq" for="d-name">名称 </label>
+
+						<div class="col-sm-9">
+							<input type="text" id="d-name" name="name" placeholder="名称" class="form-control" maxlength="20" data-validation-engine="validate[required], maxSize[10]">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="d-url">URL </label>
+
+						<div class="col-sm-9">
+							<input type="text" id="d-url" name="resUrl" placeholder="URL,分组不填写。如：/index" class="form-control" maxlength="50" data-validation-engine="maxSize[50]">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="d-key">KEY </label>
+
+						<div class="col-sm-9">
+							<input type="text" id="d-key" name="resKey" placeholder="唯一性key,分组不填写。如：index" class="form-control" maxlength="50" data-validation-engine="validate[custom[onlyLetterNumber]],maxSize[50]">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="d-key">
+							<a href="${base}/admin/icons" class="text-danger" target="_blank" title="查看所有字体">
+								<img src="${base}/assets/images/ico_help.png" title="查看所有图标"/>
+							</a>
+							图标
+						</label>
+
+						<div class="col-sm-9">
+							<input type="text" id="d-icons" name="resClass" placeholder="图标,如：fa-bell-slash-o" class="form-control" maxlength="50" data-validation-engine="maxSize[50]">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="d-desc"> 备注 </label>
+				
+						<div class="col-sm-9">
+							<!-- <div class="wysiwyg-editor" id="deptAddEditor" style="border-width: 1px;"></div> -->
+							<textarea id="d-desc" name="desc" style="width:100%; height:250px"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" id="btn_submit" data-loading-text="正在加载...">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<form id="delForm" name="delForm" action="${base}/admin/sysmenu/delete">
+	<input type="hidden" id="del_poid" name="poid" value="">
+</form>
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/ztree/js/jquery.ztree.all-3.5.min.js,
+${base}/assets/js/plugins/nestable/jquery.nestable.min.js
+"/>
+<!-- inline scripts related to this page -->
+<script>
+$(function($){
+	$('#menutable').nestable({
+		group: 1
+	}).on('change', update);
+
+	$('.dd-handle a').on('mousedown', function(e){
+		e.stopPropagation();
+	});
+	
+	$('[data-rel="tooltip"]').tooltip();
+	
+	initTreeMenu();
+	
+	$('#addForm').validationEngine('attach',{
+		//binded: false,
+		onValidationComplete: function(form, status){
+			if (status) {
+				var success = false;
+				try {
+					$.ajax({
+						url: "${base}/admin/sysmenu/keycount",
+						type: 'post',
+						async: false,
+						data: {poid: $("#d-poid").val(), key: $("#d-key").val()},
+						success: function(data){
+							if (data < 1) {
+								success = true;
+							} else {
+								success = false;
+							}
+						}
+					})
+				} catch(e) {
+					success = false;
+					return false;
+				}
+				if (success) {
+					var btn = $("#btn_submit");
+					btn.button('loading');
+					
+					return true;
+				} else {
+					$("#d-key").validationEngine("showPrompt",
+						'*key已存在，不可重复，请重新输入！', 'error');
+					$("#d-key").focus();
+					return false;
+				}
+				
+				return false;
+			}
+		}
+	});
+	
+	$('#addFormModal').on('show.bs.modal', function (e) {
+	}).on('hide.bs.modal', function (e) {
+		resetAddForm();
+		// 去掉表单验证信息
+		$('#addForm').validationEngine('hide');
+	})
+});
+
+var update = function(e) {
+	var list = e.length ? e : $(e.target);
+	var root = {};
+	root.poid = 1;
+	root.children = list.nestable('serialize');
+	var dataConver = function(obj) {
+		var newObj = {};
+		if (obj.poid) {
+			newObj.poid = obj.poid;
+		}
+		if (obj.reskey) {
+			newObj.resKey = obj.reskey;
+		}
+		if (obj.resurl) {
+			newObj.resUrl = obj.resurl;
+		}
+		if (obj.resclass) {
+			newObj.resClass = obj.resclass;
+		}
+		if (obj.desc) {
+			newObj.desc = obj.desc;
+		}
+		if (obj.children) {
+			var arr = [];
+			for (var i = 0; i < obj.children.length; i ++) {
+				arr.push(dataConver(obj.children[i]));
+			}
+			newObj.children = arr;
+		}
+		
+		return newObj;
+	}
+	
+	var menu = JSON.stringify(root);
+	S.ajax({
+		url: '${base}/admin/sysmenu/update',
+		data: {json: menu}
+	});
+};
+
+function edit(id) {
+	S.ajax({
+		url: '${base}/admin/sysmenu/detail',
+		type: 'post',
+		dataType: 'json',
+		data: {poid: id},
+		success: function(res) {
+			var obj = res;
+			initParent(obj.parentId, obj.poid);
+			
+			var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+			var pnode = zTree.getNodeByParam("poid", obj.parentId);
+			
+			$("#d-poid").val(obj.poid);
+			$("#d-name").val(obj.name);
+			$("#d-sort").val(obj.sort);
+			
+			var prePoid = -1;
+			if (obj.sort != 0 && pnode.children) {
+				for (var i = 0; i < pnode.children.length; i ++) {
+					if (pnode.children[i].poid != obj.poid) {
+						if (obj.sort < pnode.children[i].sort) {
+							break;
+						}
+						prePoid = pnode.children[i].poid;
+					}
+				}
+			}
+			
+			$("#d-poid").val(obj.poid);
+			//$("#d-type").val(0);
+			$("#d-position").val(prePoid);
+			$("#d-name").val(obj.name);
+			$("#d-url").val(obj.resUrl);
+			$("#d-key").val(obj.resKey);
+			$("#d-icons").val(obj.resClass);
+			$("#d-desc").val(obj.desc);
+			
+			$("#menuModalLabel").html("编辑菜单");
+			
+			$("#addFormModal").modal("show");
+		}
+	});
+}
+
+function add() {
+	$("#menuModalLabel").html("新增菜单");
+	$("#addFormModal").modal("show");
+}
+
+function saveNew(btn) {
+	/* var form = $("#addForm");
+	form.submit(); */
+}
+
+_rootId = 1;
+
+function initTreeMenu() {
+	var menusetting = {
+		async: {
+			enable: true,
+			cache: false,
+			type: 'post',
+			url: '${base}/admin/sysmenu/stree',
+			autoParam: ['poid']
+		},
+		data: {
+			key: {
+			}
+		},
+		simpleData: {
+			enable: true,
+			rootPId: _rootId,
+			idKey: 'poid',
+			pidKey: 'parentId'
+		},
+		view: {
+			selectedMulti: false,
+			dblClickExpand: false
+		},
+		check: {
+			enable: false
+		},
+		callback: {
+			beforeClick: function(treeId, treeNode, clickFlag) {
+			},
+			onClick: function(event, treeId, treeNode, clickFlag) {
+				initParent(treeNode.poid);
+			},
+			beforeRightClick: function(treeId, treeNode) {
+				return true;
+			},
+			onRightClick: function(event, treeId, treeNode) {
+				event.preventDefault();
+			},
+			onAsyncSuccess: function(event, treeId, treeNode, msg) {
+				var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+				zTree.expandAll(true);
+			},
+			beforeExpand: function() {
+				$("#d-btn-group-parent").addClass("open");
+			},
+			beforeCollapse: function() {
+				$("#d-btn-group-parent").addClass("open");
+			},
+			onExpand: function() {
+				$("#d-btn-group-parent").addClass("open");
+			},
+			onCollapse: function() {
+				$("#d-btn-group-parent").addClass("open");
+			}
+		}
+	};
+	
+	$.fn.zTree.init($("#treeMenu"), menusetting);
+}
+
+function resetAddForm(obj) {
+	$("#d-poid").val('');
+	//$("#d-type").val(0);
+	$("#d-parent-name").val('');
+	$("#d-parent-id").val('');
+	$("#d-position").val('-1');
+	$("#d-name").val('');
+	$("#d-url").val('');
+	$("#d-key").val('');
+	$("#d-icons").val('');
+	$("#d-desc").val('');
+	$('#addForm').validationEngine('hide');
+}
+
+function addSub(poid) {
+	initParent(poid);
+	
+	add();
+}
+
+function initParent(parentId, curId) {
+	var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+	var treeNode = zTree.getNodeByParam("poid", parentId);
+	
+	$("#d-parent-id").val(parentId);
+	$("#d-parent-name").val(treeNode.name);
+	
+	var html = "<option value='-1'>最前面</option>";
+	if (treeNode.children) {
+		for (var i = 0; i < treeNode.children.length; i ++) {
+			if (curId && curId == treeNode.children[i].poid) {
+				continue;
+			}
+			if (i == treeNode.children.length - 1) {
+				html += '<option selected value='+treeNode.children[i].poid+'>'+treeNode.children[i].name+'</option>';
+			} else {
+				html += '<option value='+treeNode.children[i].poid+'>'+treeNode.children[i].name+'</option>';
+			}
+		}
+	}
+	$("#d-position").html(html);
+}
+
+function del(id) {
+	bootbox.confirm("确定删除吗？", function(result) {
+		if (result) {
+			$("#del_poid").val(id);
+			
+			var form = document.forms["delForm"];
+			form.submit();
+		}
+	});
+}
+</script>

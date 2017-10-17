@@ -1,0 +1,151 @@
+<@p.header 
+	/>
+<div >
+	<form id="bookForm" name="bookForm" action="${base}/book/do" method="post">
+		<input type="hidden" name="departmentId" value="${departmentId!}">
+		<input type="hidden" name="departmentName" value="${departmentName!}">
+		<input type="hidden" id="doctorId" name="doctorId" value="${doctorId!}"/>
+		<input type="hidden" id="doctorName" name="doctorName" value="${doctorName!}"/>
+		<input type="hidden" id="snum" name="snumber" value="${snumber!}"/>
+		<input type="hidden" id="date" name="date" value="${date!}"/>
+		<input type="hidden" id="week" name="week" value="${week!}"/>
+		<input type="hidden" id="schedules" name="schedules" value="${schedules!}"/>
+		<input type="hidden" id="limitNums" name="limitNums" value="${limitNums!}"/>
+		<input type="hidden" id="fee" name="fee" value="${fee!}"/>
+		<input type="hidden" id="serialNo" name="serialNo" value="${serialNo!}"/>
+		<input type="hidden" id="regDate" name="regDate" value="${regDate!}"/>
+		<input type="hidden" id="startTime" name="startTime" value="${startTime!}"/>
+		<input type="hidden" id="endTime" name="endTime" value="${endTime!}"/>
+		<!-- <input type="hidden" id="patient" name="patient"/> -->
+	<div class="titleallnews">
+		预约信息
+		<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="href('${base}/vintroduction')">
+     返回
+  </button>
+	</div>
+
+	<div class="panel panel-default" style="margin-bottom:5px">
+		<div class="panel-body" style="margin:0;padding:5px 5px;">
+		<div style="height:20px;color:#21B7C6; margin-bottom:8px;">
+			<div class="glyphicon glyphicon-eye-open" style="float:left;padding:0px;margin:0px 5px">
+			</div>
+			<div style="padding:0;margin:0 0 20px 0 ;font-size:14px;">
+			<h4>
+				就诊信息
+			</h4>
+			</div>
+		</div>
+		<table class="table table-responsive">
+			<tr>
+				<td style="width:100px">
+					挂号科室：
+				</td>
+				<td>
+					${departmentName!}
+				</td>
+				</tr>
+				<tr>
+				<td>
+					医生姓名：
+				</td>
+				<td>
+					${doctorName!}
+				</td>
+				</tr>
+				<tr>
+				<td>
+					门诊时间：
+				</td>
+				<td>
+					${date!string('yyyy-MM-dd')}&nbsp;${schedules!}&nbsp;${startTime!}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				挂号费用：
+				</td>
+				<td>
+				${fee!}元
+				</td>
+			</tr>
+			</table>
+		</div>
+		</div>
+		<div class="panel panel-default">
+		<div class="panel-body" style="margin:0;padding:5px 5px;">
+			<div style="height:20px;color:#21B7C6; margin-bottom:8px;">
+			<div class="glyphicon glyphicon-pencil" style="float:left;padding:0px;margin:0px 5px">
+			</div>
+			<div style="padding:0;margin:0 0 20px 0 ;font-size:14px;">
+				<h4>
+				个人信息
+				</h4>
+			</div>
+			</div>
+			<table class="table table-responsive">
+				<tr>
+					<td style="width:130px">
+					就诊人:
+					</td>
+					<td>
+						<select name="patient">
+						<#if userList??>
+							<#list userList as user>
+								<option value="${user.patietId!}_${user.name!}"
+									<#if user.patietId == Session["logintopuserinfo"].patietId> selected </#if>
+								>${user.name!}</option>
+							</#list>
+						</#if>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+				
+		</div>
+		<div class=" col-xs-11" style="margin: 0 20px">
+		<button 
+			type="button"
+			class="btn btn-danger btn-block" 
+			data-loading-text="保存中..." 
+			onclick="submitForm();">
+
+		提交
+		</button>
+		</div>
+	</form>
+	</div>
+	<!-- /content -->
+	<@p.footer scriptsrc=""/>
+	<script>
+	function selectPerson() {
+		$('#myModal').modal({})
+	}
+
+	function doSelectPerson(id, name, hcardid) {
+		$("#personId").val(id);
+		$("#personName").html(name);
+		$("#hcardid").val(hcardid);
+		$('#myModal').modal("hide")
+	}
+
+	function selectPayType() {
+		$('#payTypeModal').modal({})
+	}
+
+	function doSelectPayType(id, name) {
+		$("#payTypeId").val(id);
+		$("#payType").html(name);
+		$('#payTypeModal').modal("hide")
+	}
+
+	function submitForm() {
+		$("#btsubmit").button("loading");
+		$("#bookForm").submit();
+		//location.href = "checkMobile.html";
+	}
+	</script>

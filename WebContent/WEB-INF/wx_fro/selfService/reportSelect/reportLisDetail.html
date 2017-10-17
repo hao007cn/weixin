@@ -1,0 +1,101 @@
+﻿<@p.header csshref="" />
+<!-- 主页面一 -->
+<!-- 正文内容 -->
+<style>
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+border-top: 0px solid #ddd;
+}
+
+</style>
+
+<div data-role="content" >
+	<!-- -表头 -->
+	<div class="titleallnews">报告查询结果	
+	<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button></div>
+	
+	<table class="table" style="font-size:14px">
+		<tbody>
+			<tr>
+				<td colspan="4">姓&nbsp;&nbsp;名：${lisSampleInfo.xm!}</td>
+			</tr>
+			<tr>
+				<td colspan="4">门诊号：${lisSampleInfo.mzh!}</td>
+			</tr>
+			<tr>
+				<td colspan="2">性&nbsp;&nbsp;别：${lisSampleInfo.xb!}</td>
+				<td colspan="2">年&nbsp;&nbsp;龄：${lisSampleInfo.nl!}</td>
+			</tr>
+			<tr>
+				<td colspan="4">标本类型：${lisSampleInfo.bbmc!}</td> 
+			</tr>
+			<tr>
+				<td colspan="4">标本序列号：${lisSampleInfo.bbxh!}</td>
+			</tr>
+			<tr>
+				<td colspan="2">标本状态：${lisSampleInfo.bbxt!}</td>
+				<td colspan="2">申请医生：${lisSampleInfo.ysid!}</td>
+			</tr>
+			<tr>
+				<td colspan="4">科&nbsp;&nbsp;室：${lisSampleInfo.sqksdm!}</td>
+			</tr>
+			<tr>
+				<td colspan="4">申请项目：${lisSampleInfo.sqxm!}</td>
+			</tr>
+			<tr>
+				<td colspan="4">备注信息：&nbsp;${lisSampleInfo.jybz!}</td>
+			</tr>
+			<tr style="background-color: #21B7C6; color: white ;">
+				<!-- <td style="border-top: 2px solid #ddd;" >序号</td> -->
+				<td style="border-top: 2px solid #ddd;">项目名称</td>
+				<td style="border-top: 2px solid #ddd;">结果</td>
+				<td style="border-top: 2px solid #ddd;">单位</td>
+				<td style="border-top: 2px solid #ddd;">参考值</td>
+			</tr>
+			<#if lisResultList??>
+				<#list lisResultList as result>
+					<tr>
+						<!-- <td>${result.xuhao!}</td> -->
+						<td style="width:120px">${result.xmmc!}</td>
+						<td>${result.xmjg!}${result.jgbz!}</td>
+						<td>${result.jgdw!}</td>
+						<td>${result.ckz!}</td>
+					</tr>
+				</#list>			
+			</#if>
+			<tr style="background-color: #21B7C6; color: white">
+					<td colspan="2" style="border-top: 2px solid #ddd;">检验者：${lisSampleInfo.jyrmc!}</td>
+					<td colspan="3" style="border-top: 2px solid #ddd;">审核者：${lisSampleInfo.shr!}</td>
+					
+			</tr>
+			<tr>
+				<td colspan="5">检验时间：${lisSampleInfo.bgsj!}</td>
+			</tr>
+			<tr>
+				<td colspan="5">审核时间：${lisSampleInfo.shsj!}</td>
+			</tr>
+			<tr>
+				<td colspan="5" style="font-size: 12px; color: #BEBEBE">
+				<div style="margin: 10px 20px">注：<br/>本报告内容仅供参考，以医院发放的正式报告为准。</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- /footer -->
+<@p.footer />
+<script>
+	$(function(){
+		//$(".titleallnews").width($(".table tbody tr:first").width());
+		$(window).on('resize',function(){
+			$(".titleallnews").width($(".table tbody tr:first").width()-15);
+		})
+	});
+</script>
+

@@ -1,0 +1,840 @@
+<@p.header csshref="
+${base}/assets/css/jqueryui/jquery-ui.custom.min.css,
+${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/css/datepicker/datepicker.css,
+${base}/assets/css/daterangepicker/daterangepicker.css,
+${base}/assets/css/chosen/chosen.css" />
+
+		<form class="form-view-data" role="form" method="post" id="serch">
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-md-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1">标题</label>
+
+				<div class="col-sm-2 col-md-2 col-lg-2">
+					<input type="text" id="form-field-1-1" placeholder="文章标题"
+						class="input-sm form-control" name="title">
+				</div>
+			</div>
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-md-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-select-3">类别 </label>
+
+				<div class="col-sm-2 col-md-2 col-lg-2 ">
+					<select class="input-sm form-control" id="form-field-select-3" style="width:100%"
+						data-placeholder="选择科室..." name="wikisCategoryId">
+							<option value=""></option>
+						<#if wikisTypeList??>
+							<#list wikisTypeList as wikisType>
+								<option value="${wikisType.poid}">${wikisType.name}</option>
+							</#list>
+						</#if>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-md-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 日期 </label>
+
+				<div class="col-sm-3 col-md-3">
+					<div class="input-daterange input-group">
+						<input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="startDate"> <span
+							class="input-group-addon"> <i class="fa fa-exchange"></i>
+						</span> <input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="endDate">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class=" col-sm-1">
+					<button class="btn btn-info btn-sm" type="button" onclick="findSearch()">
+						<i class="fa fa-search"></i> 查询
+					</button>
+				</div>
+			</div>
+				<div class=" col-sm-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="formRefresh()">
+						<i class="fa fa-refresh"></i> 重置
+					</button>
+
+				</div>
+		</form>
+		<div class="row"></div>
+		<div class="space-4"></div>
+
+		<div class="table-responsive">
+			<table id="grid-table-1"></table>
+
+			<div id="grid-pager-1"></div>
+		</div>
+<!-- 修改和添加 -->
+<!-- ///////////////////////////////////////////////// addwikis-->
+		<div id="addModal" class="modal fade bs-example-modal-lg"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myLargeModalLabel">新增百科</h4>
+					</div>
+					<div class="modal-body">
+						<form id="addWikis" class="form-horizontal" role="form" method="post">
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 标题 </label>
+								<div class="col-sm-4">
+									<input type="text" class="input-sm" id="spinner1" name="title" data-validation-engine="validate[required], maxSize[20]"/>
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 类别 </label>
+									
+								<div class="col-sm-2">
+								<select class="input-sm form-control" id="form-field-select-3" style="width:auto"
+									data-placeholder="选择科室..." name="wikisTypeId">
+									<#if wikisTypeList??>
+										<#list wikisTypeList as wikisType>
+											<option value="${wikisType.poid}">${wikisType.name}</option>
+										</#list>
+									</#if>
+								</select>
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 内容
+								</label>
+								<input type="hidden" name = "content" value="" id = "content">
+								<div class="col-sm-8">
+									<div class="wysiwyg-editor" id="deptEditor"
+										style="border-width: 1px;">
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 备注 </label>
+								<div class="col-sm-4">
+									<input type="text" class="input-sm" id="spinner1" name="remark" data-validation-engine="validate[maxSize[20]"/>
+								</div>
+							</div>
+							
+<!-- 							<div class="space-4"></div> -->
+<!-- 							<div class="form-group"> -->
+<!-- 								<label class="col-sm-2 control-label no-padding-right" -->
+<!-- 									for="form-field-1-1">发布日期</label> -->
+
+<!-- 								<div class="col-sm-4"> -->
+<!-- 									<div class="input-daterange input-group"> -->
+<!-- 										<input type="text" class="input-sm form-control" -->
+<!-- 											data-date-format="YYYY-MM-DD hh:mm" name="publishTime" id = "publishTime"> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+								<div class="space-4"></div>
+							<input id="poid" name="poid" type="hidden">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+							onclick="addWikis()">提交</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- end -->
+
+<!-- showWikis -->
+		<div id="showWikis" class="modal fade bs-example-modal-lg"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myLargeModalLabel">详细内容</h4>
+					</div>
+					<div class="modal-body">
+						<form id="addWikis" class="form-horizontal" role="form" method="post">
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 标题 </label>
+								<div class="col-sm-4">
+									<input type="text" class="input-sm" id="spinner1" name="title" style="background:transparent;border:0" data-validation-engine="validate[required], maxSize[20]"/>
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 类别 </label>
+									
+								<div class="col-sm-2">
+									<input type="text" class="input-sm" id="spinner1" name="wikisCategory" value="" style="background:transparent;border:0"/>
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 内容
+								</label>
+								<input type="hidden" name = "content" value="" id = "content">
+								<div class="col-sm-8">
+									<div class="" id="deptEditor_show"
+										style="border: 1px solid #ddd; width: 600px; height: 400px; overflow: auto">
+									</div>
+								</div>
+							<div class="space-4"></div>
+							</div>
+								<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1"> 备注 </label>
+								<div class="col-sm-4">
+									<input type="text" class="input-sm" id="spinner1" name="remark" data-validation-engine="validate[required], maxSize[20]" style="background:transparent;border:0"/>
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label no-padding-right"
+									for="form-field-1-1">发布日期</label>
+
+								<div class="col-sm-4">
+									<div class="input-daterange input-group">
+										<input type="text" class="input-sm"
+											 name="publishTime" style="background:transparent;border:0">
+									</div>
+								</div>
+							</div>
+								<div class="space-4"></div>
+						</form>
+					</div>
+<!-- 					<div class="modal-footer"> -->
+<!-- 						<button type="button" class="btn btn-primary" -->
+<!-- 							onclick="addWikis()">提交</button> -->
+<!-- 						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+<!-- 					</div> -->
+				</div>
+			</div>
+		</div>
+<!-- showWikisEnd -->
+
+		<div id="msgModal" class="modal fade bs-example-modal-sm"
+			tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myLargeModalLabel">系统提示</h4>
+					</div>
+
+					<div class="modal-body">
+						<p class="alert alert-success"
+							style="padding: 0 10px; font-size: 14px; line-height: 30px; border-radius: 6px; -webkit-border-radius: 6px; -moz-border-radius: 6px;">操作成功！</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/date-time/moment.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datetimepicker.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,
+${base}/assets/js/plugins/date-time/daterangepicker.min.js,
+${base}/assets/js/plugins/chosen/chosen.jquery.min.js,
+${base}/assets/js/plugins/fuelux/fuelux.spinner.min.js,
+${base}/assets/js/plugins/jqueryui/jquery-ui.custom.min.js,
+${base}/assets/js/plugins/jqueryui/jquery.ui.touch-punch.min.js,
+${base}/assets/js/plugins/markdown/markdown.min.js,
+${base}/assets/js/plugins/markdown/bootstrap-markdown.min.js,
+${base}/assets/js/plugins/hotkeys/jquery.hotkeys.min.js,
+${base}/assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js,
+${base}/assets/js/plugins/bootstrap/bootbox.min.js" />
+<script>
+			
+	$(function() {
+		//datepicker控件激活
+		$('#serch .input-daterange').datepicker({
+			autoclose : true
+		});
+	
+		$("#serch input[name='startDate']").datepicker().on('hide',function(e){
+				var startdate = $(this).datepicker('getDate');
+				$("#serch input[name='endDate']").datepicker(
+					'setStartDate' , startdate
+				);
+		})
+		
+		$('#addModal #publishTime').datepicker({
+			endDate : "+0d",
+			autoclose : true,
+			format : 'yyyy-mm-dd hh:mm'
+				
+		});
+		
+		function showErrorAlert(reason, detail) {
+			var msg = '';
+			if (reason === 'unsupported-file-type') {
+				msg = "Unsupported format " + detail;
+			} else {
+				//console.log("error uploading file", reason, detail);
+			}
+			$(
+					'<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'
+							+ '<strong>File upload error</strong> '
+							+ msg
+							+ ' </div>').prependTo('#alerts');
+		}
+		;
+
+		$('#deptEditor').ace_wysiwyg({
+			toolbar : [ 'font', null, 'fontSize', null, {
+				name : 'bold',
+				className : 'btn-info'
+			}, {
+				name : 'italic',
+				className : 'btn-info'
+			}, {
+				name : 'strikethrough',
+				className : 'btn-info'
+			}, {
+				name : 'underline',
+				className : 'btn-info'
+			}, null, {
+				name : 'insertunorderedlist',
+				className : 'btn-success'
+			}, {
+				name : 'insertorderedlist',
+				className : 'btn-success'
+			}, {
+				name : 'outdent',
+				className : 'btn-purple'
+			}, {
+				name : 'indent',
+				className : 'btn-purple'
+			}, null, {
+				name : 'justifyleft',
+				className : 'btn-primary'
+			}, {
+				name : 'justifycenter',
+				className : 'btn-primary'
+			}, {
+				name : 'justifyright',
+				className : 'btn-primary'
+			}, {
+				name : 'justifyfull',
+				className : 'btn-inverse'
+			}, null, {
+				name : 'createLink',
+				className : 'btn-pink'
+			}, {
+				name : 'unlink',
+				className : 'btn-pink'
+			}, null, {
+				name : 'insertImage',
+				className : 'btn-success'
+			}, null, 'foreColor', null, {
+				name : 'undo',
+				className : 'btn-grey'
+			}, {
+				name : 'redo',
+				className : 'btn-grey'
+			} ],
+			'wysiwyg' : {
+				fileUploadError : showErrorAlert
+			}
+		}).prev().addClass('wysiwyg-style2');
+
+		var toolbar = $('#deptEditor').prev().get(0);
+		toolbar.className = toolbar.className.replace(/wysiwyg\-style(1|2)/g,
+				'');
+		$(toolbar).addClass('wysiwyg-style2');
+		if (typeof jQuery.ui !== 'undefined' && ace.vars['webkit']) {
+
+			var lastResizableImg = null;
+			function destroyResizable() {
+				if (lastResizableImg == null)
+					return;
+				lastResizableImg.resizable("destroy");
+				lastResizableImg.removeData('resizable');
+				lastResizableImg = null;
+			}
+
+			var enableImageResize = function() {
+				$('.wysiwyg-editor')
+						.on(
+								'mousedown',
+								function(e) {
+									var target = $(e.target);
+									if (e.target instanceof HTMLImageElement) {
+										if (!target.data('resizable')) {
+											target.resizable({
+												aspectRatio : e.target.width / e.target.height,
+											});
+											target.data('resizable', true);
+
+											if (lastResizableImg != null) {
+												//disable previous resizable image
+												lastResizableImg.resizable("destroy");
+												lastResizableImg.removeData('resizable');
+											}
+											lastResizableImg = target;
+										}
+									}
+								})
+						.on(
+								'click',
+								function(e) {
+									if (lastResizableImg != null
+											&& !(e.target instanceof HTMLImageElement)) {
+										destroyResizable();
+									}
+								}).on('keydown', function() {
+							destroyResizable();
+						});
+			}
+			enableImageResize();
+		}
+	})
+	//////////////////////////////////////////////////////// jqgrid				
+	$(function() {
+		//添加验证
+		$('#addWikis').validationEngine('attach');
+		
+		// 去掉表单验证信息
+		$('#addModal').on('show.bs.modal', function (e) {
+		}).on('hide.bs.modal', function (e) {
+			//resetAddForm();
+			// 去掉表单验证信息
+			$('#addWikis').validationEngine('hide');
+		});
+		//$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		var grid_selector = "#grid-table-1";
+		var pager_selector = "#grid-pager-1";
+
+		//resize to fit page size
+		// 					$(window).on('resize.jqGrid', function() {
+		// 								$(grid_selector).jqGrid('setGridWidth',
+		// 								$(".page-content").width());
+		// 							})
+		//resize to fit page size //
+		var minWidth = 800;
+		$(window).on(
+				'resize.jqGrid',
+				function() {
+					$(grid_selector).jqGrid('setGridWidth',$(".page-content").width() < minWidth ? minWidth : $(".page-content").width());
+				})
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on(
+				'settings.ace.jqGrid',
+				function(ev, event_name, collapsed) {
+					if (event_name === 'sidebar_collapsed'|| event_name === 'main_container_fixed') {
+						$(grid_selector).jqGrid('setGridWidth',parent_column.width() < minWidth ? minWidth : parent_column.width());
+					}
+				})
+		//渲染表格		
+		//设置jqgrid宽度
+		jQuery(grid_selector).jqGrid({
+			url : "${base}/admin/wikis/lodePage",
+			mtype : "post",
+			datatype : "json",
+			height : 250,
+			colNames : [ '编辑', 'ID', '标题', '类别', '备注', '发布时间', '发布人' ],
+			cellEdit : false,
+			colModel : [ {
+				name : 'showValue',
+				width : 90,
+				sortable : false,
+				editable : false,
+				fixed : true,
+				formatter : showValueFormatter
+			},
+
+			{
+				name : 'poid',
+				index : 'id',
+				width : 60,
+				sorttype : "int",
+				editable : false,
+			}, {
+				name : 'title',
+				index : 'title',
+				width : 70,
+				editable : false
+			}, {
+				name : 'wikisCategory',
+				index : 'wikisCategory',
+				width : 120,
+				editable : false
+			}, {
+				name : 'remark',
+				index : 'remark',
+				width : 100,
+				editable : false
+			}, {
+				name : 'publishdate',
+				index : 'publishdate',
+				width : 80,
+				editable : false
+			}, {
+				name : 'publisher',
+				index : 'publisher',
+				width : 150,
+				editable : false
+			} ],
+			viewrecords : true,
+			rowNum : 10,
+			rowList : [ 10, 20, 30 ],
+			pager : pager_selector,
+			altRows : true,
+			multiselect : false,
+			multiboxonly : false,
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function() {
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+			caption : "健康百科样本"
+		});
+		////// 必须写在表格渲染以后才能执行
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		//navButtons 工具条的图标
+		$(grid_selector).jqGrid('navGrid', pager_selector, { //navbar options
+			edit : false,
+			editicon : 'ace-icon fa fa-pencil blue',
+			add : false,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			del : false,
+			delicon : 'ace-icon fa fa-trash-o red',
+			save : false,
+			saveicon : 'ace-icon fa fa-floppy-o blue',
+			search : false,
+			searchicon : 'ace-icon fa fa-search orange',
+			refresh : false,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view : false,
+			viewicon : 'ace-icon fa fa-search-plus grey',
+		}).navButtonAdd('#grid-pager-1', {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : function() {
+				userFormRefresh();
+				$("#myLargeModalLabel").text("").text("新增百科");
+				$('#addModal').modal('show');
+			},
+			position : "last"
+		});
+
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+	})
+	//编辑 删除小图标	
+	function showValueFormatter(cellvalue, options, rowdata) {
+		be = '<div title="" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" '
+				+ ' onclick="update(\''
+				+ rowdata.poid
+				+ '\')" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')" data-original-title="编辑">'
+				+ '<span class="ui-icon ui-icon-pencil"></span></div>'
+		bv = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-search" '
+				+ ' onclick="showWikis(\''
+				+ rowdata.poid
+				+ '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="查看">'
+				+ '<span class="ui-icon fa fa-search orange"></span></div>';
+		bd = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-del" '
+				+ ' onclick="deleteWikis(\''
+				+ rowdata.poid
+				+ '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="删除">'
+				+ '<span class="ui-icon ui-icon-trash"></span></div>';
+		return be + bv + bd;
+	}
+	//获取输入内容
+	function getInputContent() {
+		var inputContent = $("#deptEditor").html();
+		$("input#content").val(inputContent);
+	}
+	
+	//修改或增加
+	function addWikis() {
+		if($('#addWikis').validationEngine('validate')) {
+			getInputContent();
+			$("#addWikis").attr("action", "${base}/admin/wikis/save");
+			$("#addWikis").submit();
+		}
+	}
+	//enable datepicker
+	function pickDate(cellvalue, options, cell) {
+		setTimeout(function() {
+			$(cell).find('input[type=text]').datepicker({
+				format : 'yyyy-mm-dd',
+				autoclose : true
+			});
+		}, 0);
+	}
+
+	function beforeDeleteCallback(e) {
+		var form = $(e[0]);
+		if (form.data('styled'))
+			return false;
+
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner(
+				'<div class="widget-header" />')
+		style_delete_form(form);
+
+		form.data('styled', true);
+	}
+
+	function beforeEditCallback(e) {
+		var form = $(e[0]);
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner(
+				'<div class="widget-header" />')
+		style_edit_form(form);
+	}
+
+	//it causes some flicker when reloading or navigating grid
+	//it may be possible to have some custom formatter to do this as the grid is being created to prevent this
+	//or go back to default browser checkbox styles for the grid
+	function styleCheckbox(table) {
+		/**
+			$(table).find('input:checkbox').addClass('ace')
+			.wrap('<label />')
+			.after('<span class="lbl align-top" />')
+		
+		
+			$('.ui-jqgrid-labels th[id*="_cb"]:first-child')
+			.find('input.cbox[type=checkbox]').addClass('ace')
+			.wrap('<label />').after('<span class="lbl align-top" />');
+		 */
+	}
+
+	//unlike navButtons icons, action icons in rows seem to be hard-coded
+	//you can change them like this in here if you want
+	function updateActionIcons(table) {
+		/**
+		var replacement = 
+		{
+			'ui-ace-icon fa fa-pencil' : 'ace-icon fa fa-pencil blue',
+			'ui-ace-icon fa fa-trash-o' : 'ace-icon fa fa-trash-o red',
+			'ui-icon-disk' : 'ace-icon fa fa-check green',
+			'ui-icon-cancel' : 'ace-icon fa fa-times red'
+		};
+		$(table).find('.ui-pg-div span.ui-icon').each(function(){
+			var icon = $(this);
+			var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+			if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+		})
+		 */
+	}
+
+	//replace icons with FontAwesome icons like above
+	function updatePagerIcons(table) {
+		var replacement = {
+			'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+			'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+			'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+			'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+		};
+		$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon')
+				.each(
+						function() {
+							var icon = $(this);
+							var $class = $.trim(icon.attr('class').replace(
+									'ui-icon', ''));
+
+							if ($class in replacement)
+								icon.attr('class', 'ui-icon '
+										+ replacement[$class]);
+						})
+	}
+
+	function enableTooltips(table) {
+		$('.navtable .ui-pg-button').tooltip({
+			container : 'body'
+		});
+		$(table).find('.ui-pg-div').tooltip({
+			container : 'body'
+		});
+	}
+
+	//or change it into a date range picker
+
+	//to translate the daterange picker, please copy the "examples/daterange-fr.js" contents here before initialization
+	$('input[name=date-range-picker]').daterangepicker({
+		'applyClass' : 'btn-sm btn-success',
+		'cancelClass' : 'btn-sm btn-default',
+		locale : {
+			applyLabel : 'Apply',
+			cancelLabel : 'Cancel',
+		}
+	}).prev().on(ace.click_event, function() {
+		$(this).next().focus();
+	});
+
+	if ('ontouchstart' in document.documentElement)
+		document
+				.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"
+						+ "<"+"/script>");
+
+	//查询按钮
+	function findSearch() {
+		var title = $("input[name='title']").val();
+		var startDate = $("input[name='startDate']").val();
+		var endDate = $("input[name='endDate']").val();
+		var wikisCategoryId = $(
+				"select[name='wikisCategoryId'] option:selected").val();
+		$("#grid-table-1").jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : {
+				'title' : title,
+				'startDate' : startDate,
+				'endDate' : endDate,
+				'wikisCategoryId' : wikisCategoryId
+			}, //发送数据  
+			page : 1
+		}).trigger("reloadGrid");
+	}
+
+	//查询条件重置按钮
+	function formRefresh() {
+		$("select[name='wikisCategoryId'] option[value='']").attr("selected",true);
+		$("#serch input").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	//enable datepicker //日期校验
+	function pickDate(cellvalue, options, cell) {
+		setTimeout(function() {
+			$(cell).find('input[type=text]').datepicker({
+				format : 'yyyy-mm-dd',
+				autoclose : true
+			});
+		}, 0);
+	}
+
+	//新增百科表单重置
+	function userFormRefresh() {
+		$("#addWikis input[type!='radio']").each(function(a, b) {
+			$(b).val('');
+		});
+		$("#deptEditor").html("");
+		iniCurentDate();
+	}
+	//根据id修改用户数据
+	function update(id) {
+		$.ajax({
+			url : "${base}/admin/wikis/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#poid").val(data.poid);
+					$("#deptEditor").html(data.content);
+// 					$("input[name='publishTime']").val(data.publishdate);
+					$("select[name='wikisTypeId'] option[value='" + data.wikisTypeId + "']").attr("selected",
+							true);
+					$("input[name='title']").val(data.title);
+					$("input[name='remark']").val(data.remark);
+					if ($("#poid").val()) {
+						$("#myLargeModalLabel").text("编辑百科");
+					}
+					$('#addModal').modal('show');
+				}
+			}
+		});
+	}
+
+	//删除数据
+	function deleteWikis(id) {
+		bootbox.confirm("确定删除？", function(result) {
+			if (result === true) {
+				$("#serch").attr("action", "${base}/admin/wikis/del?poid=" + id);
+				$("#serch").submit();
+			}
+		});
+
+	}
+
+	function showWikis(id) {
+		$.ajax({
+			url : "${base}/admin/wikis/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					//清空showWikis input内容
+					$("#showWikis input[type!='radio']").each(function(a, b) {
+						$(b).css("cursor", "default");
+						$(b).val('');
+					});
+					$("#showPoid").val(data.poid);
+					$("#deptEditor_show").html(data.content);
+					$("#showWikis input[name='publishTime']").val(
+							data.publishdate);
+					//wikisCategory
+					$("#showWikis input[name='wikisCategory']").val(
+							data.wikisCategory);
+					$("#showWikis input[name='title']").val(data.title);
+					$("#showWikis input[name='remark']").val(data.remark);
+					//$("#showWikis input").attr("disabled",true)
+					$('#showWikis').modal('show');
+				}
+			}
+		});
+	}
+
+	//获取当前日期
+	function CurentDate() {
+		var now = new Date();
+		var year = now.getFullYear(); //年
+		var month = now.getMonth() + 1; //月
+		var day = now.getDate(); //日
+		// 	        var hh = now.getHours();            //时
+		// 	        var mm = now.getMinutes();          //分
+		var clock = year + "-";
+		if (month < 10)
+			clock += "0";
+		clock += month + "-";
+		if (day < 10)
+			clock += "0";
+		clock += day + " ";
+		return (clock);
+	}
+	//发布日期初始化
+	function iniCurentDate() {
+		var curentDate = CurentDate();
+		$("input[name='publishTime']").val(curentDate);
+	}
+	//取消
+	function cancel(){
+			$("#poid").val("");
+	}
+</script>
+

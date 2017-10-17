@@ -1,0 +1,68 @@
+<@p.header />
+<div class="titleallnews">
+  意见反馈
+  <button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+
+<div style="margin: 20px; padding: 0px">
+  <textarea 
+      rows="3"
+      id="content"
+      name="content"
+      placeholder="请留下您的宝贵意见！"
+      class="ui-input-text ui-shadow-inset ui-body-inherit ui-corner-all ui-textinput-autogrow">
+
+
+  </textarea>
+</div>
+<div class=" col-xs-11" style="margin: 0 20px">
+  <button 
+      id="btsubmit"
+      class="btn btn-block"
+      type="button"
+      disload=true 
+      data-loading-text="保存中..." 
+      style="background: #21B7C6; color: #fff; border: none; border: 1px solid #21B7C6;"
+      onclick="doSubmit();">
+    提 交
+  </button>
+</div>
+
+<@p.footer />
+<script type="text/javascript">
+  function doSubmit() {
+    var content = $("#content").val().trim();
+    if (content == "") {
+      $("#content").attr("placeholder", "请留下您的宝贵意见！");
+      $("#content").focus();
+      return;
+    } else {
+      $
+      .ajax({
+        type : "post",
+        url : "${base}/feedback/save",
+        data : {
+          feedback : content
+          },
+          contentType : "application/x-www-form-urlencoded;charset=utf-8",
+          dataType : "json",
+          success : function(data) {
+            if (data.flag == 1) {
+              S.alert("info", "反馈成功,感谢您提交宝贵意见！我们会很快处理的！",
+              2000);
+              $("#content").val('');
+              $("#btsubmit").button("reset");
+            }
+            },
+            error : function(xmlReq, err, c) {
+            }
+            });
+          }
+        }
+      </script>

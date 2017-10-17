@@ -1,0 +1,70 @@
+<@p.header/>
+<style>
+.btn-default.active{
+color: #fff;
+background-color: #21B7C6;
+border-color: #21B7C6;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+.btn-default{
+color: #21B7C6;
+background-color: #fff;
+border-color: #21B7C6;
+-webkit-box-shadow:none;
+box-shadow:none;
+}
+#orderList .list-group-item table{
+	width: 100%;
+}
+</style>
+
+
+<!-- 正文内容 -->
+<div data-role="content">
+	<div class="titleallnews">
+		我的预约
+		 <button 
+	      type="button" disload=true
+	      class="btn btn-default"
+	      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+	      onclick="javascript:history.back();">
+	     返回
+	  	</button>
+	</div>
+
+	<!-- <div data-role="content" style="margin:10px">
+		<div class="text-center">
+			<div id="typeButtons" class="btn-group" data-toggle="buttons">
+				<label class="btn btn-default <#if type== '' || type == '0'>active</#if>">
+					<input type="radio" name="type" value="0" <#if type== '' || type == '0'>checked</#if> data-role="none">全部
+				</label>
+				<label class="btn btn-default <#if type == '1'>active</#if>">
+					<input type="radio" name="type" value="1" <#if type == '1'>checked</#if> data-role="none">待就医
+				</label>
+				<label class="btn btn-default <#if type == '2'>active</#if>">
+					<input type="radio" name="type" value="2" <#if type == '2'>checked</#if> data-role="none">已就医
+				</label>
+			</div>
+		</div>
+	</div> -->
+	
+	<div id="orderList" class="list-group">
+	</div>
+</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script>
+var listsize = 0;
+<#if pageSum??>
+	listsize = ${pageSum};
+</#if>
+$(function(){
+	//执行分页方法
+	ajaxScrollPage("#orderList",'${base}/myorders/list', listsize, {type: '${type!}'});
+	
+	$("#typeButtons").on("change", function(e) {
+		var type = e.target.value;
+		window.location="${base}/myorders?type="+type;
+	});
+});
+</script>

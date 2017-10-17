@@ -1,0 +1,58 @@
+﻿<@p.header csshref="${base}/static/css/common.css" />
+
+<div id="myCarousel" class="carousel slide">
+
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active">
+  </li>
+  <li data-target="#myCarousel" data-slide-to="1">
+</li>
+<li data-target="#myCarousel" data-slide-to="2">
+</li>
+</ol>
+
+<div class="carousel-inner">
+  <div class="item active">
+    <img src="static/image/banner.jpg">
+  </div>
+  <div class="item">
+    <img src="static/image/banner2.jpg">
+  </div>
+  <div class="item">
+    <img src="static/image/banner3.jpg">
+  </div>
+</div>
+</div>
+<script>
+  //初始化轮播
+  $(document).ready(function() {
+    $('#myCarousel').carousel({
+      interval : 3000
+      });
+  });
+      </script>
+     <div style="width:100%; height:9px; background:url(static/image/line.gif) repeat-x;"></div>
+<table class="tablestyle">
+	<tr>
+    	<td width="2%"></td>
+        <td width="47%" onclick="href('${base}/activities')"><img src="${base}/static/image/one.png"  width="100%"/></td>
+        <td width="2%"></td>
+        <td width="47%" onclick="href('${base}/healthy')"><img src="${base}/static/image/two.png" width="100%"/></td>
+        <td width="2%"></td>
+    </tr>
+    <tr class="kongxi">
+    	<td width="2%"></td>
+        <td width="47%"></td>
+        <td width="2%"></td>
+        <td width="47%"></td>
+        <td width="2%"></td>
+    </tr>
+    <tr>
+    	<td width="2%"></td>
+        <td width="47%" onclick="href('${base}/self?rd=self')"><img src="${base}/static/image/three.png"  width="100%"/></td>
+        <td width="2%"></td>
+        <td width="47%" onclick="href('${base}/persona?rd=persona')"><img src="${base}/static/image/fore.png" width="100%"/></td>
+        <td width="2%"></td>
+    </tr>
+</table>
+      <@p.footer/>

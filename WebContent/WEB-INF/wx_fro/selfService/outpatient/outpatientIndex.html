@@ -1,0 +1,43 @@
+<@p.header />
+<div class="titleallnews">看诊记录
+<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button></div>
+<div data-role="content">
+	  <div >
+                <div style="height:20px;color:#21B7C6; margin-bottom:8px;">
+                    <div class="glyphicon glyphicon-align-left" style="float:left;padding:0px;margin:0px 5px"></div><div style="padding:0;margin:0 0 20px 0 ;font-size:14px;"><h4>我的记录</h4></div>
+                </div>
+                        <table class="table">
+                            <thead>
+                                <tr style="background-color:#21B7C6;color:white">
+									<td>科室名</td>
+									<td>看诊医生</td>
+									<td>状态</td>
+									<td>日期</td>
+                                </tr>
+                            </thead>
+                            <tbody id="lisContent">
+                                
+                            </tbody>
+                        </table>
+               </div>
+</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+	var listsize=0;
+	<#if pageSum??>
+		listsize=${pageSum!};
+	</#if>
+	$(function(){
+	//执行分页方法
+		ajaxScrollPage("#lisContent",'${base}/outpatient/append',listsize,{
+			"cardid" : '${cardid!}',"fuName" : '${fuName!}'
+		},"","",4); 
+		
+	});
+</script>

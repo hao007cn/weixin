@@ -1,0 +1,486 @@
+<@p.header csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css,
+${base}/assets/js/plugins/fuelux/css/fuelux.min.css,
+${base}/assets/css/datepicker/datepicker.css" csscode="
+	.ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+	.ztree li ul.level0 {padding:0; background:none;}
+"/>
+
+<div class="col-xs-12">
+		<form id="search"  class="form-view-data">
+			<div class="form-group">
+					<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right" for="s-name">就诊人</label>
+					
+					<div class="col-sm-2 col-lg-2">
+						<input type="text" id="s-name" name="oderName" placeholder="就诊人姓名" class="form-control">
+					</div>
+			</div>
+			<div class="form-group">
+					<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right" for="s-patientName">预约人</label>
+					
+					<div class="col-sm-2 col-lg-2">
+						<input type="text" id="s-patientName" name="patientName" placeholder="预约人姓名" class="form-control">
+					</div>
+				</div>
+			<div class="form-group">
+					<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right" for="form-field-1-1"> 日期 </label>
+			
+					<div class="col-sm-3 col-lg-3">
+						<div class="input-daterange input-group">
+							<input type="text" id="s-dateStart" class="form-control" data-date-format="YYYY-MM-DD" name="dateStart" value="${dateStart?string("yyyy-MM-dd")}">
+							<span class="input-group-addon">
+								<i class="fa fa-exchange"></i>
+							</span>
+			
+							<input type="text" id="s-dateEnd" class="form-control" data-date-format="YYYY-MM-DD" name="dateEnd">
+						</div>
+					</div>
+				</div>
+			<div class="form-group">
+			<div class="col-sm-1 col-lg-1">
+				<button type="button" class="btn btn-info btn-sm" id="btn-search">
+					<i class="fa fa-search"></i>查询
+				</button>
+			</div>
+			</div>
+			<div class="col-sm-1 col-lg-1">
+				<button type="reset" class="btn btn-info btn-sm" onclick="resetSearchForm()">
+					<i class="fa fa-refresh"></i>重置
+				</button>
+			</div>
+			
+		</form>
+</div>
+		<div class="row"></div>
+		<div class="space-4"></div>
+<div class="table-responsive">
+	<table id="grid-table"></table>
+	<div id="grid-pager"></div> 
+</div>
+
+<!-- order view modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="预约详情">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="viewModalLabel">预约详细</h4>
+			</div>
+			<div class="modal-body">
+				<div id="orderDetail" class="form-horizontal">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="remarksIt(this)" data-loading-text="正在加载...">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- / order view modal -->
+
+<!-- user view modal -->
+<div class="modal fade" id="userViewModal" tabindex="-1" role="dialog" aria-labelledby="userViewModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用户详情">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="userViewModalLabel">用户详细</h4>
+			</div>
+			<div class="modal-body">
+				<div id="userDetail" class="form-horizontal">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- / user view modal -->
+
+<!-- doctor view modal -->
+<div class="modal fade" id="doctorViewModal" tabindex="-1" role="dialog" aria-labelledby="doctorViewModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="医生详情">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id=""doctorViewModalLabel"">预约详细</h4>
+			</div>
+			<div class="modal-body">
+				<div id="doctorDetail" class="form-horizontal">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- / doctor view modal -->
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/fuelux/js/fuelux.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js
+"/>
+<!-- inline scripts related to this page -->
+<script>
+	var _rootId = 1;
+	var grid_selector = "#grid-table";
+	var pager_selector = "#grid-pager";
+	
+	$(function(){
+		$('.input-daterange').datepicker({autoclose:true});
+		
+		initGrid();
+		
+		$("#btn-search").click(function(){
+			gridReload(1);
+		});
+		
+		$('#addFormModal').on('show.bs.modal', function (e) {
+		}).on('hide.bs.modal', function (e) {
+		});
+		
+		gridReload(1);
+	})
+	
+	function initGrid() {
+		
+		var minWidth = 800;
+		
+		//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() < minWidth ? minWidth : $(".page-content").width() );
+		})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+			if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() < minWidth ? minWidth : parent_column.width() );
+			}
+		})
+		
+		$(grid_selector).jqGrid({
+			url: '${base}/admin/orders/list',
+			datatype: "local",
+			mtype : "post",
+			height: '100%',
+			width: 800,
+			colNames: ['操作', '状态', 'ID', '就诊时间', '上下午', '预约人', '就诊人', '身份证号', '科室', '医生', '挂号费', '状态', '备注'],
+			cellEdit: false,
+			colModel: [
+				{name:'act',index:'act', width:150, fixed:true, sortable:false, resize:false},
+				{name:'state',index:'poid', width:60, hidden:true},	
+				{name:'poid',index:'poid', width:60, sorttype:"int"},
+				{name:'schedule.date',index:'schedule.date', width:150},
+				{name:'schedule.ap',index:'schedule.ap', width:50, formatter:function(value){if(value=="am")return "上午";else if(value=="pm")return "下午";}},
+				{name:'userName',index:'userName', width:70},
+				{name:'patientName',index:'patientName', width:50, formatter: S.sexFormatter},
+				{name:'patientCardid',index:'patientCardid', width:90},
+				{name:'schedule.departmentName',index:'schedule.departmentName', width:90},
+				{name:'schedule.doctor.name',index:'schedule.doctor.name', width:90},
+				{name:'fee',index:'fee', width:90},
+				{name:'stateLabel',index:'stateLabel', width:50},
+				{name:'remarks',index:'remarks', width:150}
+			],
+			
+			viewrecords: true,
+			rowNum: 10,
+			rowList: [10,20,30],
+			pager: pager_selector,
+			altRows: true,
+			
+			multiselect: false,
+			//multiboxonly: true,
+			
+			gridComplete : function() {
+				var ids = $(grid_selector).jqGrid('getDataIDs');
+				for ( var i = 0; i < ids.length; i++) {
+					var row = $(grid_selector).jqGrid('getRowData', ids[i]);
+					if (row.state == 'SUBMITED') {
+						btn_close = '<button class="btn btn-minier btn-default" onclick="closeIt('+row.poid+')" title="关闭">' +
+						'	关' +
+						'</button>&nbsp;';
+					} else {
+						btn_close = '<button class="btn btn-minier btn-default" disabled="disabled" title="关闭">' +
+						'	关' +
+						'</button>&nbsp;';
+					}
+					if (row.state == 'SUBMITED') {
+						btn_miss = '<button class="btn btn-minier btn-danger" onclick="missIt('+row.poid+')" title="记录爽约">' +
+						'	爽' +
+						'</button>&nbsp;';
+					} else {
+						btn_miss = '<button class="btn btn-minier btn-danger" disabled="disabled" title="记录爽约">' +
+						'	爽' +
+						'</button>&nbsp;';
+					}
+					if (row.state == 'SUBMITED') {
+						btn_finish = '<button class="btn btn-minier btn-success" onclick="finishIt('+row.poid+')" title="记录完成">' +
+						'	完' +
+						'</button>&nbsp;';
+					} else {
+						btn_finish = '<button class="btn btn-minier btn-success" disabled="disabled" title="记录完成">' +
+						'	完' +
+						'</button>&nbsp;';
+					}
+					if (row.state == 'SUBMITED') {
+						btn_audit = '<button class="btn btn-minier btn-warning" onclick="auditIt('+row.poid+')" title="审核">' +
+						'	审' +
+						'</button>&nbsp;';
+					} else {
+						btn_audit = '<button class="btn btn-minier btn-warning" disabled="disabled" title="审核">' +
+						'	审' +
+						'</button>&nbsp;';
+					}
+					
+					btn_view = '<button class="btn btn-minier btn-info" onclick="viewIt('+row.poid+')" title="查看详细">' +
+					'	详' +
+					'</button>&nbsp;';
+					
+					$(grid_selector).jqGrid('setRowData', ids[i], {
+						act : '<div style="margin-left:8px;">' + btn_close + btn_finish + btn_miss + btn_view + '</div>'
+					});
+				}
+			},
+			
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function(){
+					updatePagerIcons(table);
+					enableTooltips(table); 
+				}, 0);
+			},
+			
+			editurl: "${base}/admin/doctor/update",
+			caption: "专家列表"
+		});
+		
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		
+		//navButtons
+		$(grid_selector).jqGrid('navGrid', pager_selector, {	//navbar options
+			edit: false,
+			add: false,
+			del: false,
+			save: false,
+			search: false,
+			refresh: true,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view: false
+		});
+
+		//replace icons with FontAwesome icons like above
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function() {
+				var icon = $(this);
+				var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+				
+				if ($class in replacement)
+					icon.attr('class', 'ui-icon ' + replacement[$class]);
+			})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	}
+	
+	function gridReload(pageNo) {
+		$(grid_selector).setGridParam({datatype:'json', postData:null});
+		
+		var param = $("#search").serializeJson();
+		if (pageNo || pageNo == 0) {
+			param.page = pageNo;
+		}
+		$(grid_selector).jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : param,
+			page : param.page
+		}).trigger("reloadGrid");
+	}
+	
+	function view(id) {
+		S.ajax({
+			url: '${base}/admin/doctor/detail',
+			data: {id: id},
+			success: function(data) {
+				if (!data) {
+					return;
+				}
+				
+				$("#v-poid").val(data.poid);
+				$("#v-departmentId").html(data.departmentId);
+				$("#v-departmentName").html(data.departmentName);
+				$("#v-name").html(data.name);
+				$("#v-sex").html(S.sexFormatter(data.sex));
+				$("#v-position").html(data.position);
+				$("#v-jobTitle").html(data.jobTitle);
+				$("#v-fee").val(data.fee);
+				$("#v-enabled").html(S.enabledFormatter(data.enabled));
+				$("#v-despEditor").html(data.desc);
+				$("#v-remarks").html(data.remarks);
+				
+				$("#v-photo").attr("src" , '${base}/admin/file/doctor/' + data.poid);
+				
+				$("#doctorViewModalLabel").html(data.name);
+				
+				$("#viewModal").modal("show");
+			}
+		});
+	}
+	
+	function renderOpt(row) {
+		/* return '<div class="inline position-relative">' +
+			'<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">' +
+			'	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>' +
+			'</button>' +
+	
+			'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close" style="z-index:9999">' +
+			'	<li>' +
+			'		<a href="#" class="tooltip-success" data-rel="tooltip" title="编辑" onclick="edit()">' +
+			'			<span class="green">' +
+			'				<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>' +
+			'			</span>' +
+			'		</a>' +
+			'	</li>' +
+	
+			'	<li>' +
+			'		<a href="#" class="tooltip-error" data-rel="tooltip" title="删除" onclick="del("", this)">' +
+			'			<span class="red">' +
+			'				<i class="ace-icon fa fa-trash-o bigger-120"></i>' +
+			'			</span>' +
+			'		</a>' +
+			'	</li>' +
+			'</ul>' +
+		'</div>'; */
+	}
+	
+	function closeIt(id) {
+		bootbox.confirm("确定关闭吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: "${base}/admin/orders/close",
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function finishIt(id) {
+		bootbox.confirm("确定完成吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: "${base}/admin/orders/finish",
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function missIt(id) {
+		bootbox.confirm("确定记录爽约吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: "${base}/admin/orders/miss",
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function viewIt(id) {
+		S.ajax({
+			url: "${base}/admin/orders/detail",
+			data: {id: id},
+			dataType: 'html',
+			success: function(data) {
+				$("#orderDetail").html(data);
+				
+				$("#viewModal").modal('show');
+			}
+		});
+	}
+	
+	function remarksIt(btn) {
+		var id = $("#v-poid").val();
+		var remarks = $("#v-remarks").val();
+		$(btn).button("loading");
+		S.ajax({
+			url: "${base}/admin/orders/remarks",
+			data: {id: id, remarks: remarks},
+			dataType: 'json',
+			success: function(data) {
+				S.ajaxSuccess(data);
+				
+				$(btn).button("reset");
+				
+				$("#viewModal").modal('hide');
+				
+				gridReload();
+			}
+		});
+	}
+	
+	function viewFuser(id) {
+		S.ajax({
+			url: "${base}/admin/orders/view/user/"+id,
+			dataType: 'html',
+			success: function(data) {
+				$("#userDetail").html(data);
+				
+				$("#userViewModal").modal('show');
+			}
+		});
+	}
+	
+	function viewDoctor(id) {
+		S.ajax({
+			url: "${base}/admin/orders/view/doctor/" + id,
+			dataType: 'html',
+			success: function(data) {
+				$("#doctorDetail").html(data);
+				
+				$("#doctorViewModal").modal('show');
+			}
+		});
+	}
+</script>

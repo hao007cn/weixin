@@ -1,0 +1,48 @@
+<@p.header csshref="" />
+<div class="titleallnews">
+  科室/专家介绍
+</div>
+<div data-role="content" data-theme="a">
+	<table class="table">
+		<tbody>
+			<tr>
+				<td>
+					<h6>&nbsp;</h6>
+				</td>
+			</tr>
+			<#if departmentList??><#list departmentList as department>
+			<#if department.enabled && department.orderabled>
+			<tr>
+				<td class="text-center">
+					<button style="font-weight: 100" class="btn my-btn-primary" onclick="showDeptList('${department.poid}')">
+						${department.name!}
+					</button>
+				</td>
+			</tr>
+			</#if>
+			</#list></#if>
+		</tbody>
+	</table>
+</div>
+<!-- form doctorlist -->
+<form action="" method="post" id = "listForm">
+  <input type="hidden" name = "departmentId"/>
+</form>
+
+<a href="${base}/book/do">预约</a>
+<@p.footer scriptsrc=""/>
+
+<script>
+  $(function(){
+
+    })
+
+    function showDeptList(id){
+      $("input[name='departmentId']").val(id);
+      $("#listForm").attr("action","${base}/book/deptlist").submit();
+    }
+  </script>
+
+
+
+

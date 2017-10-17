@@ -1,0 +1,77 @@
+﻿<@p.header csshref = ""/>
+<style>
+.table>thead>tr>th {
+	border: none;
+	text-align: center;
+	text-shadow: none;
+	border: none;
+	font-weight: 100;
+}
+
+.table>tbody>tr>td {
+	text-align: center;
+	border-top: none;
+	border-bottom: 1px solid #ebebeb;
+}
+
+.dropdown-menu {
+	box-shadow: none;
+}
+</style>
+
+<div class="titleallnews">排班详情
+<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<!-- 正文内容 -->
+<div data-role="content">
+	<div style="height: 20px; color: #21B7C6; margin-bottom: 8px;">
+		<div class="glyphicon glyphicon-time"
+			style="float: left; padding: 0px; margin: 0px 5px"></div>
+		<div style="padding: 0; margin: 0 0 20px 0; font-size: 14px;">
+			<h4>排班日期：${paramDate}</h4>
+		</div>
+	</div>
+	<table class="table" style="text-align: center">
+		<thead>
+			<tr style="background-color: #21B7C6; color: white; border-top: none;">
+<!-- 				<th rowspan="2" style="vertical-align: middle;">号类</th> -->
+				<th rowspan="2" style="vertical-align: middle;">姓名</th>
+				<th rowspan="2" style="vertical-align: middle;">科室</th>
+				<th colspan="2">限 号</th>
+			</tr>
+			<tr style="background-color: #21B7C6; color: white; border-top: none;">
+				<th>上午</th>
+				<th>下午</th>
+			</tr>
+			
+		</thead>
+		<tbody id = "newContent">
+			
+		</tbody>
+	</table>
+</div>
+
+<!-- /content -->
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+var listsize=0;
+<#if datasum??>
+	listsize=${datasum};
+</#if>
+$(function(){
+	//执行分页方法
+	ajaxScrollPage("#newContent",'${base}/scheduleIndex/append',listsize,{
+		paramDate : '${paramDate}',
+		endTime : '${endTime}',
+		endfn: function(){
+			$('.load6').remove();
+		}
+	})	
+});
+</script>

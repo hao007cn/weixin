@@ -1,0 +1,504 @@
+<@p.header csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css,
+${base}/assets/css/chosen/chosen.css,
+${base}/assets/css/datepicker/datepicker.css" csscode="
+	.ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+	.ztree li ul.level0 {padding:0; background:none;}
+"/>
+
+<div class="search">
+	<div class="row">
+		<form id="search" onsubmit="return false">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right text-right" for="s-name">姓名</label>
+					
+					<div class="col-sm-6">
+						<input type="text" id="s-name" name="name" placeholder="名称" class="form-control">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+			<div class=" col-sm-1">
+				<button type="button" class="btn btn-info btn-sm" id="btn-search">
+					<i class="fa fa-search"></i>查询
+				</button>
+			</div>
+			</div>
+			<div class=" col-sm-1">
+				<button type="reset" class="btn btn-info btn-sm" onclick="resetSearchForm()">
+					<i class="fa fa-refresh"></i>重置
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+		<div class="row"></div>
+		<div class="space-4"></div>
+<div class="table-responsive">
+	<table id="grid-table"></table>
+	<div id="grid-pager"></div>
+</div>
+
+<!-- add form modal -->
+<div class="modal fade" id="addFormModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用于新增、编辑角色时">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="addModalLabel">新增角色</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addForm" class="form-horizontal" role="form">
+					<input type="hidden" id="d-poid" name="poid"/>
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-name">名称</label>
+						
+						<div class="col-sm-10">
+							<input type="text" id="d-name" name="name" placeholder="名称" class="form-control" data-validation-engine="validate[required,maxSize[20]]" maxlength="20" autocomplete="off">
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-users">用户</label>
+						
+						<div class="col-sm-10">
+							<div id="doctors-container" class="input-group" style="z-index: 800">
+								<span class="input-group-addon">
+									<i class="ace-icon fa fa-users"></i>
+								</span>
+								<select name="userIds" id="d-users" class="chosen-select" multiple data-placeholder="选择用户">
+									<option value=""></option>
+									<#if userList??>
+										<#list userList as user>
+											<option value="${user.poid}">${user.name}</option>
+										</#list>
+									</#if>
+								</select>
+							</div>
+						</div><!-- /col-sm-10 -->
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-position">权限</label>
+						
+						<div class="col-sm-10">
+							<div style="border:1px solid #CCCCCC;max-height: 300px; overflow: auto">
+								<ul id="treeMenu" class="ztree" style="margin-top:0;"></ul>
+							</div>
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-remarks"> 备注 </label>
+
+						<div class="col-sm-10">
+							<textarea id="d-desc" name="desc" class="autosize-transition form-control" placeholder="备注" data-validation-engine="validate[maxSize[200]]"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save(this)" data-loading-text="正在加载...">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /add form modal -->
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/ztree/js/jquery.ztree.all-3.5.min.js,
+${base}/assets/js/plugins/chosen/chosen.jquery.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js
+"/>
+<!-- inline scripts related to this page -->
+<script>
+	var _rootId = 1;
+	var grid_selector = "#grid-table";
+	var pager_selector = "#grid-pager";
+	
+	$(function(){
+		initGrid();
+		initTree();
+		
+		$('#addForm').validationEngine('attach');
+		
+		$("#btn-search").click(function(){
+			gridReload(1);
+		});
+		
+		$('#addFormModal').on('show.bs.modal', function (e) {
+		}).on('hide.bs.modal', function (e) {
+			// 重置树
+			resetTree();
+			
+			// 去掉表单验证信息
+			$('#addForm').validationEngine('hide');
+			
+			$("#d-poid").val('');
+			$("#d-name").val('');
+			$("#d-users").val('');
+			$("#d-users").trigger("chosen:updated");
+			$("#d-desc").val('');
+		});
+		
+		$('.chosen-select').chosen({
+			//allow_single_deselect:true,
+			no_results_text: "无匹配结果!",
+			search_contains: true
+		});
+		//resize the chosen on window resize
+		$(window).on('resize.chosen', function() {
+			var w = $('.chosen-select').parent().width();
+			$('.chosen-select').next().css({'width': '100%'});
+		}).trigger('resize.chosen');
+	})
+	
+	function initGrid() {
+		var minWidth = 800;
+		
+		//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() < minWidth ? minWidth : $(".page-content").width() );
+		})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+			if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() < minWidth ? minWidth : parent_column.width() );
+			}
+		})
+		
+		$(grid_selector).jqGrid({
+			url: '${base}/admin/sysrole/list',
+			datatype: 'json',
+			mtype : "post",
+			height: '100%',
+			width: 800,
+			colNames: ['', 'ID', '名称', '备注'],
+			cellEdit: false,
+			colModel: [
+				{name:'act',index:'act', width:100, fixed:true, sortable:false, resize:false},
+				{name:'poid',index:'poid', width:60, sorttype:"int"},
+				{name:'name',index:'name', width:70},
+				{name:'desc',index:'desc', width:150}
+			],
+			
+			viewrecords: true,
+			rowNum: 10,
+			rowList: [10,20,30],
+			pager: pager_selector,
+			altRows: true,
+			
+			multiselect: true,
+			
+			gridComplete : function() {
+				var ids = $(grid_selector).jqGrid('getDataIDs');
+				for ( var i = 0; i < ids.length; i++) {
+					var row = $(grid_selector).jqGrid('getRowData', ids[i]);
+					be = '<div title="" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" '
+						+ ' onclick="edit(\'' + row.poid + '\')" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')" data-original-title="编辑">'
+						+ '<span class="ui-icon ui-icon-pencil"></span></div>';
+						
+					bv = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-search" '
+						+ ' onclick="view(\'' + row.poid + '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="查看">'
+						+ '<span class="ui-icon fa fa-search orange"></span></div>';
+						
+					bd = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-del" '
+						+ ' onclick="del(\'' + row.poid + '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="删除">'
+						+ '<span class="ui-icon ui-icon-trash"></span></div>';
+						
+					$(grid_selector).jqGrid('setRowData', ids[i], {
+						act : '<div style="margin-left:8px;">' + be + bd /* + bv */ + '</div>'
+					});
+				}
+			},
+			
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function(){
+					updatePagerIcons(table);
+					enableTooltips(table); 
+				}, 0);
+			},
+			
+			editurl: "${base}/admin/sysrole/update",
+			caption: "专家列表"
+		});
+		
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		
+		//navButtons
+		$(grid_selector).jqGrid('navGrid', pager_selector, {	//navbar options
+			edit: false,
+			add: false,
+			del: false,
+			save: false,
+			search: false,
+			refresh: true,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view: false
+		}).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-trash-o red",
+			onClickButton : batchDel,
+			position : "first",
+			title : "删除所选记录",
+			cursor : "pointer"
+		}).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : addForm,
+			position : "first",
+			title : "新增记录",
+			cursor : "pointer"
+		});
+
+		//replace icons with FontAwesome icons like above
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function() {
+				var icon = $(this);
+				var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+				
+				if ($class in replacement)
+					icon.attr('class', 'ui-icon ' + replacement[$class]);
+			})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	}
+	
+	function initTree() {
+		var menusetting = {
+			async: {
+				enable: true,
+				type: 'post',
+				url: '${base}/admin/sysmenu/stree',
+				autoParam: ['poid'],
+				dataFilter: function(treeId, parentNode, responseData) {
+					if (responseData) {
+						for(var i =0; i < responseData.length; i++) {
+							responseData[i].iconSkin = responseData[i].resClass;
+						}
+					}
+					return responseData;
+				}
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					rootPId: 1,
+					idKey: 'poid',
+					pidKey: 'parentId'
+				}
+			},
+			view: {
+				selectedMulti: false,
+				dblClickExpand: false
+			},
+			check: {
+				enable: true
+			},
+			callback: {
+				beforeClick: function(treeId, treeNode, clickFlag) {
+				},
+				onClick: function(event, treeId, treeNode, clickFlag) {
+				},
+				beforeRightClick: function(treeId, treeNode) {
+					return true;
+				},
+				onRightClick: function(event, treeId, treeNode) {
+					event.preventDefault();
+				},
+				onAsyncSuccess: function(event, treeId, treeNode, msg) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+					zTree.expandAll(true);
+				},
+				beforeExpand: function() {
+				},
+				beforeCollapse: function() {
+					//return false;
+				},
+				onExpand: function() {
+				},
+				onCollapse: function() {
+				}
+			}
+		};
+		
+		$.fn.zTree.init($("#treeMenu"), menusetting);
+	}
+	
+	function resetTree() {
+		var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+		zTree.expandAll(true);
+		zTree.checkAllNodes(false);
+	}
+	
+	function gridReload(pageNo) {
+		var param = $("#search").serializeJson();
+		if (pageNo || pageNo == 0) {
+			param.page = pageNo;
+		}
+		$(grid_selector).jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : param,
+			page : param.page
+		}).trigger("reloadGrid");
+	}
+	
+	function addForm() {
+		$("#addModalLabel").html("新增角色");
+		
+		$("#addFormModal").modal("show");
+	}
+	
+	function batchDel() {
+		var slarrrow = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+		var ids = "";
+		for (var i = 0; i < slarrrow.length; i++) {
+			ids += "" + $(grid_selector).jqGrid('getRowData', slarrrow[i]).poid + ",";
+		}
+		dis = ids.substring(0, ids.length-1);
+		del(ids);
+	}
+	
+	function del(id) {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: '${base}/admin/sysrole/delete',
+					type: 'post',
+					dataType: 'json',
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function edit(id) {
+		S.ajax({
+			url: '${base}/admin/sysrole/detail',
+			data: {id: id},
+			success: function(data) {
+				if (!data) {
+					return;
+				}
+				
+				$("#d-poid").val(data.poid);
+				$("#d-name").val(data.name);
+				$("#d-users").val(data.userIds);
+				$("#d-users").trigger("chosen:updated");
+				$("#d-desc").val(data.desc);
+				
+				var resIds = data.resIds;
+				if (resIds && resIds.length>0) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+					for (var i = 0; i < resIds.length; i++) {
+						var id = resIds[i];
+						zTree.checkNode(zTree.getNodeByParam('poid', id), true);
+					}
+				}
+				
+				$("#addModalLabel").html("编辑角色");
+				
+				$("#addFormModal").modal("show");
+			}
+		});
+	}
+	
+	function view(id) {
+		S.ajax({
+			url: '${base}/admin/sysrole/detail',
+			data: {id: id},
+			success: function(data) {
+				if (!data) {
+					return;
+				}
+				
+				$("#viewModalLabel").html(data.name);
+				
+				$("#viewModal").modal("show");
+			}
+		});
+	}
+	
+	function save(btn) {
+		if($('#addForm').validationEngine('validate')) {
+			var data = {};
+			data = $("#addForm").serializeJson();
+			
+			var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+			var nodes = zTree.getCheckedNodes(true);
+			var id = "";
+			nodes.sort(function compare(a,b){return a.id-b.id;});
+			for (var i=0, l=nodes.length; i<l; i++) {
+				id += nodes[i].poid + ",";
+			}
+			if (id.length > 0 ) id = id.substring(0, id.length-1);
+			
+			data.resIds = id;
+			
+			$(btn).button("loading");
+			S.ajax({
+				url: '${base}/admin/sysrole/save',
+				data: data,
+				type: 'post',
+				success: function(res) {
+					S.ajaxSuccess(res);
+					
+					$(btn).button("reset");
+					$("#addFormModal").modal("hide");
+					
+					gridReload();
+				}
+			});
+		}
+	}
+	
+	function gotoEdit() {
+		$('#viewModal').modal('hide');
+		edit($('#v-poid').val());
+	}
+	
+	function gotoDel() {
+		$('#viewModal').modal('hide');
+		del($('#v-poid').val());
+	}
+	
+	function resetSearchForm() {
+		$("#s-name").val('');
+	}
+</script>

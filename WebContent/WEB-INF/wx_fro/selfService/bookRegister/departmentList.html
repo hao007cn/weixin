@@ -1,0 +1,65 @@
+<@p.header csshref="" />
+<div class="titleallnews">预约挂号</div>
+<div data-role="content" data-theme="a">
+	<table class="table">
+		<tbody >
+		  <#if departmentList??>
+			<#list departmentList as departmentType>
+			<#if departmentType.realEnabled && departmentType.realOrderabled>
+			  <tr>
+				<td colspan="3">
+				  <div style="height: 20px; color: #21B7C6;" >
+					<div class="glyphicon ${departmentType.icon}" style="float: left; margin: 0px; padding: 0px">
+					</div>
+					<div style="padding: 0px; margin: 0 0 0 10px; font-size: 14px;" class=" h4_title">
+					  <h4>
+						${departmentType.name}
+					  </h4>
+					</div>
+				  </div>
+				</td>
+			  </tr>
+			  <tr>
+				<td>
+				</td>
+				<td>
+				  <div class="row">
+					<#if departmentType.poid??>
+					  <#if departmentType.children??>
+						<#list departmentType.children as department>
+						  <#if department.enabled>
+							<div class="col-xs-6" style="padding: 0 10px">
+							  <button 
+								  style="font-weight: 100"
+								  class="btn my-btn-primary"
+								  onclick="showDoctorList(${department.poid})">
+								${department.name}
+							  </button>
+							</div>
+						  </#if>
+						</#list>
+					  </#if>
+					</#if>
+				  </div>
+				</td>
+				<td>
+				</td>
+			  </tr>
+			 </#if>
+			</#list>
+		  </#if>
+		</tbody>
+	</table>
+</div>
+<!-- form表单提交doctorlist -->
+<form method="post" id="doctorListForm" action="${base}/book/doctorlist">
+	<input type="hidden" name="departmentId"/>
+</form>
+<@p.footer scriptsrc=""/>
+
+<script>
+	function showDoctorList(id){
+		$("input[name='departmentId']").val(id);
+		$("#doctorListForm").submit();
+	}
+</script>

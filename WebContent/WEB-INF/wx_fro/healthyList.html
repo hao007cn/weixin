@@ -1,0 +1,28 @@
+﻿<@p.header csshref="" />
+<div class="titleallnews">${healthyCategoryName}
+<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<div data-role="content" style="margin: 10px;" id = "newContent">
+	
+</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+	var listsize=0;
+	<#if datasum??>
+		listsize=${datasum!};
+	</#if>
+	
+	$(function(){
+		//执行分页方法
+		ajaxScrollPage("#newContent",'${base}/healthy/append?',listsize,{
+			id : ${id}			
+		})	   
+	});
+</script>
+

@@ -1,0 +1,91 @@
+﻿<@p.header />
+<style>
+  .btn:active,.btn.active { color: #fff; border-color: #21B7C6; background-color: #21B7C6; -webkit-box-shadow: none;
+  box-shadow: none; } .btn { color: #21B7C6; background-color: #fff; border-color: #21B7C6; -webkit-box-shadow: none;
+  box-shadow: none; }
+</style>
+
+<div class="titleallnews">
+用户注册
+</div>
+<div data-role="content" style="padding:20px">
+  <form id="addForm" name="addForm" class="form-horizontal" method="post" role="form">
+    <table width="100%">
+      <tbody>
+        <tr>
+          <td style="color: #21B7C6; vertical-align: middle; height: 100%; width: 80px" >
+           		 姓&nbsp;&nbsp;&nbsp;名：
+          </td>
+          <td>
+            <div style="margin: 0px; padding: 0px" class="col-xs-10">
+              <input type="text" class="form-control" id="userName" name="userName" placeholder="请输入姓名" value="">
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <td style="color: #21B7C6; vertical-align: middle; height: 100%;">
+           		 身份证：
+          </td>
+          <td>
+            <div style="margin: 0px; padding: 0px" class="col-xs-10">
+              <input type="text" class="form-control" id="cardid" name="cardid" placeholder="请输身份证" value="">
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+        <div class="col-xs-13" style="margin: 10px 10px;">
+			<div class="center-block">
+				<button type="button" id="btsubmit" class="btn btn-block"
+					disload=true data-loading-text="保存中..."
+					style="background: #21B7C6; color: #fff; border: none; border: 1px solid #21B7C6; line-height: 20px;"
+					onclick="onSubmit();">完成</button>
+			</div>
+		</div>
+    <!--       openid rd -->
+      <input type="hidden" id="rd" name="rd" value="${rd!}">
+      <input type="hidden" id="openid" name="openid" value="${openid!}">
+  </form>
+</div>
+<@p.footer/>
+<script type="text/javascript">
+  function onSubmit() {
+ 	  var subname = $("input[name='userName']").val();
+ 	    var namepatrn=/^[\u4E00-\u9FA5]{1,4}$/;
+ 	    if (!namepatrn.test(subname)) {
+ 	      $("input[name='userName']").val('');
+ 	      $("input[name='userName']").attr("placeholder", "无效的姓名");
+ 	      $("input[name='userName']").focus();
+	      return;
+ 	  }   
+ 	var cardid = $("input[name='cardid']").val();
+     var cardidpatrn=/^[1-9]\d{5}[1-9]\d{3}(((0[13578]|1[02])(0[1-9]|[12]\d|3[0-1]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|[12]\d)))(\d{4}|\d{3}[xX])$/;
+     if (!cardidpatrn.test(cardid)){
+       $("input[name='cardid']").val('');
+       $("input[name='cardid']").attr("placeholder", "无效的身份证号码");
+       $("input[name='cardid']").focus();
+       return;
+     }
+     S.ajax({
+ 		url: '${base}/login/isValidatedAllIdcard',
+ 		data: {cardId: cardid},
+ 		success: function(data) {
+ 			if(data.success == 1){
+ 				$(".spinner").show();
+ 	 		    $("#btsubmit").button("loading");
+ 	 		    $("#addForm").attr("action", "${base}/login/registValidate");
+ 	 		    $("#addForm").submit();
+ 			}else{
+ 				 $("input[name='cardid']").val('');
+ 			     $("input[name='cardid']").attr("placeholder", "请输入合法身份证号");
+ 			     $("input[name='cardid']").focus();
+ 			     return;
+ 			}
+ 		}
+ 	});    
+     
+     
+   
+  }
+</script>

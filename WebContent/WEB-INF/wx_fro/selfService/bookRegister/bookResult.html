@@ -1,0 +1,35 @@
+<@p.header />
+	<!-- 正文内容 -->
+	<div class="titleallnews">
+		信息提示
+	<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="href('${base}/myorders')">
+     返回
+  	</button>
+	</div>
+	<div style="margin:10px">
+	<#if message??>
+		<div class="alert alert-success">${message!}</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">温馨提示</h3>
+			</div>
+			<div class="panel-body">
+				<p>
+					1、预约挂号不扣费，在取号时扣除，<br>
+					请在就诊时间前30分钟取号！过期作废
+				</p>
+				<p>
+					2、实际就诊时间以叫号时间为准
+				</p>
+			</div>
+		</div>
+	</#if>
+	<#if errMsg??>
+		<div class="alert alert-warning">${errMsg!}</div>
+	</#if>
+	</div><!-- /content -->
+<@p.footer />

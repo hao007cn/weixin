@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+		<meta charset="utf-8" >
+		<title>首页 - 掌上医院后台管理系统</title>
+
+		<meta name="description" content="" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" >
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../assets/css/bootstrap.min.css" >
+		<link rel="stylesheet" href="../assets/css/font-awesome/4.1/font-awesome.min.css" >
+
+		<!-- page specific plugin styles -->
+		<link rel="stylesheet" href="../assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css" >
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../assets/css/fonts.css" >
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../assets/css/senyint.min.css" >
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../assets/css/senyint-part2.min.css" >
+		<![endif]-->
+		<link rel="stylesheet" href="../assets/css/senyint-skins.min.css" >
+		<link rel="stylesheet" href="../assets/css/senyint-rtl.min.css" >
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../assets/css/senyint-ie.min.css" >
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../assets/js/senyint-extra.min.js"></script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../assets/js/html5shiv/html5shiv.js"></script>
+		<script src="../assets/js/respond/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body class="no-skin">
+		<div id="navbar" class="navbar navbar-default">
+			<script type="text/javascript">
+				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="navbar-container" id="navbar-container">
+				<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler">
+					<span class="sr-only">展开/关闭</span>
+
+					<span class="icon-bar"></span>
+
+					<span class="icon-bar"></span>
+
+					<span class="icon-bar"></span>
+				</button>
+
+				<div class="navbar-header pull-left">
+					<a href="../index.html" class="navbar-brand">
+						<small>
+							<img src="../assets/images/logo.png" width="300px">
+						</small>
+					</a>
+				</div>
+
+				<div class="navbar-buttons navbar-header pull-right" role="navigation">
+					<ul class="nav ace-nav">
+						<li class="light-blue">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>欢迎,</small>
+									Admin
+								</span>
+
+								<i class="ace-icon fa fa-caret-down"></i>
+							</a>
+
+							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="setting.html">
+										<i class="ace-icon fa fa-cog"></i>
+										设置
+									</a>
+								</li>
+
+								<li>
+									<a href="userSetting.html">
+										<i class="ace-icon fa fa-user"></i>
+										用户资料
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="logout()">
+										<i class="ace-icon fa fa-power-off"></i>
+										退出
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div><!-- /.navbar-container -->
+		</div>
+
+		<div class="main-container" id="main-container">
+			<script>
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<div id="sidebar" class="sidebar responsive">
+				<script>
+					try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+				</script>
+
+				<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+					<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+						<button class="btn btn-success">
+							<i class="ace-icon fa fa-signal"></i>
+						</button>
+
+						<button class="btn btn-info">
+							<i class="ace-icon fa fa-pencil"></i>
+						</button>
+
+						<button class="btn btn-warning">
+							<i class="ace-icon fa fa-users"></i>
+						</button>
+
+						<button class="btn btn-danger">
+							<i class="ace-icon fa fa-cogs"></i>
+						</button>
+					</div>
+
+					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+						<span class="btn btn-success"></span>
+
+						<span class="btn btn-info"></span>
+
+						<span class="btn btn-warning"></span>
+
+						<span class="btn btn-danger"></span>
+					</div>
+				</div><!-- /.sidebar-shortcuts -->
+
+				<ul class="nav nav-list">
+					<li class="">
+						<a href="../index.html">
+							<i class="menu-icon fa fa-tachometer"></i>
+							<span class="menu-text"> 首页 </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+					
+					<li class="">
+						<a href="indexSetting.html">
+							<i class="menu-icon fa fa-flag"></i>
+							<span class="menu-text"> 首页设置 </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-plus-square"></i>
+							<span class="menu-text">医院信息</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="hospitalSetting.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									医院基本信息设置
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="news.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									新闻活动
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-list-alt"></i>
+							<span class="menu-text">预约挂号</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-caret-right"></i>
+									<span class="menu-text">科室设置</span>
+									
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+
+								<b class="arrow"></b>
+
+								<ul class="submenu">
+									<li class="">
+										<a href="departmentType.html">
+											<i class="menu-icon fa fa-caret-right"></i>
+											科室类别
+										</a>
+		
+										<b class="arrow"></b>
+									</li>
+									<li class="">
+										<a href="department.html">
+											<i class="menu-icon fa fa-caret-right"></i>
+											科室
+										</a>
+		
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
+
+							<li class="">
+								<a href="doctor.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									专家
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="scheduling.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									排班
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-users"></i>
+							<span class="menu-text">用户管理</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="foregroundUser.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									前台用户
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="adminUser.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									后台用户
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-h-square"></i>
+							<span class="menu-text">健康百科</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="wikisType.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									类别
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="wikis.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									百科管理
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="active">
+						<a href="guideSetting.html">
+							<i class="menu-icon fa fa-stethoscope"></i>
+							<span class="menu-text"> 智能导诊设置  </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-bar-chart-o"></i>
+							<span class="menu-text">统计分析</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									注册用户统计
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									用户访问统计
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									地区分布
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+						</ul>
+					</li>
+					
+					<li class="">
+						<a href="userSetting.html">
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text"> 个人中心  </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+				</ul><!-- /.nav-list -->
+
+				<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+					<i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+				</div>
+
+				<script>
+					try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+				</script>
+			</div>
+
+			<div class="main-content">
+				<div class="breadcrumbs" id="breadcrumbs">
+					<script type="text/javascript">
+						try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+					</script>
+
+					<ul class="breadcrumb">
+						<li>
+							<i class="ace-icon fa fa-home home-icon"></i>
+							<a href="#">首页</a>
+						</li>
+
+						<li class="active">
+							智能导诊
+						</li>
+					</ul><!-- /.breadcrumb -->
+				</div>
+
+				<div class="page-content">
+					<div class="page-header">
+						<h1>
+							智能导诊
+							<small>
+								<i class="ace-icon fa fa-angle-double-right"></i>
+								设置
+							</small>
+						</h1>
+					</div><!-- /.page-header -->
+
+					<div class="row">
+						<div class="col-xs-12">
+							<!-- PAGE CONTENT BEGINS -->
+							<ul id="guideTree" class="ztree"></ul>
+							<!-- PAGE CONTENT ENDS -->
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+				</div><!-- /.page-content -->
+			</div><!-- /.main-content -->
+
+			<div class="footer">
+				<div class="footer-inner">
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Senyint</span>
+							手机网站管理后台 &copy; 2013-2014
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+		<script src="../assets/js/modernizr-2.6.2.min.js"></script>
+
+		<!--[if lte IE 7]>
+		<script src="../assets/js/json2.js"></script>
+		<!-- <![endif]-->
+
+		<!--[if !IE]> -->
+		<script src="../assets/js/jquery-2.1.1.min.js"></script>
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script src="../assets/js/jquery-1.10.2.min.js"></script>
+		<![endif]-->
+
+		<!--[if !IE]> -->
+		<script>
+			window.jQuery || document.write("<script src='../assets/js/jquery-2.1.1.min.js'>"+"<"+"/script>");
+		</script>
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script type="text/javascript">
+		 window.jQuery || document.write("<script src='../assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+		</script>
+		<![endif]-->
+		<script>
+			if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="../assets/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+		<!--<script src="../assets/js/plugins/nestable/jquery.nestable.min.js"></script>-->
+		<script src="../assets/js/plugins/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+
+		<!-- ace scripts -->
+		<script src="../assets/js/senyint-elements.min.js"></script>
+		<script src="../assets/js/senyint.min.js"></script>
+
+		<!-- inline scripts related to this page -->
+		<script type="text/javascript">
+			jQuery(function($){
+				var treeData = [
+					{ name:"头部", open:true,
+						children: [
+							{ name:"父节点11 - 折叠",
+								children: [
+									{ name:"叶子节点111"},
+									{ name:"叶子节点112"},
+									{ name:"叶子节点113"},
+									{ name:"叶子节点114"}
+								]},
+							{ name:"父节点12 - 折叠",
+								children: [
+									{ name:"叶子节点121"},
+									{ name:"叶子节点122"},
+									{ name:"叶子节点123"},
+									{ name:"叶子节点124"}
+								]},
+							{ name:"父节点13 - 没有子节点", isParent:true}
+						]},
+					{ name:"父节点2 - 折叠",
+						children: [
+							{ name:"父节点21 - 展开", open:true,
+								children: [
+									{ name:"叶子节点211"},
+									{ name:"叶子节点212"},
+									{ name:"叶子节点213"},
+									{ name:"叶子节点214"}
+								]},
+							{ name:"父节点22 - 折叠",
+								children: [
+									{ name:"叶子节点221"},
+									{ name:"叶子节点222"},
+									{ name:"叶子节点223"},
+									{ name:"叶子节点224"}
+								]},
+							{ name:"父节点23 - 折叠",
+								children: [
+									{ name:"叶子节点231"},
+									{ name:"叶子节点232"},
+									{ name:"叶子节点233"},
+									{ name:"叶子节点234"}
+								]}
+						]},
+					{ name:"父节点3 - 没有子节点", isParent:true}
+				];
+				
+				var setting = {
+					data: {
+						key: {
+						}
+					},
+					view: {
+						selectedMulti: false
+					},
+					check: {
+						enable: false
+					},
+					callback: {
+						beforeClick: function(treeId, treeNode, clickFlag) {
+							if (!treeNode.id || treeNode.id == '' || treeNode.id == '0') {
+								return false;
+							}
+						},
+						onClick: function(event, treeId, treeNode, clickFlag) {
+							getEmpKpiAssignInfo();
+						},
+						beforeRightClick: function(treeId, treeNode) {
+							return true;
+						},
+						onRightClick: function(event, treeId, treeNode) {
+							event.preventDefault();
+							_zTreeObj.selectNode(treeNode);
+						}
+					}
+				};
+				
+				var _zTreeObj = $.fn.zTree.init($("#guideTree"), setting, treeData);
+				
+				/*$('.dd').nestable();
+			
+				$('.dd-handle a').on('mousedown', function(e){
+					e.stopPropagation();
+				});
+				
+				$('[data-rel="tooltip"]').tooltip();*/
+			
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,99 @@
+<#if doctor??>
+					
+					<input type="hidden" id="doctor-v-poid" name="poid" value="${doctor.poid}"/>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">科室</label>
+						
+						<label class="col-sm-10"><strong>${doctor.departmentName!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">姓名</label>
+						
+						<label class="col-sm-10"><strong>${doctor.name!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">性别</label>
+						
+						<label class="col-sm-10"><strong>
+						<#if doctor.sex??>
+							<#if doctor.sex == '1'>
+								男
+							<#elseif doctor.sex == '2'>
+								女
+							<#else>
+								未知
+							</#if>
+						</#if>
+						</strong></label>
+					</div>
+				
+					<!-- <div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">职务</label>
+						
+						<label class="col-sm-10"><strong>${doctor.position!}</strong></label>
+					</div> -->
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">职称</label>
+						
+						<label class="col-sm-10"><strong>${doctor.jobTitle!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">挂号费</label>
+						
+						<label class="col-sm-10"><strong>${doctor.fee!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >启用</label>
+						
+						<label class="col-sm-10"><strong>${doctor.enabled?string("启用","禁用")}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >个人照片</label>
+						
+						<div class="col-sm-10" style="padding-top: 4px">
+							<img src="${base}/admin/file/doctor/${doctor.poid}" width="80px">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 介绍 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div id="v-despEditor" class="text-block" style="border-width: 1px;">${doctor.desc!}</div>
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 备注 </label>
+
+						<div class="col-sm-10">
+							<textarea rows="" cols="" id="v-remarks" class="autosize-transition form-control " readonly placeholder="">${doctor.remarks}</textarea>
+						</div>
+					</div>
+<#else>
+					<div class="alert alert-warning">没有查到数据！</div>
+</#if>

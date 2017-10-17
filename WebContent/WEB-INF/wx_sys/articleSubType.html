@@ -1,0 +1,354 @@
+<@p.header csshref="" />
+
+<form id="addForm" name="addForm" action="${base}/admin/wikisType/save"
+	method="post">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+			<table id="grid-table"
+				class="table table-striped table-hover dataTable">
+				<thead>
+					<tr>
+						<th><label class="position-relative"> <input
+								id="delAll" type="checkbox" name="chk_items" type="checkbox"
+								class="ace" /> <span class="lbl"></span>
+						</label></th>
+						<th>显示顺序</th>
+						<th>名称</th>
+						<th>背景色</th>
+						<th>代表图标（20x20）</th>
+						<th>备注</th>
+						<th>可用</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<#if wikisTypeList??> <#list wikisTypeList as wikisType>
+					<tr>
+						<td ><input type="hidden" name="poid" value="${wikisType.poid}" /> 
+							<label class="position-relative">
+									<input type="checkbox" name="chk_item" value="${wikisType.poid}" class="ace" /> 
+									<span class="lbl"></span>
+							</label>
+						</td>
+						<td ><input type="text" name="sort"
+							aria-invalid="true" class=" spinners input-mini"
+							value="${wikisType.sort}" data-validation-engine="validate[min[0], max[99]]"/></td>
+						
+						<td ><input type="text" name="name"
+							class="form-control input-sm text-input" data-validation-engine="validate[required], maxSize[6],custom[chinese]"
+							value="${wikisType.name}" /></td>
+
+						
+						<td >
+						<input type="hidden" name="backcolorValue" value="${wikisType.backColor}"/>
+						<select id="simple-colorpicker-1"
+							name="backcolor" class="simple-colorpicker hide">
+								<option value="#ac725e">#ac725e</option>
+								<option value="#d06b64">#d06b64</option>
+								<option value="#f83a22">#f83a22</option>
+								<option value="#fa573c">#fa573c</option>
+								<option value="#ff7537">#ff7537</option>
+								<option value="#ffad46" selected="">#ffad46</option>
+								<option value="#42d692">#42d692</option>
+								<option value="#16a765">#16a765</option>
+								<option value="#7bd148">#7bd148</option>
+								<option value="#b3dc6c">#b3dc6c</option>
+								<option value="#fbe983">#fbe983</option>
+								<option value="#fad165">#fad165</option>
+								<option value="#92e1c0">#92e1c0</option>
+								<option value="#9fe1e7">#9fe1e7</option>
+								<option value="#9fc6e7">#9fc6e7</option>
+								<option value="#4986e7">#4986e7</option>
+								<option value="#9a9cff">#9a9cff</option>
+								<option value="#b99aff">#b99aff</option>
+								<option value="#c2c2c2">#c2c2c2</option>
+								<option value="#cabdbf">#cabdbf</option>
+								<option value="#cca6ac">#cca6ac</option>
+								<option value="#f691b2">#f691b2</option>
+								<option value="#cd74e6">#cd74e6</option>
+								<option value="#a47ae2">#a47ae2</option>
+								<option value="#555">#555</option>
+						</select></td>
+						<td class="col-xs-2"><div class="input-group "><input type="text" id="icon_bs" name="icon"
+							class="form-control input-sm" onclick="bootstrap_glyphicon_init(this)" value="${wikisType.icon}" /><span class="input-group-addon ${wikisType.icon}"></span></div>
+						</td>
+						<td ><input type="text" name="remarks"
+							class="form-control input-sm" value="${wikisType.remark!}" /></td>
+						<td>
+						 <!-- checkebox的value值 0=false 1=true -->
+							<input type="hidden" name="enabled" value="${wikisType.enabled ? string('1','0') }"/>
+						<label>
+							<input name="enabled_chk" class="ace ace-switch ace-switch-6" onclick="onEnabledClick(this,event)" type="checkbox" <#if wikisType.enabled> checked </#if> /> 
+							<span class="lbl"></span>
+						</label></td>
+						<td>
+<!-- 							<button class="btn btn-xs btn-danger" -->
+<!-- 								onclick="$(this).closest('tr').remove()"> -->
+							<button type="button" class="btn btn-xs btn-danger" onclick="del(${wikisType.poid})">
+								<i class="ace-icon fa fa-trash-o bigger-120"></i>
+							</button>
+						</td>
+					</tr>
+					</#list> </#if>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7"><a id="addBtn" href="#" class="text-danger">
+								+添加一条 </a></td>
+					</tr>
+				</tfoot>
+			</table>
+			</div>
+		</div>
+		<!-- /col -->
+		<div class="col-md-12 text-center">
+			<button class="btn btn-danger btn-sm" type="button" onclick="delbath()">
+				<i class="ace-icon fa fa-times bigger-110"></i>
+				批量删除
+			</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="submit" class="btn btn-info  btn-primary btn-sm"
+				id="btn_submit" data-loading-text="正在保存...">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+					提&nbsp;&nbsp;交
+			</button>
+				
+		</div>
+	</div>
+</form>
+
+<!-- 删除表单 -->
+<form id="delForm" name="delForm" action="${base}/admin/wikisType/delete" method="post">
+	<input id="wikisTypeId" type="hidden" name="wikisId" value=""/>
+</form>
+
+<!-- 增加一行 -->
+<textarea id="template" class="hide">
+	<tr>
+		<td ><input type="hidden" name="poid" value=" " /> 
+			<label class="position-relative">
+					<input type="checkbox" name="chk_item" value=" " class="ace" /> 
+					<span class="lbl"></span>
+			</label>
+		</td>
+		
+		<td >
+			<input type="text" name="sort" class="spinnern input-mini" data-validation-engine="validate[min[0], max[99]]" />
+		</td>
+		
+		<td >
+			<input type="text" name="name" class="form-control input-sm text-input " data-validation-engine="validate[required], maxSize[6], custom[chinese]" />
+		</td>
+		
+		<td ><select id="simple-colorpicker-temp" class="simple-colorpicker hide" name="backcolor">
+				<option value="#ac725e">#ac725e</option>
+				<option value="#d06b64">#d06b64</option>
+				<option value="#f83a22">#f83a22</option>
+				<option value="#fa573c">#fa573c</option>
+				<option value="#ff7537">#ff7537</option>
+				<option value="#ffad46" selected="">#ffad46</option>
+				<option value="#42d692">#42d692</option>
+				<option value="#16a765">#16a765</option>
+				<option value="#7bd148">#7bd148</option>
+				<option value="#b3dc6c">#b3dc6c</option>
+				<option value="#fbe983">#fbe983</option>
+				<option value="#fad165">#fad165</option>
+				<option value="#92e1c0">#92e1c0</option>
+				<option value="#9fe1e7">#9fe1e7</option>
+				<option value="#9fc6e7">#9fc6e7</option>
+				<option value="#4986e7">#4986e7</option>
+				<option value="#9a9cff">#9a9cff</option>
+				<option value="#b99aff">#b99aff</option>
+				<option value="#c2c2c2">#c2c2c2</option>
+				<option value="#cabdbf">#cabdbf</option>
+				<option value="#cca6ac">#cca6ac</option>
+				<option value="#f691b2">#f691b2</option>
+				<option value="#cd74e6">#cd74e6</option>
+				<option value="#a47ae2">#a47ae2</option>
+				<option value="#555">#555</option>
+		</select>
+		
+		</td>
+		
+		<td class="col-xs-2">
+			<div class="input-group">
+				<input type="text" id="icon_vs" name="icon" onclick="bootstrap_glyphicon_init(this)" class="form-control input-sm" value="icon-dashboard"/><span class="input-group-addon"></span>
+			</div>
+		</td>
+		
+		<td >
+			<input type="text" name="remarks" class="form-control input-sm" />
+		</td>
+		<td>
+				<input type="hidden" name="enabled" value="1"/> 
+			<label> 
+				<input name="enabled_chk" class="ace ace-switch ace-switch-6" type="checkbox" onclick = "onEnabledClick(this)" value="1" checked="checked"> 
+				<span class="lbl"></span>
+			</label>
+		</td>
+		<td>
+			<button class="btn btn-xs btn-danger" onclick="$(this).closest('tr').remove()">
+				<i class="ace-icon fa fa-trash-o bigger-120"></i>
+			</button>
+		</td>
+	</tr>
+</textarea>
+
+<@p.footer scriptsrc=" 
+${base}/assets/js/plugins/bootstrap/bootstrap-colorpicker.min.js,
+${base}/assets/js/plugins/fuelux/fuelux.spinner.min.js,${base}/assets/js/jquery.importicon.js" />
+
+<!-- inline scripts related to this page -->
+<script>
+	$(function() {
+		//背景颜色初始化
+		iniBackColor();
+		$('.simple-colorpicker').ace_colorpicker(); //图片拾取渲染
+	})
+	
+	$(function() {
+		$("#delAll").click(function() {
+					var that = this;
+					$(this).closest('table').find('tr > td:first-child input:checkbox').each(function() {
+								this.checked = that.checked;
+								$(this).closest('tr').toggleClass('selected');
+							});
+				});
+
+		$("#grid-table").find('tbody > tr > td:first-child input:checkbox')
+				.each(function(){var that = this;
+								$(that).click(function() {var uncheckedItems = $("#grid-table").find('tbody > tr > td:first-child input:checkbox').not("input:checked");
+												if (uncheckedItems.length > 0) {
+													var chkAll = $("#delAll");
+													chkAll.get(0).checked = false;
+													chkAll.closest('tr')
+															.removeClass(
+																	'selected');
+												} else {
+													var chkAll = $("#delAll");
+													chkAll.get(0).checked = true;
+													chkAll.closest('tr')
+															.addClass(
+																	'selected');
+												}
+											})
+						});
+
+		$("#addBtn").click(function() {
+			//var tr = $('#tempTr').clone().appendTo("#grid-table tbody");
+			var tr =$($('#template').val());
+			var maxSort = $("#grid-table tbody input[name='sort']:last").val();
+			if(!maxSort){
+				maxSort = 0;
+			}
+			tr.find("input[name='sort']").val(Number(maxSort) + 1).end().find('.simple-colorpicker').ace_colorpicker();
+			tr.appendTo("#grid-table tbody")
+			tr.attr("id", '').find(".spinnern").ace_spinner({value:0,min:0,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+			.on('change', function(){ }).removeClass("spinnern").addClass("spinners");
+		});
+
+		//箭头样式
+		$('.spinners').ace_spinner({
+			value : 0,
+			min : 0,
+			max : 200,
+			step : 1,
+			btn_up_class : 'btn-info',
+			btn_down_class : 'btn-info'
+		}).on('change', function() {
+		});
+		
+		//提交之前不进行校验
+		$("#addForm").validationEngine('attach',{
+				binded: false
+			}
+		)
+		//保存
+		$("#addForm").validationEngine('attach', {
+			onValidationComplete : function(form, status) {
+				if (status) {
+					var btn = $("#btn_submit")
+					btn.button('loading');
+					return true;
+				}
+				
+			}
+		});
+		
+	})
+	
+	//选择按钮
+	function onEnabledClick(obj,event) {
+		event.stopPropagation();
+		var $this = $(obj);
+		$this.parent().prev().val(Number($this.is(":checked")));
+	}
+	
+	
+	
+	//选择颜色初始化
+	function iniBackColor(){
+		$("select[name='backcolor']").each(function(index,element){
+			var backcolor =$(this).prev().val();
+			$(this).children("option[value='"+backcolor+"']").attr("selected",true);
+		});
+	}
+	
+	//单个删除
+	function del(id){
+		bootbox.confirm( "确定删除?",function(result){
+			if(result){
+				S.ajax({
+					url: '${base}/admin/wikisType/delete',
+					type: 'post',
+					dataType: 'json',
+					data: {id: id},
+					success: function(data){
+						//消息提醒
+						if(data.success == 0){
+							S.ajaxSuccess(data);
+						}else{
+							S.ajaxSuccess(data);
+							window.location.href = "${base}/admin/wikisType";
+						}
+					}
+				})
+			}
+			
+		})
+	}
+	
+	//批量删除
+	
+	function delbath(){
+		var ids = "";
+		$("input[name='chk_item']:checked").each(function(i,element){
+			ids += "," + $(this).val();
+		});
+		bootbox.confirm("确定批量删除", function(result){
+			if(result){
+				S.ajax({
+					url: '${base}/admin/wikisType/delete',
+					type: 'post',
+					dataType: 'json',
+					data: {id: ids},
+					success:function(data){
+						//消息提醒
+						if(data.success == 0){
+							S.ajaxSuccess(data);
+						}else{
+							S.ajaxSuccess(data);
+							window.location.href = "${base}/admin/wikisType";
+						}
+					}
+				})
+			}
+			
+		});
+		
+		
+	}
+	
+	
+</script>

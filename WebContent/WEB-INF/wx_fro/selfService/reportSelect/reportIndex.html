@@ -1,0 +1,46 @@
+<@p.header />
+<div class="titleallnews">报告查询
+<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<!-- 正文内容 -->
+<div data-role="content">
+	<div class="list-group">
+		<#if myForegroundUser??> <a
+			href="#"
+			onclick="report('${myForegroundUser.name}','${myForegroundUser.cardid}')" class="list-group-item" style="font-weight: 100">
+			${myForegroundUser.name!} ${myForegroundUser.mobile!}
+			<div style="float: right; font-size: 13px; color: #07a3b9">
+				查看报告<span style="float: right"
+					class="glyphicon glyphicon-chevron-right"></span>
+			</div>
+		</a> </#if> <#if foregroundUserList??> <#list foregroundUserList as item>
+		<a
+			href="#"
+			onclick="report('${item.name}','${item.cardid}')" class="list-group-item" style="font-weight: 100">
+			${item.name!} ${item.mobile!}
+			<div style="float: right; font-size: 13px; color: #07a3b9">
+				查看报告<span style="float: right"
+					class="glyphicon glyphicon-chevron-right"></span>
+			</div>
+		</a> </#list> </#if>
+	</div>
+</div>
+<form id="reportForm" name="reportForm" action="${base}/report/lisList" method="post" role="form">
+	<input type="hidden" id="pname" name="name">
+	<input type="hidden" id="pcardid" name="cardid">
+</form>
+<@p.footer />
+<script>
+	function report(name, cardid) {
+		
+		$("#pname").val(name);
+		$("#pcardid").val(cardid);
+		$("#reportForm").submit();
+	}
+</script>

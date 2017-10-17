@@ -1,0 +1,457 @@
+<@p.header csshref="
+${base}/assets/css/jqueryui/jquery-ui.custom.min.css,
+${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/css/datepicker/datepicker.css,
+${base}/assets/css/daterangepicker/daterangepicker.css,
+${base}/assets/css/chosen/chosen.css" />
+
+		<form class="form-view-data" role="form" method="post" id="serch">
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-md-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1">职称</label>
+
+				<div class="col-sm-2 col-md-2 col-lg-2">
+					<input type="text" id="form-field-1-1" placeholder="职称"
+						class="input-sm form-control" name="title">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class=" col-sm-1">
+					<button class="btn btn-info btn-sm" type="button" onclick="findSearch()">
+						<i class="fa fa-search"></i> 查询
+					</button>
+				</div>
+			</div>
+				<div class=" col-sm-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="formRefresh()">
+						<i class="fa fa-refresh"></i> 重置
+					</button>
+
+				</div>
+		</form>
+		<div class="row"></div>
+		<div class="space-4"></div>
+
+		<div class="table-responsive">
+			<table id="grid-table-1"></table>
+
+			<div id="grid-pager-1"></div>
+		</div>
+		
+
+<!-- add and modify form modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用于新增、编辑专家时，显示新增、编辑专家表单">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myLargeModalLabel">新增称职</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addForm" class="form-horizontal" role="form" action="${base}/doctor/upload" enctype="multipart/form-data" target="uploadFrame" method="post">
+					<input type="hidden" id="d-poid" name="poid"/>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-jobTitle">职称</label>
+						<div class="col-sm-8">
+							<input type="text" id="d-jobTitle" name="name" placeholder="职称" class="form-control" data-validation-engine="validate[required, maxSize[50]]" maxlength="50" autocomplete="off">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-fee">挂号费</label>
+						
+						<div class="col-sm-8">
+							<input type="text" id="d-fee" name="fee" placeholder="挂号费" class="form-control" data-validation-engine="validate[required, custom[number], min[0.00], max[9999.99]]" maxlength="50" autocomplete="off">
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >启用</label>
+						
+						<div class="col-sm-10">
+							<label>
+								<input id="d-enabled" name="enabled" class="ace ace-switch ace-switch-6" type="checkbox" checked>
+								<span class="lbl"></span>
+							</label>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="add()" data-loading-text="正在加载...">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()" >取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- /add checkedTime modal -->
+<!-- end -->
+		<div id="msgModal" class="modal fade bs-example-modal-sm"
+			tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myLargeModalLabel">系统提示</h4>
+					</div>
+
+					<div class="modal-body">
+						<p class="alert alert-success"
+							style="padding: 0 10px; font-size: 14px; line-height: 30px; border-radius: 6px; -webkit-border-radius: 6px; -moz-border-radius: 6px;">操作成功！</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/date-time/moment.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datetimepicker.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,
+${base}/assets/js/plugins/date-time/daterangepicker.min.js,
+${base}/assets/js/plugins/chosen/chosen.jquery.min.js,
+${base}/assets/js/plugins/fuelux/fuelux.spinner.min.js,
+${base}/assets/js/plugins/jqueryui/jquery-ui.custom.min.js,
+${base}/assets/js/plugins/jqueryui/jquery.ui.touch-punch.min.js,
+${base}/assets/js/plugins/markdown/markdown.min.js,
+${base}/assets/js/plugins/markdown/bootstrap-markdown.min.js,
+${base}/assets/js/plugins/hotkeys/jquery.hotkeys.min.js,
+${base}/assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js,
+${base}/assets/js/plugins/bootstrap/bootbox.min.js" />
+<script>
+	$(function() {
+		//添加验证
+		$('#addForm').validationEngine('attach');
+		
+		//去掉表单验证信息
+		$('#addModal').on('show.bs.modal', function (e) {
+		}).on('hide.bs.modal', function (e) {
+			//resetAddForm();
+			// 去掉表单验证信息
+			$('#addForm').validationEngine('hide');
+		});
+		var grid_selector = "#grid-table-1";
+		var pager_selector = "#grid-pager-1";
+		var minWidth = 800;
+		$(window).on('resize.jqGrid',function() {
+					$(grid_selector).jqGrid('setGridWidth',$(".page-content").width() < minWidth ? minWidth : $(".page-content").width());
+				})
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid',function(ev, event_name, collapsed) {
+					if (event_name === 'sidebar_collapsed'|| event_name === 'main_container_fixed') {
+						$(grid_selector).jqGrid('setGridWidth',parent_column.width() < minWidth ? minWidth : parent_column.width());
+					}
+				})
+		//渲染表格		
+		//设置jqgrid宽度
+		jQuery(grid_selector).jqGrid({
+			url : "${base}/admin/jobTitle/loadpage",
+			mtype : "post",
+			datatype : "json",
+			height : 250,
+			colNames : [ '编辑', 'ID', '职称', '挂号费', '状态'],
+			cellEdit : false,
+			colModel : [ {
+				name : 'showValue',
+				width : 80,
+				sortable : false,
+				editable : false,
+				fixed : true,
+				formatter : showValueFormatter
+			},
+
+			{
+				name : 'poid',
+				index : 'id',
+				width : 60,
+				sorttype : "int",
+				editable : false,
+			}, {
+				name : 'name',
+				index : 'name',
+				width : 70,
+				editable : false
+			}, {
+				name : 'fee',
+				index : 'fee',
+				width : 120,
+				editable : false
+			}, {
+				name : 'enabled',
+				index : 'enabled',
+				width : 100,
+				editable : false,
+				formatter:function(cellvalue, options, rowdata){
+					return cellvalue ? "启用" : "未启用";
+				}
+			}],
+			viewrecords : true,
+			rowNum : 10,
+			rowList : [ 10, 20, 30 ],
+			pager : pager_selector,
+			altRows : true,
+			multiselect : false,
+			multiboxonly : false,
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function() {
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+			caption : "称职管理"
+		});
+		////// 必须写在表格渲染以后才能执行
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		//navButtons 工具条的图标
+		$(grid_selector).jqGrid('navGrid', pager_selector, { //navbar options
+			edit : false,
+			editicon : 'ace-icon fa fa-pencil blue',
+			add : false,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			del : false,
+			delicon : 'ace-icon fa fa-trash-o red',
+			save : false,
+			saveicon : 'ace-icon fa fa-floppy-o blue',
+			search : false,
+			searchicon : 'ace-icon fa fa-search orange',
+			refresh : false,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view : false,
+			viewicon : 'ace-icon fa fa-search-plus grey',
+		}).navButtonAdd('#grid-pager-1', {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : function() {
+				//新增职称
+				userFormRefresh();
+				$("#myLargeModalLabel").text("").text("新增职称");
+				$('#addModal').modal('show');
+			},
+			position : "last"
+		});
+
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+	})
+	//编辑 删除小图标	
+	function showValueFormatter(cellvalue, options, rowdata) {
+		be = '<div title="" style="float:left;cursor:pointer; margin-left:10px" class="ui-pg-div ui-inline-edit" '
+				+ ' onclick="update(\''
+				+ rowdata.poid
+				+ '\')" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')" data-original-title="编辑">'
+				+ '<span class="ui-icon ui-icon-pencil"></span></div>'
+// 		bv = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-search" '
+// 				+ ' onclick="showWikis(\''
+// 				+ rowdata.poid
+// 				+ '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="查看">'
+// 				+ '<span class="ui-icon fa fa-search orange"></span></div>';
+		bd = '<div title="" style="float:right; margin-right:18px;" class="ui-pg-div ui-inline-del" '
+				+ ' onclick="del(\''
+				+ rowdata.poid
+				+ '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="删除">'
+				+ '<span class="ui-icon ui-icon-trash"></span></div>';
+		return be +  bd;
+	}
+	
+	
+	//修改或增加
+	function add() {
+		if($('#addForm').validationEngine('validate')) {
+			$("#addForm").attr("action", "${base}/admin/jobTitle/save");
+			$("#addForm").submit();
+		}
+	}
+
+	function beforeDeleteCallback(e) {
+		var form = $(e[0]);
+		if (form.data('styled'))
+			return false;
+
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner(
+				'<div class="widget-header" />')
+		style_delete_form(form);
+
+		form.data('styled', true);
+	}
+
+	function beforeEditCallback(e) {
+		var form = $(e[0]);
+		form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner(
+				'<div class="widget-header" />')
+		style_edit_form(form);
+	}
+
+	//it causes some flicker when reloading or navigating grid
+	//it may be possible to have some custom formatter to do this as the grid is being created to prevent this
+	//or go back to default browser checkbox styles for the grid
+	function styleCheckbox(table) {
+		/**
+			$(table).find('input:checkbox').addClass('ace')
+			.wrap('<label />')
+			.after('<span class="lbl align-top" />')
+		
+		
+			$('.ui-jqgrid-labels th[id*="_cb"]:first-child')
+			.find('input.cbox[type=checkbox]').addClass('ace')
+			.wrap('<label />').after('<span class="lbl align-top" />');
+		 */
+	}
+
+	//unlike navButtons icons, action icons in rows seem to be hard-coded
+	//you can change them like this in here if you want
+	function updateActionIcons(table) {
+		/**
+		var replacement = 
+		{
+			'ui-ace-icon fa fa-pencil' : 'ace-icon fa fa-pencil blue',
+			'ui-ace-icon fa fa-trash-o' : 'ace-icon fa fa-trash-o red',
+			'ui-icon-disk' : 'ace-icon fa fa-check green',
+			'ui-icon-cancel' : 'ace-icon fa fa-times red'
+		};
+		$(table).find('.ui-pg-div span.ui-icon').each(function(){
+			var icon = $(this);
+			var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+			if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+		})
+		 */
+	}
+
+	//replace icons with FontAwesome icons like above
+	function updatePagerIcons(table) {
+		var replacement = {
+			'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+			'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+			'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+			'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+		};
+		$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon')
+				.each(
+						function() {
+							var icon = $(this);
+							var $class = $.trim(icon.attr('class').replace(
+									'ui-icon', ''));
+
+							if ($class in replacement)
+								icon.attr('class', 'ui-icon '
+										+ replacement[$class]);
+						})
+	}
+
+	function enableTooltips(table) {
+		$('.navtable .ui-pg-button').tooltip({
+			container : 'body'
+		});
+		$(table).find('.ui-pg-div').tooltip({
+			container : 'body'
+		});
+	}
+
+	//or change it into a date range picker
+
+	//to translate the daterange picker, please copy the "examples/daterange-fr.js" contents here before initialization
+	$('input[name=date-range-picker]').daterangepicker({
+		'applyClass' : 'btn-sm btn-success',
+		'cancelClass' : 'btn-sm btn-default',
+		locale : {
+			applyLabel : 'Apply',
+			cancelLabel : 'Cancel',
+		}
+	}).prev().on(ace.click_event, function() {
+		$(this).next().focus();
+	});
+
+	if ('ontouchstart' in document.documentElement)
+		document
+				.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"
+						+ "<"+"/script>");
+
+	//查询按钮
+	function findSearch() {
+		var title = $("input[name='title']").val();
+		$("#grid-table-1").jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : {
+				'name' : title
+				
+			}, //发送数据  
+			page : 1
+		}).trigger("reloadGrid");
+	}
+
+	//查询条件重置按钮
+	function formRefresh() {
+		$("select[name='wikisCategoryId'] option[value='']").attr("selected",true);
+		$("#serch input").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	
+	//新增百科表单重置
+	function userFormRefresh() {
+		$("#addWikis input[type!='radio']").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	//根据id修改用户数据
+	function update(id) {
+		$.ajax({
+			url : "${base}/admin/jobTitle/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#d-poid").val(data.poid);
+					$("#d-jobTitle").val(data.name);
+					$("#d-fee").val(data.fee);
+					
+					if(data.enabled){
+						$("#d-enabled")[0].checked = true;
+					}else{
+						$("#d-enabled")[0].checked = false;
+					}
+					
+					if ($("#poid").val()) {
+						$("#myLargeModalLabel").text("编辑称职");
+					}
+					$('#addModal').modal('show');
+				}
+			}
+		});
+	}
+
+	//删除数据
+	function del(id) {
+		bootbox.confirm("确定删除？", function(result) {
+			if (result === true) {
+				$("#serch").attr("action", "${base}/admin/jobTitle/del?poid=" + id);
+				$("#serch").submit();
+			}
+		});
+
+	}
+
+	//取消
+	function cancel(){
+			$("#poid").val("");
+	}
+</script>
+

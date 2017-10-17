@@ -1,0 +1,81 @@
+﻿<@p.header />
+<div class="titleallnews">
+  常用就诊人
+  <button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="href('${base}/homemember/openadd')">
+    +&nbsp;添加
+  </button>
+</div>
+<!-- 正文内容 -->
+<div data-role="content">
+  <form id="tableForm" class="form-horizontal" method="post" role="form">
+    <div>
+      <div style="height: 20px; color: #21B7C6; margin-bottom: 8px;">
+        <div class="glyphicon glyphicon-heart" style="float: left; padding: 0px; margin: 0px 5px">
+        </div>
+        <div style="padding: 0; margin: 0 0 20px 0; font-size: 14px;">
+          <h4>
+            成员名单
+          </h4>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr style="background-color: #21B7C6; color: white">
+            <td>
+              姓名
+            </td>
+            <td>
+              性别
+            </td>
+            <td>
+              手机号
+            </td>
+            <td>
+              操作
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <#if foregroundUserList??>
+            <#list foregroundUserList as item>
+              <tr>
+                <td onclick="href('${base}/homemember/getsubuser?id=${item.patietId}')">
+                  ${item.name!}
+                </td>
+                <td onclick="href('${base}/homemember/getsubuser?id=${item.patietId}')">
+                  ${item.sex!}
+                </td>
+                <td onclick="href('${base}/homemember/getsubuser?id=${item.patietId}')">
+                  ${item.mobile!}
+                </td>
+                <td>
+                  <button 
+                      type="button"
+                      disload=true
+                      class="btn-xs"
+                      onclick="deleteUser('${item.patietId!}')"
+                      style="border: none; font-size: 12px; color: #fff; background-color: red; vertical-align: top;">
+                    删除
+                  </button>
+                </td>
+              </tr>
+            </#list>
+          </#if>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+<@p.footer />
+<script type="text/javascript">
+  function deleteUser(e) {
+    S.confirm("确定删除？",function(){
+      $("#tableForm").attr("action","${base}/homemember/del?patietId=" + e);
+      $("#tableForm").submit();
+      });
+    }
+  </script>

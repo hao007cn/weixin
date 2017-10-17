@@ -1,0 +1,146 @@
+<#if order??>
+					<input type="hidden" id="v-poid" name="poid" value="${order.poid}"/>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">就诊人</label>
+						
+						<label class="col-sm-10"><a href="javascript:void(0)" class="text-info" onclick="viewFuser('${order.patient.poid}')" ><strong>${order.patientName!}</strong></a></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">身份证号</label>
+						
+						<label class="col-sm-10"><strong>${order.patientCardid!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">健康卡号</label>
+						
+						<label class="col-sm-10"><strong>${order.patientHcardid!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">科室</label>
+						
+						<label class="col-sm-10"><strong>${order.schedule.departmentName!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">医生</label>
+						
+						<label class="col-sm-10"><a href="javascript:void(0)" class="text-info" onclick="viewDoctor('${order.schedule.doctor.poid}')" ><strong>${order.schedule.doctor.name!}</strong></a></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">就诊日期</label>
+						
+						<label class="col-sm-10"><strong>${order.schedule.date!string("yyyy-MM-dd")}&nbsp;${order.schedule.week!}&nbsp;<#if order.schedule.ap == 'am'>上午<#elseif order.schedule.ap == 'pm'>下午</#if></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >预约人</label>
+						
+						<label class="col-sm-10"><a href="javascript:void(0)" class="text-info" onclick="viewFuser('${order.user.poid}')" ><strong>${order.userName!}</strong></a></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >预约人身份证号</label>
+						
+						<label class="col-sm-10"><strong>${order.userCardid!}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >提交日期</label>
+						
+						<label class="col-sm-10"><strong>${order.orderTime!string("yyyy-MM-dd HH:mm:ss")}</strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >订单状态</label>
+						
+						<div class="col-sm-10"><strong>${order.stateLabel!}</strong></div>
+					</div>
+					
+					<#if order.state == '1'><!-- 取消 -->
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 取消时间 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div class="col-sm-10"><strong>${order.cancelTime!string("yyyy-MM-dd HH:mm:ss")}</strong></div>
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 取消人 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div class="col-sm-10"><a href="javascript:void(0)" class="text-info" onclick="viewFuser('${order.cancelUser.poid}')" ><strong>${order.cancelUserName!}</strong></a></div>
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 取消人身份证号 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div class="col-sm-10"><strong>${order.cancelUserCardid!}</strong></div>
+						</div>
+					</div>
+					</#if>
+					
+					<#if order.state == '2'><!-- 关闭 -->
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 关闭时间</label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div class="col-sm-10"><strong>${order.closeTime!string("yyyy-MM-dd HH:mm:ss")}</strong></div>
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 关闭人 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div class="col-sm-10" title="${order.closerName!}"><strong>${order.closerUserName!}</strong></div>
+						</div>
+					</div>
+					</#if>
+					
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 备注 </label>
+
+						<div class="col-sm-10">
+							<textarea rows="" cols="" id="v-remarks" class="autosize-transition form-control " placeholder="备注">${order.remarks!}</textarea>
+						</div>
+					</div>
+<#else>
+					<div class="alert alert-warning">没有查到数据！</div>
+</#if>

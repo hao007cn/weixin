@@ -1,0 +1,85 @@
+<@p.header csshref=""/>
+<div class="alert alert-block alert-success">
+	<button type="button" class="close" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+	</button>
+
+	<i class="ace-icon fa fa-check green"></i>
+
+	欢迎登录
+	<strong class="green">
+		掌上医院管理系统
+	</strong>，
+	漂亮、全面的统计将给您带来不一样的体验！
+</div>
+
+<div class="row">
+	<div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">今日微信用户报告查询访问量</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info">Lis：${lisCount!}<br/>Pacs：${pacsCount!}<br/>合计：${todayCount!}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">微信用户报告查询访问总量</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info">Lis：${lisSum!}<br/>Pacs：${pacsSum!}<br/>合计：${totalCount!}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">本周新增用户数</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info"> 500 </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-3 widget-container-col">
+		<div class="widget-box">
+			<div class="widget-header">
+				<h5 class="widget-title smaller">本月新增用户数</h5>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main padding-6">
+					<div class="alert alert-info"> 2000 </div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+</div>
+<@p.footer scriptsrc=""/>
+<script type="text/javascript">
+function deleteCookie(name, path) {   /**根据cookie的键，删除cookie，其实就是设置其失效**/
+    var name = escape(name);
+    var expires = new Date(0);
+    path = path == "" ? "" : ";path=" + path;
+    document.cookie = name + "=" + ";expires=" + expires.toUTCString() + path;
+}
+$(document).ready(function(){
+	<#if deleteCookie??>
+		deleteCookie("LoginUserName","/");
+		deleteCookie("LoginUserPass","/");
+	</#if>
+});
+</script>
+

@@ -1,0 +1,272 @@
+<@p.header
+csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,${base}/assets/css/jqueryui/jquery-ui.custom.min.css,${base}/assets/css/chosen/chosen.css,${base}/assets/css/datepicker/datepicker.css,${base}/assets/css/daterangepicker/daterangepicker.css,${base}/assets/css/autocomplete/jquery.autocomplete.css"
+/>
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<form id="serch" method="post" class="form-view-data">
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 姓名 </label>
+
+				<div class="col-sm-2 col-lg-2">
+					<input type="text" id="findusername" name="findusername"
+						placeholder="姓名" class="input-sm form-control">
+				</div>
+			</div>
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 操作日期 </label>
+
+				<div class="col-sm-3 col-lg-3">
+					<div class="input-daterange input-group date-picker">
+						<input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="startDate"> <span
+							class="input-group-addon"> <i class="fa fa-exchange"></i>
+						</span> <input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="endDate">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="findSearch();">
+						<i class="fa fa-search"></i> 查询
+					</button>
+
+				</div>
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="formRefresh();">
+						<i class="fa fa-refresh"></i> 重置
+					</button>
+
+				</div>
+			</div>
+		</form>
+
+		<div class="row"></div>
+		<div class="space-4"></div>
+		<table id="grid-table"></table>
+		<div id="grid-pager"></div>
+		<!-- PAGE CONTENT ENDS -->
+	</div>
+</div>
+
+<@p.footer
+scriptsrc="${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,${base}/assets/js/plugins/date-time/daterangepicker.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.pack.js"
+/>
+<script>
+	$(function() {
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+
+		//resize to fit page size
+		$(window).on(
+				'resize.jqGrid',
+				function() {
+					$(grid_selector).jqGrid('setGridWidth',
+							$(".page-content").width());
+				})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on(
+				'settings.ace.jqGrid',
+				function(ev, event_name, collapsed) {
+					if (event_name === 'sidebar_collapsed'
+							|| event_name === 'main_container_fixed') {
+						$(grid_selector).jqGrid('setGridWidth',
+								parent_column.width());
+					}
+				})
+
+		jQuery(grid_selector).jqGrid({
+			url : "${base}/admin/operatelog/loadpage",
+			mtype : "post",
+			subGrid : false,
+			subGridOptions : {
+				plusicon : "ace-icon fa fa-plus center bigger-110 blue",
+				minusicon : "ace-icon fa fa-minus center bigger-110 blue",
+				openicon : "ace-icon fa fa-chevron-right center orange"
+			},
+
+			datatype : "json",
+			height : 330,
+			colNames : [ 'ID', '操作画面', '操作时间', '姓名', 'IP地址', '状态描述' ],
+			cellEdit : false,
+			colModel : [ {
+				name : 'poid',
+				index : 'poid',
+				width : 60,
+				sorttype : "int",
+				editable : false,
+				hidden : true
+			}, {
+				name : 'operate',
+				index : 'operate',
+				width : 100,
+				editable : false
+			}, {
+				name : 'operate_time',
+				index : 'operate_time',
+				width : 100,
+				editable : false
+			}, {
+				name : 'user_name',
+				index : 'user_name',
+				width : 80,
+				editable : false
+			}, {
+				name : 'ip',
+				index : 'ip',
+				width : 100,
+				editable : false
+			}, {
+				name : 'description',
+				index : 'description',
+				width : 50,
+				editable : false
+			} ],
+
+			viewrecords : true,
+			rowNum : 10,
+			rowList : [ 10, 20, 30 ],
+			pager : pager_selector,
+			altRows : true,
+			multiselect : false,
+			multiboxonly : false,
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function() {
+
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+
+			caption : "系统日志"
+		});
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+		//navButtons
+		jQuery(grid_selector).jqGrid('navGrid', pager_selector, { //navbar options
+			edit : false,
+			editicon : 'ace-icon fa fa-pencil blue',
+			add : false,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			del : false,
+			delicon : 'ace-icon fa fa-trash-o red',
+			save : false,
+			saveicon : 'ace-icon fa fa-floppy-o blue',
+			search : false,
+			searchicon : 'ace-icon fa fa-search orange',
+			refresh : false,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view : false,
+			viewicon : 'ace-icon fa fa-search-plus grey',
+		})
+
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$(
+					'.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon')
+					.each(
+							function() {
+								var icon = $(this);
+								var $class = $.trim(icon.attr('class').replace(
+										'ui-icon', ''));
+
+								if ($class in replacement)
+									icon.attr('class', 'ui-icon '
+											+ replacement[$class]);
+							})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	})
+	//查询按钮
+	function findSearch() {
+		var name = $("#findusername").val();
+		var startDate = $("input[name='startDate']").val();
+		var endDate = $("input[name='endDate']").val();
+		$("#grid-table").jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : {
+				'findusername' : name,
+				'startDate' : startDate,
+				'endDate' : endDate
+			}, //发送数据  
+			page : 1
+		}).trigger("reloadGrid");
+	}
+	//查询条件重置按钮
+	function formRefresh() {
+		$("#serch input").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	$(document).ready(function() {
+		//刷新页面重置 查询条件
+		formRefresh();
+		//or change it into a date range picker
+		$('.input-daterange').datepicker({
+			autoclose : true
+		});
+		//姓名自动补全
+		$("#findusername").autocomplete("${base}/admin/user/autouser", {
+			minChars : 1, //用户输入几个字触发
+			max : 100, //最大显示条数
+			autoFill : false,
+			width : 150,
+			delay : 500, //延迟响应
+			dataType : "json", //指定数据类型的渲染方式
+			extraParams : {
+				q : function() {
+					return $("#findusername").val();
+				}
+			}, //获得文本框的值   
+			parse : function(data) {
+				var datavalue = eval(data);
+
+				var rows = [];
+				for (var i = 0; i < datavalue.length; i++) {
+					rows[rows.length] = {
+						data : datavalue[i],
+						value : datavalue[i].name,
+						//result里面显示的是要返回到列表里面的值  
+						result : datavalue[i].name
+					};
+				}
+				return rows;
+			},
+			formatItem : function(item) {
+
+				return item.name;
+			}
+		}).result(function(event, data, formatted) {
+			//$("#findusername").val(data.name);
+
+		})
+		$("#serch input[name='startDate']").datepicker().on('hide',function(e){
+			var startdate = $(this).datepicker('getDate');
+			$("#serch input[name='endDate']").datepicker(
+				'setStartDate' , startdate
+			);
+		});
+	});
+</script>

@@ -1,0 +1,28 @@
+﻿<@p.header />
+<style>
+
+</style>
+<div class="titleallnews">
+  新闻/活动
+  <button 
+      type="button" disload=true
+      class="btn btn-default"
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<div id="newContent" style="margin: 10px">
+
+</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+  var listsize=0;
+  <#if pageSum??>
+  listsize=${pageSum!};
+  </#if>
+  $(function(){
+    //执行分页方法
+    ajaxScrollPage("#newContent",'${base}/activities/append',listsize);
+    });
+  </script>

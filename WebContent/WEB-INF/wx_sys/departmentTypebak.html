@@ -1,0 +1,203 @@
+<@p.header csshref=""/>
+<form id="addForm" name="addForm" action="${base}/admin/depttype/save" method="post">
+<div class="row">
+	<div class="col-xs-12">
+	<div class="table-responsive">
+		<table id="grid-table" class="table table-striped table-hover dataTable">
+			<thead>
+				<tr>
+					<th>
+						<label class="position-relative">
+							<input id="delAll" type="checkbox" name="chk_items" type="checkbox" class="ace" />
+							<span class="lbl"></span>
+						</label>
+					</th>
+					<th>显示顺序</th>
+					<th>名称</th>
+					<th>代表图标（20x20）</th>
+					<th>备注</th>
+					<th>可用</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+			<#if departmentTypeList??>
+				<#list departmentTypeList as departmentType>
+				<tr>
+					<td class="col-xs-1">
+						<input type="hidden" name="poid" value="${departmentType.poid}"/>
+						<label class="position-relative">
+							<input type="checkbox" name="chk_item" value="${departmentType.poid}" class="ace" />
+							<span class="lbl"></span>
+						</label>
+					</td>
+					<td class="col-xs-2">
+						<input type="text" name="sort" class="spinners input-mini" value="${departmentType.sort}" maxlength="2"  data-validation-engine="validate[min[0], max[99]]"/>
+					</td>
+					<td>
+						<input type="text" name="name" class="form-control input-sm text-input" value="${departmentType.name}" data-validation-engine="validate[required, maxSize[6]]" />
+					</td>
+					<td class="col-xs-2">
+						<div class="input-group">
+							<input type="text" name="icons" onclick="bootstrap_glyphicon_init(this)" class="form-control input-sm" value="${departmentType.icons}" maxlength="100" data-validation-engine="validate[maxSize[100]]" /><span class="input-group-addon ${departmentType.icons}"></span>
+						</div>
+					</td>
+					<td>
+						<input type="text" name="remarks" class="form-control input-sm" value="${departmentType.remarks}" maxlength="100" data-validation-engine="validate[maxSize[100]]" />
+					</td>
+					<td>
+						<input type="hidden" name="enabled" value="${departmentType.enabled?string('1','0')}" />
+						<label>
+							<input name="enabled_chk" class="ace ace-switch ace-switch-6" type="checkbox" value="1" <#if departmentType.enabled >checked</#if> onclick="onEnabledClick(this)" />
+							<span class="lbl"></span>
+						</label>
+					</td>
+					<td>
+						<button type="button" class="btn btn-xs btn-danger" onclick="removeit(${departmentType.poid})">
+							<i class="ace-icon fa fa-trash-o bigger-120"></i>
+						</button>
+					</td>
+				</tr>
+				</#list>
+			<#else>
+			</#if>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7">
+						<a id="btn_add" href="javascript:void(0)" class="text-danger">
+							+添加一条
+						</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	</div><!-- /col -->
+	<div class="col-xs-12 text-center">
+		<button id="btn_submit" type="submit" class="btn btn-primary" data-loading-text="正在保存...">
+			<i class="ace-icon fa fa-check bigger-110"></i>
+			提交
+		</button>
+	</div>
+	</div>
+</form>
+
+<form id="delForm" name="delForm" action="${base}/admin/depttype/delete" method="post">
+	<input id="departmentTypeId" type="hidden" name="id" value=""/>
+</form>
+
+<textarea id="template" class="hide">
+	<tr>
+		<td class="col-xs-1">
+			<input type="hidden" name="poid" value=""/>
+			<label class="position-relative">
+				<input type="checkbox" name="chk_item" value="" class="ace" />
+				<span class="lbl"></span>
+			</label>
+		</td>
+		<td class="col-xs-2">
+			<input type="text" name="sort" class="spinnern input-mini" data-validation-engine="validate[min[0], max[99]]" />
+		</td>
+		<td>
+			<input type="text" name="name" class="form-control input-sm text-input" data-validation-engine="validate[required, maxSize[6]]" />
+		</td>
+		<td class="col-xs-2">
+			<div class="input-group">
+				<input type="text" name="icons" onclick="bootstrap_glyphicon_init(this)" class="form-control input-sm" data-validation-engine="validate[maxSize[100]]"/><span class="input-group-addon"></span>
+			</div>
+		</td>
+		<td>
+			<input type="text" name="remarks" class="form-control input-sm" data-validation-engine="validate[maxSize[100]]"/>
+		</td>
+		<td>
+			<input type="hidden" name="enabled" value="1" />
+			<label>
+				<input name="enabled_chk" class="ace ace-switch ace-switch-6" type="checkbox" checked="checked" onclick="onEnabledClick(this)" />
+				<span class="lbl"></span>
+			</label>
+		</td>
+		<td>
+			<button type="button" class="btn btn-xs btn-danger" onclick="$(this).closest('tr').remove()">
+				<i class="ace-icon fa fa-trash-o bigger-120"></i>
+			</button>
+		</td>
+	</tr>
+</textarea>
+<@p.footer scriptsrc="${base}/assets/js/plugins/fuelux/fuelux.spinner.min.js,${base}/assets/js/jquery.importicon.js" scriptcode=""/>
+<!-- inline scripts related to this page -->
+<script>
+	$(function(){
+		$("#delAll").click(function() {
+			var that = this;
+			$(this).closest('table').find('tr > td:first-child input:checkbox')
+			.each(function(){
+				this.checked = that.checked;
+				$(this).closest('tr').toggleClass('selected');
+			});
+		});
+		
+		$("#grid-table").find('tbody > tr > td:first-child input:checkbox').each(function(){
+			var that = this;
+			$(that).click(function() {
+				var uncheckedItems = $("#grid-table").find('tbody > tr > td:first-child input:checkbox').not("input:checked");
+				if (uncheckedItems.length > 0) {
+					var chkAll = $("#delAll");
+					chkAll.get(0).checked = false;
+					chkAll.closest('tr').removeClass('selected');
+				} else {
+					var chkAll = $("#delAll");
+					chkAll.get(0).checked = true;
+					chkAll.closest('tr').addClass('selected');
+				}
+			})
+		});
+		
+		$("#btn_add").click(function() {
+			var tr = $($('#template').val());
+			var maxSort = $("#grid-table tbody input[name='sort']:last").val();
+			tr.find("input[name='sort']").val(Number(maxSort) + 1);
+			tr.appendTo("#grid-table tbody")
+			tr.attr("id", '').find(".spinnern").ace_spinner({value:0,min:0,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+			.on('change', function(){ }).removeClass("spinnern").addClass("spinners");
+		});
+		
+		$('.spinners').ace_spinner({value:0,min:0,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+		.on('change', function(){
+		});
+		
+		$('#addForm').validationEngine('attach', {
+			binded: false,
+			onValidationComplete: function(form, status){
+				if (status) {
+					var btn = $("#btn_submit");
+					btn.button('loading');
+					
+					return true;
+				}
+			}
+		});
+		
+		/* $("#btn_submit").click(function(){
+			var btn = $(this);
+			btn.button('loading');
+			var form = document.forms['addForm'];
+			form.submit();
+		}) */
+	})
+	
+	function onEnabledClick(obj) {
+		var $this = $(obj);
+		$this.parent().prev().val(Number($this.is(":checked")));
+	}
+	
+	function removeit(id) {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				$("#departmentTypeId").val(id);
+				var form = document.delForm;
+				form.submit();
+			}
+		});
+	}
+</script>

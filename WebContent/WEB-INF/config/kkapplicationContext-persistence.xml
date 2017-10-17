@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:seam="http://jboss.com/products/seam/spring-seam" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:annotation-config/>
+	<context:component-scan base-package="com.senyint.wx" >
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<context:property-placeholder ignore-unresolvable="true" local-override="true" location="/WEB-INF/config/application.properties"/>
+	<!-- JPA Settings -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="default" /> 
+		<property name="packagesToScan" value="com.senyint.wx.*"/>
+		<property name="dataSource" ref="dataSource"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="${hibernate_showSql}"/>
+				<property name="generateDdl" value="${hibernate_generateDdl}"/>
+				<property name="databasePlatform" value="${hibernate_databaseMysqlPlatform}"/>
+			</bean>
+		</property>
+		<property name="jpaProperties">  
+			<props>
+				
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cacheRegionFactoryClass}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cacheUseQueryCache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cacheUseSecondLevelCache}</prop>
+				<prop key="hibernate.cache.use_structured_entries">${hibernate.cacheUseStructuredEntries}</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cacheProviderConfigurationFileResourcePath}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.useSqlComments}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generateStatistics}</prop>
+				<prop key="hibernate.format_sql">${hibernate.formatSql}</prop>  
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="lisEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="lis" /> 
+		<property name="persistenceXmlLocation" value="classpath:persistence.xml"/>
+		<property name="dataSource" ref="lis_oracle_dataSource"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="${hibernate_showSql}"/>
+				<property name="generateDdl" value="false"/>
+				<property name="databasePlatform" value="${hibernate_databaseMysqlPlatform}"/>
+			</bean>
+		</property>
+		<property name="jpaProperties">  
+			<props>
+				
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cacheRegionFactoryClass}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cacheUseQueryCache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cacheUseSecondLevelCache}</prop>
+				<prop key="hibernate.cache.use_structured_entries">${hibernate.cacheUseStructuredEntries}</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cacheProviderConfigurationFileResourcePath}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.useSqlComments}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generateStatistics}</prop>
+				<prop key="hibernate.format_sql">${hibernate.formatSql}</prop>  
+			</props>  
+		</property>
+	</bean>
+	<bean id="pacsEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="pacs" /> 
+		<property name="persistenceXmlLocation" value="classpath:persistence.xml"/>
+		<property name="dataSource" ref="pacs_oracle_dataSource"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="${hibernate_showSql}"/>
+				<property name="generateDdl" value="false"/>
+				<property name="databasePlatform" value="${hibernate_databaseMysqlPlatform}"/>
+			</bean>
+		</property>
+		<property name="jpaProperties">  
+			<props>
+				
+				<prop key="hibernate.cache.region.factory_class">${hibernate.cacheRegionFactoryClass}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cacheUseQueryCache}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cacheUseSecondLevelCache}</prop>
+				<prop key="hibernate.cache.use_structured_entries">${hibernate.cacheUseStructuredEntries}</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cacheProviderConfigurationFileResourcePath}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.useSqlComments}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generateStatistics}</prop>
+				<prop key="hibernate.format_sql">${hibernate.formatSql}</prop>  
+			</props>  
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+	
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="autoCommitOnClose" value="true"/>
+		<property name="checkoutTimeout" value="${cpool.checkoutTimeout}"/>
+		<property name="initialPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="minPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="maxPoolSize" value="${cpool.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${cpool.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${cpool.acquireIncrement}"/>
+		<property name="maxIdleTimeExcessConnections" value="${cpool.maxIdleTimeExcessConnections}"/>
+	</bean>
+	
+	<bean id="lis_oracle_dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">  
+		<property name="driver" value="${jdbc.driverClassName}"/>
+		<property name="driverUrl" value="jdbc:mysql://localhost:3306/senyint_wx_lis?characterEncoding=UTF-8"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="houseKeepingTestSql" value="select now()"/>
+		<property name="alias" value="${lis_oracle_proxool.alias}"/>
+		<property name="maximumActiveTime" value="${lis_oracle_proxool.maximumActiveTime}"/>
+		<!-- <property name="prototypeCount" value="${lis_oracle_proxool.prototypeCount}"/> -->
+		<property name="maximumConnectionCount" value="${lis_oracle_proxool.maximumConnectionCount}"/>
+		<property name="minimumConnectionCount" value="${lis_oracle_proxool.minimumConnectionCount}"/>
+		<property name="simultaneousBuildThrottle" value="${lis_oracle_proxool.simultaneousBuildThrottle}"/>
+		<property name="testBeforeUse" value="${lis_oracle_proxool.testBeforeUse}"></property>
+	</bean>
+	<!-- 
+	<bean id="lis_oracle_dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+		<property name="driverClass" value="${lis_oracle_jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${lis_oracle_jdbc.url}" />
+		<property name="user" value="${lis_oracle_jdbc.username}" />
+		<property name="password" value="${lis_oracle_jdbc.password}" />
+		<property name="autoCommitOnClose" value="true"/>
+		<property name="checkoutTimeout" value="${lis_oracle_cpool.checkoutTimeout}"/>
+		<property name="initialPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="minPoolSize" value="${lis_oracle_cpool.minPoolSize}"/>
+		<property name="maxPoolSize" value="${lis_oracle_cpool.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${lis_oracle_cpool.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${lis_oracle_cpool.acquireIncrement}"/>
+		<property name="maxIdleTimeExcessConnections" value="${lis_oracle_cpool.maxIdleTimeExcessConnections}"/>
+		<property name="testConnectionOnCheckin" value="true"></property>
+		<property name="preferredTestQuery" value="select 1 from dual"></property>
+	</bean> -->
+	
+	<bean id="pacs_oracle_dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">  
+		<property name="driver" value="${jdbc.driverClassName}"/>
+		<property name="driverUrl" value="jdbc:mysql://localhost:3306/senyint_wx_pacs?characterEncoding=UTF-8"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="houseKeepingTestSql" value="select now()"/>
+		<property name="alias" value="${pacs_oracle_proxool.alias}"/>
+		<property name="maximumActiveTime" value="${pacs_oracle_proxool.maximumActiveTime}"/>
+		<!-- <property name="prototypeCount" value="${pacs_oracle_proxool.prototypeCount}"/> -->
+		<property name="maximumConnectionCount" value="${pacs_oracle_proxool.maximumConnectionCount}"/>
+		<property name="minimumConnectionCount" value="${pacs_oracle_proxool.minimumConnectionCount}"/>
+		<property name="simultaneousBuildThrottle" value="${pacs_oracle_proxool.simultaneousBuildThrottle}"/>
+		<property name="testBeforeUse" value="${pacs_oracle_proxool.testBeforeUse}"></property>
+	</bean>
+	
+	<!-- <bean id="pacs_oracle_dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+		<property name="driverClass" value="${pacs_oracle_jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${pacs_oracle_jdbc.url}" />
+		<property name="user" value="${pacs_oracle_jdbc.username}" />
+		<property name="password" value="${pacs_oracle_jdbc.password}" />
+		<property name="autoCommitOnClose" value="true"/>
+		<property name="checkoutTimeout" value="${pacs_oracle_cpool.checkoutTimeout}"/>
+		<property name="initialPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="minPoolSize" value="${pacs_oracle_cpool.minPoolSize}"/>
+		<property name="maxPoolSize" value="${pacs_oracle_cpool.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${pacs_oracle_cpool.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${pacs_oracle_cpool.acquireIncrement}"/>
+		<property name="maxIdleTimeExcessConnections" value="${pacs_oracle_cpool.maxIdleTimeExcessConnections}"/>
+		<property name="testConnectionOnCheckin" value="true"></property>
+		<property name="preferredTestQuery" value="select 1 from dual"></property>
+	</bean> -->
+	
+</beans>

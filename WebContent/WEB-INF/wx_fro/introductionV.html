@@ -1,0 +1,71 @@
+<@p.header csshref="" />
+<div class="titleallnews">
+  预约挂号
+</div>
+<div>
+  <table class="table">
+    <tbody >
+      <#if listDepartmentTypes??>
+        <#list listDepartmentTypes as departmentType>
+          <tr>
+            <td colspan="3">
+              <div style="height: 20px; color: #21B7C6;" >
+                <div class="" style="float: left; margin: 0px; padding: 0px">
+                </div>
+                <div style="padding: 0px; margin: 0 0 0 10px; font-size: 14px;" class=" h4_title">
+                  <h4>
+                    ${departmentType.name!}
+                  </h4>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>
+              <div class="row">
+                <#if departmentType.poid??>
+                    <#list listDepartment as department>
+                     <#if department.typeId??>
+                      <#if departmentType.poid == department.typeId>
+                        <div class="col-xs-6" style="padding: 0 10px">
+                          <button 
+                              style="font-weight: 100"
+                              class="btn my-btn-primary"
+                              onclick="showDoctorList('${department.poid}','${department.name!}')">
+                            ${department.name!}
+                          </button>
+                        </div>
+                       </#if>
+                      </#if>
+                    </#list>
+                </#if>
+              </div>
+            </td>
+            <td>
+            </td>
+          </tr>
+        </#list>
+      </#if>
+    </tbody>
+  </table>
+</div>
+<!-- form -->
+<form action="" method="post" id = "doctorListForm">
+  <input type="hidden" name = "departmentId"/>
+  <input type="hidden" name = "departmentName"/>
+</form>
+<@p.footer scriptsrc=""/>
+
+<script>
+    function showDoctorList(id,departmentname){
+      $("input[name='departmentId']").val(id);
+      $("input[name='departmentName']").val(departmentname);
+      $("#doctorListForm").attr("action","${base}/vintroduction/doctorList").submit();
+    }
+  </script>
+
+
+
+

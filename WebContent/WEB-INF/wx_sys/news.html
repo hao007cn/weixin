@@ -1,0 +1,643 @@
+<@p.header csshref="${base}/assets/css/jqgrid/ui.jqgrid.css" />
+
+<form id="gridForm" method="post">
+	<div class="row">
+
+		<div class="col-xs-12">
+			<!-- PAGE CONTENT BEGINS -->
+			<table id="grid-table"></table>
+			<div id="grid-pager"></div>
+			<!-- PAGE CONTENT ENDS -->
+		</div>
+
+		<!-- /.col -->
+	</div>
+</form>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title">新闻活动</h4>
+			</div>
+			<div class="modal-body">
+				<form id="newsForm" class="form-horizontal" method="post">
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="title">新闻标题：</label>
+						<div class="col-sm-8">
+							<input type="text" id="title" name="title" placeholder="请填写新闻标题"
+								class="col-xs-10 col-sm-5 input-sm form-control" data-validation-engine="validate[required,maxSize[40]]" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right"
+							for="deptEditor">文章内容：</label>
+						<div class="col-sm-8">
+							<div class="wysiwyg-editor" id="deptEditor"
+								style="border-width: 1px;"></div>
+						</div>
+					</div>
+					<input id="content" name="content" type="hidden"> <input
+						id="poid" name="poid" type="hidden">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save();">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- /.row -->
+<@p.footer
+scriptsrc="${base}/assets/js/plugins/hotkeys/jquery.hotkeys.min.js,${base}/assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js,${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js"
+/>
+<script>
+	$(function() {
+		$('#newsForm').validationEngine('attach');
+
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+
+		//resize to fit page size
+		$(window).on(
+				'resize.jqGrid',
+				function() {
+					$(grid_selector).jqGrid('setGridWidth',
+							$(".page-content").width());
+				})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on(
+				'settings.ace.jqGrid',
+				function(ev, event_name, collapsed) {
+					if (event_name === 'sidebar_collapsed'
+							|| event_name === 'main_container_fixed') {
+						$(grid_selector).jqGrid('setGridWidth',
+								parent_column.width());
+					}
+				})
+
+		jQuery(grid_selector).jqGrid({
+			url : "${base}/admin/news/loadpage",
+			mtype : "post",
+			subGrid : false,
+			subGridOptions : {
+				plusicon : "ace-icon fa fa-plus center bigger-110 blue",
+				minusicon : "ace-icon fa fa-minus center bigger-110 blue",
+				openicon : "ace-icon fa fa-chevron-right center orange"
+			},
+
+			datatype : "json",
+			height : 250,
+			colNames : [ '操作', 'ID', '文章标题', '发布时间', '发布人' ],
+			cellEdit : false,
+			colModel : [ {
+				name : 'showValue',
+				width : 80,
+				sortable : false,
+				editable : false,
+				fixed : true,
+				formatter : showValueFormatter
+			}, {
+				name : 'poid',
+				index : 'poid',
+				width : 60,
+				sorttype : "int",
+				editable : false,
+				hidden : true
+			}, {
+				name : 'title',
+				index : 'title',
+				width : 100,
+				editable : false
+			}, {
+				name : 'createDate',
+				index : 'createDate',
+
+				width : 60,
+				editable : false
+			}, {
+				name : 'createUserName',
+				index : 'createUserName',
+				width : 50,
+				editable : false
+			} ],
+
+			viewrecords : true,
+			rowNum : 10,
+			rowList : [ 10, 20, 30 ],
+			pager : pager_selector,
+			altRows : true,
+			//toppager: true,
+
+			multiselect : false,
+			//multikey: "ctrlKey",
+			multiboxonly : false,
+
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function() {
+
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+
+			caption : "新闻活动"
+		});
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+		function showValueFormatter(cellvalue, options, rowdata) {
+			return '<div style="margin-left:8px;"><div id="jEditButton_1" class="ui-pg-div ui-inline-edit" onmouseout="jQuery(this).removeClass(\'ui-state-hover\')" onmouseover="jQuery(this).addClass(\'ui-state-hover\');" onclick="update('
+					+ rowdata.poid
+					+ ');" style="float:left;cursor:pointer;" title="" data-original-title="编辑所选记录"><span class="ui-icon ui-icon-pencil"></span></div><div id="jDeleteButton_1" class="ui-pg-div ui-inline-del" onmouseout="jQuery(this).removeClass(\'ui-state-hover\');" onmouseover="jQuery(this).addClass(\'ui-state-hover\');" onclick="deleteNew('
+					+ rowdata.poid
+					+ ');" style="float:left;margin-left:5px;" title="" data-original-title="删除所选记录"><span class="ui-icon ui-icon-trash"></span></div></div>';
+		}
+		//switch element when editing inline
+		function aceSwitch(cellvalue, options, cell) {
+			setTimeout(function() {
+				$(cell).find('input[type=checkbox]').addClass(
+						'ace ace-switch ace-switch-5').after(
+						'<span class="lbl"></span>');
+			}, 0);
+		}
+		//enable datepicker
+		function pickDate(cellvalue, options, cell) {
+			setTimeout(function() {
+				$(cell).find('input[type=text]').datepicker({
+					format : 'yyyy-mm-dd',
+					autoclose : true
+				});
+			}, 0);
+		}
+
+		//navButtons
+		jQuery(grid_selector).jqGrid(
+				'navGrid',
+				pager_selector,
+				{ //navbar options
+					edit : false,
+					editicon : 'ace-icon fa fa-pencil blue',
+					add : false,
+					addicon : 'ace-icon fa fa-plus-circle purple',
+					del : false,
+					delicon : 'ace-icon fa fa-trash-o red',
+					save : false,
+					saveicon : 'ace-icon fa fa-floppy-o blue',
+					search : false,
+					searchicon : 'ace-icon fa fa-search orange',
+					refresh : false,
+					refreshicon : 'ace-icon fa fa-refresh green',
+					view : true,
+					viewicon : 'ace-icon fa fa-search-plus grey',
+				},
+				{
+					//edit record form
+					//closeAfterEdit: true,
+					//width: 700,
+					recreateForm : true,
+					beforeShowForm : function(e) {
+						var form = $(e[0]);
+						form.closest('.ui-jqdialog').find(
+								'.ui-jqdialog-titlebar').wrapInner(
+								'<div class="widget-header" />')
+						style_edit_form(form);
+					}
+				},
+				{
+					//new record form
+					//width: 700,
+					closeAfterAdd : true,
+					recreateForm : true,
+					viewPagerButtons : false,
+					beforeShowForm : function(e) {
+						var form = $(e[0]);
+						form.closest('.ui-jqdialog').find(
+								'.ui-jqdialog-titlebar').wrapInner(
+								'<div class="widget-header" />')
+						style_edit_form(form);
+					}
+				},
+				{
+					//delete record form
+					recreateForm : true,
+					beforeShowForm : function(e) {
+						var form = $(e[0]);
+						if (form.data('styled'))
+							return false;
+
+						form.closest('.ui-jqdialog').find(
+								'.ui-jqdialog-titlebar').wrapInner(
+								'<div class="widget-header" />')
+						style_delete_form(form);
+
+						form.data('styled', true);
+					},
+					onClick : function(e) {
+						alert(1);
+					}
+				},
+				{
+					//search form
+					recreateForm : true,
+					afterShowSearch : function(e) {
+						var form = $(e[0]);
+						form.closest('.ui-jqdialog').find('.ui-jqdialog-title')
+								.wrap('<div class="widget-header" />')
+						style_search_form(form);
+					},
+					afterRedraw : function() {
+						style_search_filters($(this));
+					},
+					multipleSearch : true,
+
+				},
+				{
+					//view record form
+					width : 700,
+					recreateForm : true,
+					beforeShowForm : function(e) {
+						var form = $(e[0]);
+						form.closest('.ui-jqdialog').find('.ui-jqdialog-title')
+								.wrap('<div class="widget-header" />')
+					}
+				}).navButtonAdd('#grid-pager', {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : function() {
+				btnResult();
+				$('#myModal').modal('show');
+			},
+			position : "last"
+		})
+
+		function style_edit_form(form) {
+			//enable datepicker on "sdate" field and switches for "stock" field
+			form.find('input[name=inputdate]').datepicker({
+				format : 'yyyy-mm-dd',
+				autoclose : true
+			});
+
+			var buttons = form.next().find('.EditButton .fm-button');
+			buttons.addClass('btn btn-sm').find('[class*="-icon"]').hide();//ui-icon, s-icon
+			buttons.eq(0).addClass('btn-primary').prepend(
+					'<i class="ace-icon fa fa-check"></i>');
+			buttons.eq(1).prepend('<i class="ace-icon fa fa-times"></i>')
+
+			buttons = form.next().find('.navButton a');
+			buttons.find('.ui-icon').hide();
+			buttons.eq(0).append('<i class="ace-icon fa fa-chevron-left"></i>');
+			buttons.eq(1)
+					.append('<i class="ace-icon fa fa-chevron-right"></i>');
+		}
+
+		function style_delete_form(form) {
+			var buttons = form.next().find('.EditButton .fm-button');
+			buttons.addClass('btn btn-sm btn-white btn-round').find(
+					'[class*="-icon"]').hide();//ui-icon, s-icon
+			buttons.eq(0).addClass('btn-danger').prepend(
+					'<i class="ace-icon fa fa-trash-o"></i>');
+			buttons.eq(1).addClass('btn-default').prepend(
+					'<i class="ace-icon fa fa-times"></i>')
+		}
+
+		function style_search_filters(form) {
+			form.find('.delete-rule').val('X');
+			form.find('.add-rule').addClass('btn btn-xs btn-primary');
+			form.find('.add-group').addClass('btn btn-xs btn-success');
+			form.find('.delete-group').addClass('btn btn-xs btn-danger');
+		}
+
+		function style_search_form(form) {
+			var dialog = form.closest('.ui-jqdialog');
+			var buttons = dialog.find('.EditTable')
+			buttons.find('.EditButton a[id*="_reset"]').addClass(
+					'btn btn-sm btn-info').find('.ui-icon').attr('class',
+					'ace-icon fa fa-retweet');
+			buttons.find('.EditButton a[id*="_query"]').addClass(
+					'btn btn-sm btn-inverse').find('.ui-icon').attr('class',
+					'ace-icon fa fa-comment-o');
+			buttons.find('.EditButton a[id*="_search"]').addClass(
+					'btn btn-sm btn-purple').find('.ui-icon').attr('class',
+					'ace-icon fa fa-search');
+		}
+
+		function beforeDeleteCallback(e) {
+			var form = $(e[0]);
+			if (form.data('styled'))
+				return false;
+
+			form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+					.wrapInner('<div class="widget-header" />')
+			style_delete_form(form);
+
+			form.data('styled', true);
+		}
+
+		function beforeEditCallback(e) {
+			var form = $(e[0]);
+			form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+					.wrapInner('<div class="widget-header" />')
+			style_edit_form(form);
+		}
+
+		//replace icons with FontAwesome icons like above
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$(
+					'.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon')
+					.each(
+							function() {
+								var icon = $(this);
+								var $class = $.trim(icon.attr('class').replace(
+										'ui-icon', ''));
+
+								if ($class in replacement)
+									icon.attr('class', 'ui-icon '
+											+ replacement[$class]);
+							})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	})
+	$(document)
+			.ready(
+					function() {
+
+						function showErrorAlert(reason, detail) {
+							var msg = '';
+							if (reason === 'unsupported-file-type') {
+								msg = "Unsupported format " + detail;
+							} else {
+								//console.log("error uploading file", reason, detail);
+							}
+							$(
+									'<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'
+											+ '<strong>File upload error</strong> '
+											+ msg + ' </div>').prependTo(
+									'#alerts');
+						}
+						;
+						$('#deptEditor').ace_wysiwyg({
+							toolbar : [ 'font', null, 'fontSize', null, {
+								name : 'bold',
+								className : 'btn-info'
+							}, {
+								name : 'italic',
+								className : 'btn-info'
+							}, {
+								name : 'strikethrough',
+								className : 'btn-info'
+							}, {
+								name : 'underline',
+								className : 'btn-info'
+							}, null, {
+								name : 'insertunorderedlist',
+								className : 'btn-success'
+							}, {
+								name : 'insertorderedlist',
+								className : 'btn-success'
+							}, {
+								name : 'outdent',
+								className : 'btn-purple'
+							}, {
+								name : 'indent',
+								className : 'btn-purple'
+							}, null, {
+								name : 'justifyleft',
+								className : 'btn-primary'
+							}, {
+								name : 'justifycenter',
+								className : 'btn-primary'
+							}, {
+								name : 'justifyright',
+								className : 'btn-primary'
+							}, {
+								name : 'justifyfull',
+								className : 'btn-inverse'
+							}, null, {
+								name : 'insertImage',
+								className : 'btn-success'
+							}, null, 'foreColor', null, {
+								name : 'undo',
+								className : 'btn-grey'
+							}, {
+								name : 'redo',
+								className : 'btn-grey'
+							} ],
+							'wysiwyg' : {
+								fileUploadError : showErrorAlert
+							}
+						}).prev().addClass('wysiwyg-style2');
+
+						var toolbar = $('#deptEditor').prev().get(0);
+						toolbar.className = toolbar.className.replace(
+								/wysiwyg\-style(1|2)/g, '');
+						$(toolbar).addClass('wysiwyg-style2');
+						if (typeof jQuery.ui !== 'undefined'
+								&& ace.vars['webkit']) {
+
+							var lastResizableImg = null;
+							function destroyResizable() {
+								if (lastResizableImg == null)
+									return;
+								lastResizableImg.resizable("destroy");
+								lastResizableImg.removeData('resizable');
+								lastResizableImg = null;
+							}
+
+							var enableImageResize = function() {
+								$('.wysiwyg-editor')
+										.on(
+												'mousedown',
+												function(e) {
+													var target = $(e.target);
+													if (e.target instanceof HTMLImageElement) {
+														if (!target
+																.data('resizable')) {
+															target
+																	.resizable({
+																		aspectRatio : e.target.width
+																				/ e.target.height,
+																	});
+															target
+																	.data(
+																			'resizable',
+																			true);
+
+															if (lastResizableImg != null) {
+																//disable previous resizable image
+																lastResizableImg
+																		.resizable("destroy");
+																lastResizableImg
+																		.removeData('resizable');
+															}
+															lastResizableImg = target;
+														}
+													}
+												})
+										.on(
+												'click',
+												function(e) {
+													if (lastResizableImg != null
+															&& !(e.target instanceof HTMLImageElement)) {
+														destroyResizable();
+													}
+												}).on('keydown', function() {
+											destroyResizable();
+										});
+							}
+
+							enableImageResize();
+						}
+					});
+	function initTable() {
+		$("#delAll").click(
+				function() {
+					var that = this;
+					$(this).closest('table').find(
+							'tr > td:first-child input:checkbox').each(
+							function() {
+								this.checked = that.checked;
+								$(this).closest('tr').toggleClass('selected');
+							});
+				});
+
+		$("#grid-table")
+				.find('tbody > tr > td:first-child input:checkbox')
+				.each(
+						function() {
+							var that = this;
+							$(that)
+									.click(
+											function() {
+												var uncheckedItems = $(
+														"#grid-table")
+														.find(
+																'tbody > tr > td:first-child input:checkbox')
+														.not("input:checked");
+												if (uncheckedItems.length > 0) {
+													var chkAll = $("#delAll");
+													chkAll.get(0).checked = false;
+													chkAll.closest('tr')
+															.removeClass(
+																	'selected');
+												} else {
+													var chkAll = $("#delAll");
+													chkAll.get(0).checked = true;
+													chkAll.closest('tr')
+															.addClass(
+																	'selected');
+												}
+											})
+						});
+
+		$("#addBtn").click(function() {
+			var tr = $('#tempTr').clone().appendTo("#grid-table tbody");
+		});
+	}
+
+	function edit() {
+		$("#deptList").hide();
+		$("#deptEdit").show();
+	}
+
+	function cancelEdit() {
+		$("#deptList").show();
+		$("#deptEdit").hide();
+	}
+
+	function del(obj) {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				$(obj).closest('tr').remove();
+
+				bootbox.alert("操作成功！");
+			}
+		});
+	}
+
+	function delbatch() {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				bootbox.alert("操作成功！");
+			}
+		});
+	}
+
+	function saveNew() {
+		bootbox.alert("操作成功！", function() {
+			$("#deptList").show();
+			$("#deptEdit").hide();
+		});
+	}
+	function btnResult() {
+		$("#deptEditor").html("");
+		$("#content").val("");
+		$("#poid").val("");
+		$("#title").val("");
+	}
+
+	function save() {
+		$("#content").val($("#deptEditor").html());
+		$("#newsForm").attr("action", "${base}/admin/news/save");
+		$("#newsForm").submit();
+	}
+	function update(id) {
+		$.ajax({
+			url : "${base}/admin/news/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#poid").val(data.poid);
+					$("#title").val(data.title);
+					$("#content").val(data.content);
+					$("#deptEditor").html(data.content);
+					$('#myModal').modal('show');
+				}
+			}
+		});
+
+	}
+	function deleteNew(id) {
+		bootbox.confirm("确定删除？", function(result) {
+			if (result === true) {
+				$("#gridForm").attr("action",
+						"${base}/admin/news/del?poid=" + id);
+				$("#gridForm").submit();
+			} else {
+
+			}
+		});
+
+	}
+</script>

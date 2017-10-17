@@ -1,0 +1,19 @@
+<#if errMsg??>
+	${errMsg}
+<#else>
+	<#if scheduleList??>
+		<#list scheduleList as schedule>
+<tr>
+	<td style="width: 80%; padding-left:20px; line-height:30px; border-top:none">
+		<div class="" style="color: #398ffc">
+			${schedule.date!string("yyyy-MM-dd")}&nbsp;${schedule.week!}&nbsp;<#if schedule.ap == 'am'>上午<#elseif schedule.ap == 'pm'>下午</#if>
+		</div>
+		<h6><small>挂号费：${schedule.doctor.fee!}元&nbsp;&nbsp;剩余号数：${schedule.leftCounts!}</small></h6>
+	</td>
+	<td class="text-right" style="vertical-align:middle; border-top:none" >
+		<button class="btn-sm" style="font-size:14px" data-role="none" onclick="doBook(${schedule.poid})">预约</button>
+	</td>
+</tr>
+		</#list>
+	</#if>
+</#if>

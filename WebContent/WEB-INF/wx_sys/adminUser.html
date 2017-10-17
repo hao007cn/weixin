@@ -1,0 +1,459 @@
+<@p.header
+csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,${base}/assets/css/jqueryui/jquery-ui.custom.min.css,${base}/assets/css/chosen/chosen.css,${base}/assets/css/datepicker/datepicker.css,${base}/assets/css/daterangepicker/daterangepicker.css,${base}/assets/css/autocomplete/jquery.autocomplete.css"
+/>
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<form id="serch" method="post" class="form-view-data">
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 姓名 </label>
+				<div class="col-sm-2 col-lg-2">
+					<input type="text" id="findusername" name="findusername"
+						placeholder="姓名" class="input-sm form-control">
+						<input type="hidden" id="tempid" name="tempid">
+				</div>
+			</div>
+			<div class="form-group">
+				<label
+					class="col-sm-2 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 注册日期 </label>
+
+				<div class="col-sm-3 col-lg-3">
+					<div class="input-daterange input-group date-picker">
+						<input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="startDate"> <span
+							class="input-group-addon"> <i class="fa fa-exchange"></i>
+						</span> <input type="text" class="input-sm form-control"
+							data-date-format="YYYY-MM-DD" name="endDate">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="findSearch();">
+						<i class="fa fa-search"></i> 查询
+					</button>
+
+				</div>
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="formRefresh();">
+						<i class="fa fa-refresh"></i> 重置
+					</button>
+
+				</div>
+			</div>
+		</form>
+
+		<div class="row"></div>
+		<div class="space-4"></div>
+		
+	<div class="table-responsive">
+		<table id="grid-table"></table>
+		<div id="grid-pager"></div>
+	</div>
+
+		<!-- PAGE CONTENT ENDS -->
+	</div>
+	<!-- /.col -->
+</div>
+<!-- /.row -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title">用户操作</h4>
+			</div>
+			<div class="modal-body">
+				<form id="userForm" class="form-horizontal" method="post">
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="username">用户名：</label>
+						<div class="col-sm-9">
+							<input type="text" id="username" name="username"
+								placeholder="请填写用户名" data-validation-engine="validate[required,maxSize[20]]"
+								class="col-xs-10 col-sm-5 input-sm form-control" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="password">密码：</label>
+						<div class="col-sm-9">
+							<input class="col-xs-10 col-sm-5 input-sm form-control"
+								id="password" name="password" type="password"
+								placeholder="请填写密码" data-validation-engine="validate[required,maxSize[40]]">
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="password2">再次密码：</label>
+						<div class="col-sm-9">
+							<input class="col-xs-10 col-sm-5 input-sm form-control"
+								id="password2" name="password2" type="password"
+								placeholder="请再次填写密码"
+								data-validation-engine="validate[required,equals[password],maxSize[40]]">
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="name">姓名：</label>
+						<div class="col-sm-9">
+							<input type="text" id="name" name="name" placeholder="请填写姓名"
+								data-validation-engine="validate[required,maxSize[8]]"
+								class="col-xs-10 col-sm-5 input-sm form-control" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="sex">性别：</label>
+						<div class="col-sm-9">
+							<label> <input class="ace" type="radio" name="sex"
+								value="1" checked></input> <span class="lbl"> 男 </span>
+							</label> <label> <input class="ace" type="radio" name="sex"
+								value="2"></input> <span class="lbl"> 女 </span>
+							</label>
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="enabled">启用状态：</label>
+						<div class="col-sm-9">
+							<label> <input class="ace" type="radio" name="enabled"
+								value="1" checked="checked"></input> <span class="lbl"> 是
+							</span>
+							</label> <label> <input class="ace" type="radio" name="enabled"
+								value="0"></input> <span class="lbl"> 否 </span>
+							</label>
+						</div>
+					</div>
+					<input id="poid" name="poid" type="hidden">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save();">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<@p.footer
+scriptsrc="${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,${base}/assets/js/plugins/date-time/daterangepicker.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.pack.js"
+/>
+
+<!-- inline scripts related to this page -->
+<script>
+	$(function() {
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+		
+		var minWidth = 800;
+		
+		//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() < minWidth ? minWidth : $(".page-content").width() );
+		})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+			if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() < minWidth ? minWidth : parent_column.width() );
+			}
+		})
+
+		jQuery(grid_selector).jqGrid({
+			url : "${base}/admin/user/loadpage",
+			subGrid : false,
+			mtype : "post",
+			datatype : "json",
+			subGridOptions : {
+				plusicon : "ace-icon fa fa-plus center bigger-110 blue",
+				minusicon : "ace-icon fa fa-minus center bigger-110 blue",
+				openicon : "ace-icon fa fa-chevron-right center orange"
+			},
+			height : 250,
+			colNames : [ '操作', 'ID', '姓名', '用户名', '最后登陆时间','注册日期','启用状态' ],
+			cellEdit : false,
+			colModel : [ {
+				name : 'showValue',
+				width : 80,
+				sortable : false,
+				editable : false,
+				fixed : true,
+				resize : false,
+				formatter : showValueFormatter
+			}, {
+				name : 'poid',
+				index : 'poid',
+				width : 50,
+				fixed : true,
+				sorttype : "int",
+				editable : false
+			}, {
+				name : 'name',
+				index : 'name',
+				width : 70,
+				editable : false
+			}, {
+				name : 'username',
+				index : 'username',
+				width : 70,
+				editable : false
+			}, {
+				name : 'lastlogintime',
+				index : 'lastlogintime',
+				width : 50,
+				editable : false
+			},
+			{
+				name : 'createDate',
+				index : 'createDate',
+				width : 50,
+				editable : false
+			},
+			{
+				name : 'enabled',
+				index : 'enabled',
+				width : 50,
+				editable : false,
+				formatter : function(cellvalue, options, rowdata) {
+					return cellvalue == "1" ? "是" : "否";
+				}
+			} ],
+
+			viewrecords : true,
+			rowNum : 10,
+			rowList : [ 10, 20, 30 ],
+			pager : pager_selector,
+			altRows : true,
+			multiselect : false,
+			multiboxonly : false,
+
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function() {
+
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+
+			caption : "后台用户列表"
+
+		});
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+		function showValueFormatter(cellvalue, options, rowdata) {
+			return '<div style="margin-left:8px;"><div id="jEditButton_1" class="ui-pg-div ui-inline-edit" onmouseout="jQuery(this).removeClass(\'ui-state-hover\')" onmouseover="jQuery(this).addClass(\'ui-state-hover\');" onclick="update('
+					+ rowdata.poid
+					+ ');" style="float:left;cursor:pointer;" title="" data-original-title="编辑所选记录"><span class="ui-icon ui-icon-pencil"></span></div><div id="jDeleteButton_1" class="ui-pg-div ui-inline-del" onmouseout="jQuery(this).removeClass(\'ui-state-hover\');" onmouseover="jQuery(this).addClass(\'ui-state-hover\');" onclick="deleteUser('
+					+ rowdata.poid
+					+ ');" style="float:left;margin-left:5px;" title="" data-original-title="删除所选记录"><span class="ui-icon ui-icon-trash"></span></div></div>';
+		}
+
+		//navButtons
+		jQuery(grid_selector).jqGrid('navGrid', pager_selector, { //navbar options
+			edit : false,
+			editicon : 'ace-icon fa fa-pencil blue',
+			add : false,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			del : false,
+			delicon : 'ace-icon fa fa-trash-o red',
+			save : false,
+			saveicon : 'ace-icon fa fa-floppy-o blue',
+			search : false,
+			searchicon : 'ace-icon fa fa-search orange',
+			refresh : false,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view : false,
+			viewicon : 'ace-icon fa fa-search-plus grey',
+		}).navButtonAdd('#grid-pager', {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : function() {
+				userFormRefresh();
+				$('#myModal').modal('show');
+			},
+			position : "last"
+		})
+
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$(
+					'.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon')
+					.each(
+							function() {
+								var icon = $(this);
+								var $class = $.trim(icon.attr('class').replace(
+										'ui-icon', ''));
+
+								if ($class in replacement)
+									icon.attr('class', 'ui-icon '
+											+ replacement[$class]);
+							})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+
+	})
+	//保存数据
+	function save() {
+		$("#userForm").attr("action", "${base}/admin/user/save");
+		$("#userForm").submit();
+	}
+	//删除数据
+	function deleteUser(id) {
+		bootbox.confirm("确认删除？",
+				function(result) {
+					if (result === true) {
+						$("#serch").attr("action",
+								"${base}/admin/user/del?poid=" + id);
+						$("#serch").submit();
+					}
+				});
+
+	}
+	//根据id修改用户数据
+	function update(id) {
+		$.ajax({
+			url : "${base}/admin/user/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#poid").val(data.poid);
+					$("#username").val(data.username);
+					$("#name").val(data.name);
+					if (data.sex == 'MALE') {
+						$("input:radio[name='sex']")[0].checked = true;
+						$("input:radio[name='sex']")[1].checked = false;
+					} else {
+						$("input:radio[name='sex']")[1].checked = true;
+						$("input:radio[name='sex']")[0].checked = false;
+					}
+					$("input[name='password']").val(data.password);
+					$("input[name='password2']").val(data.password);
+					if (data.enabled == true) {
+						$("input:radio[name='enabled']")[0].checked = true;
+						$("input:radio[name='enabled']")[1].checked = false;
+					} else {
+						$("input:radio[name='enabled']")[1].checked = true;
+						$("input:radio[name='enabled']")[0].checked = false;
+					}
+					$('#myModal').modal('show');
+				}
+			}
+		});
+
+	}
+	//查询按钮
+	function findSearch() {
+		var tempid = $("#tempid").val();
+		var startDate = $("input[name='startDate']").val();
+		var endDate = $("input[name='endDate']").val();
+		$("#grid-table").jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : {
+				'tempid' : tempid,
+				'startDate' : startDate,
+				'endDate' : endDate
+			}, //发送数据  
+			page : 1
+		}).trigger("reloadGrid");
+	}
+	//查询条件重置按钮
+	function formRefresh() {
+		$("#serch input").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	//用户表单重置
+	function userFormRefresh() {
+		$("#userForm input[type!='radio']").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	$(document).ready(function() {
+		$('#userForm').validationEngine('attach');
+		//刷新页面重置 查询条件
+		formRefresh();
+		//or change it into a date range picker
+		$('.input-daterange').datepicker({
+			autoclose : true
+		});
+		//姓名自动补全
+		$("#findusername").autocomplete("${base}/admin/user/autouser", {
+			minChars : 1, //用户输入几个字触发
+			max : 100, //最大显示条数
+			autoFill : false,
+			width : 150,
+			delay : 500, //延迟响应
+			dataType : "json", //指定数据类型的渲染方式
+			extraParams : {
+				q : function() {
+					return $("#findusername").val();
+				}
+			}, //获得文本框的值   
+			parse : function(data) {
+				var datavalue = eval(data);
+
+				var rows = [];
+				for (var i = 0; i < datavalue.length; i++) {
+					rows[rows.length] = {
+						data : datavalue[i],
+						value : datavalue[i].name,
+						//result里面显示的是要返回到列表里面的值  
+						result : datavalue[i].name
+					};
+				}
+				return rows;
+			},
+			formatItem : function(item) {
+
+				return item.name;
+			}
+		}).result(function(event, data, formatted) {
+		$("#tempid").val(data.poid);
+
+		})
+		$("#serch input[name='startDate']").datepicker().on('hide',function(e){
+			var startdate = $(this).datepicker('getDate');
+			$("#serch input[name='endDate']").datepicker(
+				'setStartDate' , startdate
+			);
+	})
+	});
+</script>
+

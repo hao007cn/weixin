@@ -1,0 +1,144 @@
+<@p.header csshref="" />
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<form id="userForm" class="form-horizontal" method="post">
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right"
+					for="username">用户名：</label>
+				<div class="col-sm-5">
+					<input type="text" readonly="readonly" id="username"
+						name="username" placeholder="请填写用户名"
+						data-validation-engine="validate[required]"
+						class="col-xs-10 col-sm-5 input-sm form-control" />
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right myreq"
+					for="oldpassword">原始密码：</label>
+				<div class="col-sm-5">
+					<input class="col-xs-10 col-sm-5 input-sm form-control"
+						id="oldpassword" name="oldpassword" type="password"
+						data-validation-engine="validate[required,ajax[ajaxPassWord]]">
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right"
+					for="password">新密码：</label>
+				<div class="col-sm-5">
+					<input data-validation-engine="validate[maxSize[40]]" class="col-xs-10 col-sm-5 input-sm form-control" id="password" name="password" type="password" placeholder="请填写新密码">
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right"
+					for="password2">再次密码：</label>
+				<div class="col-sm-5">
+					<input class="col-xs-10 col-sm-5 input-sm form-control"
+						id="password2" name="password2" type="password"
+						placeholder="请再次填写新密码"
+						data-validation-engine="validate[equals[password]]">
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right myreq"
+					for="name">姓名：</label>
+				<div class="col-sm-5">
+					<input type="text" id="name" name="name" placeholder="请填写姓名"
+						data-validation-engine="validate[required,maxSize[4]]"
+						class="col-xs-10 col-sm-5 input-sm form-control" />
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right myreq"
+					for="sex">性别：</label>
+				<div class="col-sm-5">
+					<label> <input class="ace" type="radio" name="sex"
+						value="1" checked></input> <span class="lbl"> 男 </span>
+					</label> <label> <input class="ace" type="radio" name="sex"
+						value="2"></input> <span class="lbl"> 女 </span>
+					</label>
+				</div>
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right myreq"
+					for="enabled">是否启用：</label>
+				<div class="col-sm-5">
+					<label> <input class="ace" type="radio" name="enabled"
+						value="1" checked="checked"></input> <span class="lbl"> 是 </span>
+					</label> <label> <input class="ace" type="radio" name="enabled"
+						value="0"></input> <span class="lbl"> 否 </span>
+					</label>
+				</div>
+			</div>
+
+			<input id="poid" name="poid" type="hidden">
+			<div class="clearfix form-actions">
+				<div class="col-md-offset-3 col-md-9">
+					<button class="btn btn-info" type="button" onclick="save();">
+						<i class="ace-icon fa fa-check bigger-110"></i> 修改
+					</button>
+				</div>
+			</div>
+		</form>
+
+
+		<!-- PAGE CONTENT ENDS -->
+	</div>
+	<!-- /.col -->
+</div>
+<!-- /.row -->
+
+<@p.footer scriptsrc=""/>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#userForm').validationEngine('attach');
+		$("#oldpassword").val('');
+		var id = ${userid};
+		$.ajax({
+			url : "${base}/admin/user/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#poid").val(data.poid);
+					$("#username").val(data.username);
+					$("#name").val(data.name);
+					if (data.sex == '男') {
+						$("input:radio[name='sex']")[0].checked = true;
+						$("input:radio[name='sex']")[1].checked = false;
+					} else {
+						$("input:radio[name='sex']")[1].checked = true;
+						$("input:radio[name='sex']")[0].checked = false;
+					}
+					if (data.enabled == true) {
+						$("input:radio[name='enabled']")[0].checked = true;
+						$("input:radio[name='enabled']")[1].checked = false;
+					} else {
+						$("input:radio[name='enabled']")[1].checked = true;
+						$("input:radio[name='enabled']")[0].checked = false;
+					}
+				}
+			}
+		});
+
+	});
+	//保存数据
+	function save() {
+
+		$("#userForm").attr("action", "${base}/admin/usersetting/saveuser");
+		$("#userForm").submit();
+
+	}
+</script>

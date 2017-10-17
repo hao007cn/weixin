@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+		<meta charset="utf-8" >
+		<title>掌上医院后台管理系统</title>
+
+		<meta name="description" content="" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" >
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../assets/css/bootstrap.min.css" >
+		<link rel="stylesheet" href="../assets/css/font-awesome/4.1/font-awesome.min.css" >
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../assets/css/fonts.css" >
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../assets/css/senyint.min.css" >
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../assets/css/senyint-part2.min.css" >
+		<![endif]-->
+		<link rel="stylesheet" href="../assets/css/senyint-skins.min.css" >
+		<link rel="stylesheet" href="../assets/css/senyint-rtl.min.css" >
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../assets/css/senyint-ie.min.css" >
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../assets/js/senyint-extra.min.js"></script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../assets/js/html5shiv/html5shiv.js"></script>
+		<script src="../assets/js/respond/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body class="no-skin">
+		<div id="navbar" class="navbar navbar-default">
+			<script type="text/javascript">
+				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="navbar-container" id="navbar-container">
+				<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler">
+					<span class="sr-only">展开/关闭</span>
+
+					<span class="icon-bar"></span>
+
+					<span class="icon-bar"></span>
+
+					<span class="icon-bar"></span>
+				</button>
+
+				<div class="navbar-header pull-left">
+					<a href="../index.html" class="navbar-brand">
+						<small>
+							<img src="../assets/images/logo.png" width="300px">
+						</small>
+					</a>
+				</div>
+
+				<div class="navbar-buttons navbar-header pull-right" role="navigation">
+					<ul class="nav ace-nav">
+						<li class="light-blue">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>欢迎,</small>
+									Admin
+								</span>
+
+								<i class="ace-icon fa fa-caret-down"></i>
+							</a>
+
+							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="setting.html">
+										<i class="ace-icon fa fa-cog"></i>
+										设置
+									</a>
+								</li>
+
+								<li>
+									<a href="userSetting.html">
+										<i class="ace-icon fa fa-user"></i>
+										用户资料
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="logout()">
+										<i class="ace-icon fa fa-power-off"></i>
+										退出
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div><!-- /.navbar-container -->
+		</div>
+
+		<div class="main-container" id="main-container">
+			<script>
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<div id="sidebar" class="sidebar responsive">
+				<script>
+					try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+				</script>
+
+				<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+					<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+						<button class="btn btn-success">
+							<i class="ace-icon fa fa-signal"></i>
+						</button>
+
+						<button class="btn btn-info">
+							<i class="ace-icon fa fa-pencil"></i>
+						</button>
+
+						<button class="btn btn-warning">
+							<i class="ace-icon fa fa-users"></i>
+						</button>
+
+						<button class="btn btn-danger">
+							<i class="ace-icon fa fa-cogs"></i>
+						</button>
+					</div>
+
+					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+						<span class="btn btn-success"></span>
+
+						<span class="btn btn-info"></span>
+
+						<span class="btn btn-warning"></span>
+
+						<span class="btn btn-danger"></span>
+					</div>
+				</div><!-- /.sidebar-shortcuts -->
+
+				<ul class="nav nav-list">
+					<li class="">
+						<a href="../index.html">
+							<i class="menu-icon fa fa-tachometer"></i>
+							<span class="menu-text"> 首页 </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+					
+					<li class="">
+						<a href="indexSetting.html">
+							<i class="menu-icon fa fa-flag"></i>
+							<span class="menu-text"> 首页设置 </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-plus-square"></i>
+							<span class="menu-text">医院信息</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="hospitalSetting.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									医院基本信息设置
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="news.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									新闻活动
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="active open">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-list-alt"></i>
+							<span class="menu-text">预约挂号</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-caret-right"></i>
+									<span class="menu-text">科室设置</span>
+									
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+
+								<b class="arrow"></b>
+
+								<ul class="submenu">
+									<li class="">
+										<a href="departmentType.html">
+											<i class="menu-icon fa fa-caret-right"></i>
+											科室类别
+										</a>
+		
+										<b class="arrow"></b>
+									</li>
+									<li class="">
+										<a href="department.html">
+											<i class="menu-icon fa fa-caret-right"></i>
+											科室
+										</a>
+		
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
+
+							<li class="active">
+								<a href="doctor.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									专家
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="scheduling.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									排班
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-users"></i>
+							<span class="menu-text">用户管理</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="foregroundUser.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									前台用户
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="adminUser.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									后台用户
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-h-square"></i>
+							<span class="menu-text">健康百科</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="wikisType.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									类别
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="wikis.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									百科管理
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="">
+						<a href="guideSetting.html">
+							<i class="menu-icon fa fa-stethoscope"></i>
+							<span class="menu-text"> 智能导诊设置  </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-bar-chart-o"></i>
+							<span class="menu-text">统计分析</span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									注册用户统计
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									用户访问统计
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="tongji.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									地区分布
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+						</ul>
+					</li>
+					
+					<li class="">
+						<a href="userSetting.html">
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text"> 个人中心  </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+				</ul><!-- /.nav-list -->
+
+				<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+					<i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+				</div>
+
+				<script>
+					try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+				</script>
+			</div>
+
+			<div class="main-content">
+				<div class="breadcrumbs" id="breadcrumbs">
+					<script type="text/javascript">
+						try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+					</script>
+
+					<ul class="breadcrumb">
+						<li>
+							<i class="ace-icon fa fa-home home-icon"></i>
+							<a href="#">首页</a>
+						</li>
+						
+						<li>
+							<i class="ace-icon fa fa-home home-icon"></i>
+							<a href="#">预约挂号</a>
+						</li>
+
+						<li class="active">
+							专家
+						</li>
+					</ul><!-- /.breadcrumb -->
+				</div>
+
+				<div class="page-content">
+					<div class="page-header">
+						<h1>
+							预约挂号
+							<small>
+								<i class="ace-icon fa fa-angle-double-right"></i>
+								专家
+							</small>
+						</h1>
+					</div><!-- /.page-header -->
+
+					<div class="row">
+						<div class="col-xs-12">
+							<!-- PAGE CONTENT BEGINS -->
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">选择科室</label>
+									
+									<div class="col-sm-10">
+										<select class="form-control" id="form-field-select-3" data-placeholder="选择上级科室...">
+											<option value="0">&gt;总部</option>
+											<option value="1">&nbsp;&nbsp;&nbsp;&nbsp;&gt;妇科内分泌</option>
+										</select>
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">姓名</label>
+									
+									<div class="col-sm-10">
+										<input type="text" id="form-field-1" placeholder="科室名称" class="form-control">
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">性别</label>
+									
+									<div class="col-sm-10">
+										<input type="text" id="form-field-1" placeholder="科室名称" class="form-control">
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">职务</label>
+									
+									<div class="col-sm-10">
+										<input type="text" id="form-field-1" placeholder="职务" class="form-control">
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">职称</label>
+									
+									<div class="col-sm-10">
+										<input type="text" id="form-field-1" placeholder="职称" class="form-control">
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">显示顺序</label>
+									
+									<div class="col-sm-10">
+										<input type="number" id="form-field-1" placeholder="显示顺序" class="form-control">
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">启用</label>
+									
+									<div class="col-sm-10">
+										<label>
+											<input name="enabledFlg" class="ace ace-switch ace-switch-6" type="checkbox">
+											<span class="lbl"></span>
+										</label>
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">个人照片</label>
+									
+									<div class="col-sm-10">
+										<input type="file" id="id-input-file-2" />
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1"> 介绍 </label>
+	
+									<div class="col-sm-10">
+										<div class="wysiwyg-editor" id="despEditor" style="border-width: 1px;"></div>
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-11"> 备注 </label>
+	
+									<div class="col-sm-10">
+										<textarea id="form-field-11" class="autosize-transition form-control" placeholder="备注"></textarea>
+									</div>
+								</div>
+							
+								<div class="space-4"></div>
+
+								<div class="clearfix form-actions">
+									<div class="col-md-12 text-center">
+										<button class="btn btn-info btn-sm" type="button">
+											<i class="ace-icon fa fa-check bigger-110"></i>
+											提交
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn btn-sm" type="reset">
+											<i class="ace-icon fa fa-undo bigger-110"></i>
+											重置
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn btn-sm" type="button" onclick="goback()">
+											<i class="ace-icon fa fa-arrow-left bigger-110"></i>
+											返回
+										</button>
+									</div>
+								</div>
+							</form>
+							<!-- PAGE CONTENT ENDS -->
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+				</div><!-- /.page-content -->
+			</div><!-- /.main-content -->
+
+			<div class="footer">
+				<div class="footer-inner">
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Senyint</span>
+							手机网站管理后台 &copy; 2013-2014
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+		
+        <script src="../assets/js/modernizr-2.6.2.min.js"></script>
+
+		<!--[if lte IE 7]>
+		<script src="../assets/js/json2.js"></script>
+		<!-- <![endif]-->
+
+		<!--[if !IE]> -->
+		<script src="../assets/js/jquery-2.1.1.min.js"></script>
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../assets/js/jquery-1.10.2.min.js"></script>
+<![endif]-->
+
+		<!--[if !IE]> -->
+		<script>
+			window.jQuery || document.write("<script src='../assets/js/jquery-2.1.1.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='../assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+		<script>
+			if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="../assets/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+		<script src="../assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js"></script>
+
+		<!-- ace scripts -->
+		<script src="../assets/js/senyint-elements.min.js"></script>
+		<script src="../assets/js/senyint.min.js"></script>
+
+		<!-- inline scripts related to this page -->
+		<script>
+			$(function(){
+				function showErrorAlert (reason, detail) {
+					var msg='';
+					if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
+					else {
+						//console.log("error uploading file", reason, detail);
+					}
+					$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+ 
+					 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
+				};
+
+				$('#despEditor').ace_wysiwyg({
+					toolbar:
+					[
+						'font',
+						null,
+						'fontSize',
+						null,
+						{name:'bold', className:'btn-info'},
+						{name:'italic', className:'btn-info'},
+						{name:'strikethrough', className:'btn-info'},
+						{name:'underline', className:'btn-info'},
+						null,
+						{name:'insertunorderedlist', className:'btn-success'},
+						{name:'insertorderedlist', className:'btn-success'},
+						{name:'outdent', className:'btn-purple'},
+						{name:'indent', className:'btn-purple'},
+						null,
+						{name:'justifyleft', className:'btn-primary'},
+						{name:'justifycenter', className:'btn-primary'},
+						{name:'justifyright', className:'btn-primary'},
+						{name:'justifyfull', className:'btn-inverse'},
+						null,
+						{name:'createLink', className:'btn-pink'},
+						{name:'unlink', className:'btn-pink'},
+						null,
+						{name:'insertImage', className:'btn-success'},
+						null,
+						'foreColor',
+						null,
+						{name:'undo', className:'btn-grey'},
+						{name:'redo', className:'btn-grey'}
+					],
+					'wysiwyg': {
+						fileUploadError: showErrorAlert
+					}
+				}).prev().addClass('wysiwyg-style2');
+				
+				var toolbar = $('#despEditor').prev().get(0);
+				toolbar.className = toolbar.className.replace(/wysiwyg\-style(1|2)/g , '');
+				$(toolbar).addClass('wysiwyg-style2');
+				//$(toolbar).find('.btn-group > .btn').addClass('btn-white btn-round');
+				
+				$('#id-input-file-2').ace_file_input({
+					no_file:'No File ...',
+					btn_choose:'Choose',
+					btn_change:'Change',
+					droppable:false,
+					onchange:null,
+					thumbnail:false //| true | large
+					//whitelist:'gif|png|jpg|jpeg'
+					//blacklist:'exe|php'
+					//onchange:''
+					//
+				});
+
+			})
+		
+			function goback() {
+				window.href = 'docotor.html'
+			}
+		</script>
+	</body>
+</html>

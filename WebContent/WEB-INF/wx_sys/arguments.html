@@ -1,0 +1,528 @@
+<@p.header
+csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,${base}/assets/css/jqueryui/jquery-ui.custom.min.css,${base}/assets/css/chosen/chosen.css,${base}/assets/css/datepicker/datepicker.css,${base}/assets/css/daterangepicker/daterangepicker.css,${base}/assets/css/autocomplete/jquery.autocomplete.css"
+/>
+<style>
+	.ui-icon-pencil-1{
+		color: gray;
+	}
+</style>
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<form id="serch" method="post" class="form-view-data">
+			<div class="form-group">
+				<label
+					class="col-sm-1 col-lg-1 control-label no-padding-right text-right"
+					for="form-field-1-1"> 参数名称 </label>
+
+				<div class="col-sm-2 col-lg-2">
+					<input type="text" id="argumentName" name="argumentName"
+						placeholder="参数名称" class="input-sm form-control"> 
+<!-- 						<input type="hidden" id="tempid" name="tempid"> -->
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="findSearch();">
+						<i class="fa fa-search"></i> 查询
+					</button>
+
+				</div>
+				<div class=" col-sm-1 col-lg-1">
+					<button type="button" class="btn btn-info btn-sm"
+						onclick="formRefresh();">
+						<i class="fa fa-refresh"></i> 重置
+					</button>
+
+				</div>
+			</div>
+		</form>
+
+		<div class="row"></div>
+		<div class="space-4"></div>
+		<table id="grid-table"></table>
+
+		<div id="grid-pager"></div>
+		<!-- PAGE CONTENT ENDS -->
+	</div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title">参数修改</h4>
+			</div>
+			<div class="modal-body">
+				<form id="userForm" class="form-horizontal" method="post">
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="name">名称：</label>
+						<div class="col-sm-6">
+							<input type="text" id="name" name="name" placeholder="参数名称"
+								data-validation-engine="validate[required,maxSize[8]]"
+								class="col-xs-10 col-sm-5 input-sm form-control" disabled="disabled"/>
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="mobile">代码：</label>
+						<div class="col-sm-6">
+							<input type="text" id="code" name="code" placeholder="参数代码"
+								data-validation-engine="validate[required]"
+								class="col-xs-10 col-sm-5 input-sm form-control" disabled="disabled"/>
+						</div>
+					</div>
+					
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="mobile">值：</label>
+						<div class="col-sm-6" id="valueContent">
+							<input type="text" id="value" name="value" placeholder="参数值"
+								data-validation-engine=""
+								class="col-xs-10 col-sm-5 input-sm form-control" />
+							<input type="hidden" id = "argumentType" name = "argumentType" value = "" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right myreq"
+							for="sex">是否修改：</label>
+						<div class="col-sm-6">
+							<input type="text" id="isModify" name="isModify" 
+								class="col-xs-10 col-sm-5 input-sm form-control" disabled="disabled"/>
+						</div>
+					</div>
+				
+					<input id="poid" name="poid" type="hidden">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save();">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<@p.footer
+scriptsrc="${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,${base}/assets/js/plugins/date-time/daterangepicker.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.min.js,${base}/assets/js/plugins/autocomplete/jquery.autocomplete.pack.js"
+/>
+
+<!-- inline scripts related to this page -->
+<script>
+	$(function() {
+		$('.input-daterange').datepicker({
+			autoclose : true
+		});
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+
+		//resize to fit page size
+		$(window).on('resize.jqGrid',function() {$(grid_selector).jqGrid('setGridWidth',
+					$(".page-content").width());
+				})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid',function(ev, event_name, collapsed) {
+					if (event_name === 'sidebar_collapsed'
+							|| event_name === 'main_container_fixed') {
+						$(grid_selector).jqGrid('setGridWidth',
+								parent_column.width());
+					}
+				})
+
+		jQuery(grid_selector)
+				.jqGrid({	
+							url : "${base}/admin/arguments/loadpage",
+							mtype : "post",
+							datatype : "json",
+							height : 250,
+							colNames : [ '编辑', 'ID', '参数名称', '代码', '参数值',
+									'默认值', '修改','参数类型','说明'],
+							cellEdit : false,
+							colModel : [
+									{
+										name : 'showValue',
+										width : 45,
+										sortable : false,
+										editable : false,
+										fixed : true,
+										formatter : showValueFormatter
+									},
+									{
+										name : 'poid',
+										index : 'id',
+										width : 20,
+										sorttype : "int",
+										editable : false,
+										hidden : true
+									},
+									{
+										name : 'name',
+										index : 'name',
+										width : 70,
+										editable : false
+									},
+									{
+										name : 'code',
+										index : 'code',
+										width : 70,
+										editable : false
+									},
+									{
+										name : 'value',
+										index : 'value',
+										width : 50
+										
+									},
+									{
+										name : 'defaultValue',
+										index : 'defaultValue',
+										width : 90,
+										editable : false,
+										formatter : function(cellvalue,
+												options, rowdata) {
+											return cellvalue == "" ? "暂无默认值" : cellvalue;
+										},
+										hidden : true
+									},
+									{
+										name : 'isModify',
+										index : 'isModify',
+										width : 80,
+										editable : false,
+										fixed : true,
+										formatter : function(cellvalue,
+												options, rowdata) {
+											return cellvalue == "0" ? "否" : "是";
+										}
+									},
+									{
+										name : 'argumentType',
+										index : 'argumentType',
+										width : 80,
+										editable : false,
+										fixed : true,
+										formatter : showArgumentType
+									},
+									{
+										name : 'desc',
+										index : 'desc',
+										width : 40,
+										editable : false
+									}
+									],
+							viewrecords : true,
+							rowNum : 10,
+							rowList : [ 10, 20, 30 ],
+							pager : pager_selector,
+							altRows : true,
+							multiselect : false,
+							multiboxonly : false,
+
+							loadComplete : function() {
+								var table = this;
+								setTimeout(function() {
+									updatePagerIcons(table);
+									enableTooltips(table);
+								}, 0);
+							},
+							caption : "系统参数管理"
+						});
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		function showValueFormatter(cellvalue, options, rowdata) {
+			if(rowdata.isModify== true){
+				return '<div style="margin-left:8px;"><div id="jEditButton_1" class="ui-pg-div ui-inline-edit" onmouseout="jQuery(this).removeClass(\'ui-state-hover\')" onmouseover="jQuery(this).addClass(\'ui-state-hover\');" onclick="update('
+				+ rowdata.poid
+				+ ');" style="float:left;cursor:pointer;" title="" data-original-title="编辑所选记录"><span class="ui-icon ui-icon-pencil"></span></div>'
+			}else{
+				return '<div style="margin-left:8px;"><div id="jEditButton_1" class="ui-pg-div ui-inline-edit" onmouseout="jQuery(this).removeClass(\'ui-state-hover\')" onmouseover="jQuery(this).addClass(\'ui-state-hover\');"  style="float:left;cursor:pointer;" title="" data-original-title="不允许编辑"><span class="ui-icon ui-icon-pencil ui-icon-pencil-1" style="color: gary;cursor: auto;"></span></div>'
+			}
+			
+		}
+		//参数类型
+		function showArgumentType(cellvalue, options, rowdata){
+			var result = "";
+			 switch (cellvalue) {
+				case "int_Argument":
+					result = "int"
+					break;
+				case "float_Argument":
+					result = "float"
+					break;
+				case "date_Argument":
+					result = "date"
+					break;
+				case "boolean_Argument":
+					result = "boolean"
+					break;
+				case "string_Argument":
+					result = "string"
+					break;
+				default:
+					result = "未定义"
+					break;
+			}
+			 return result;
+			 
+		}
+		//switch element when editing inline
+// 		function aceSwitch(cellvalue, options, cell) {
+// 			setTimeout(function() {
+// 				$(cell).find('input[type=checkbox]').addClass(
+// 						'ace ace-switch ace-switch-5').after(
+// 						'<span class="lbl"></span>');
+// 			}, 0);
+// 		}
+		//enable datepicker
+// 		function pickDate(cellvalue, options, cell) {
+// 			setTimeout(function() {
+// 				$(cell).find('input[type=text]').datepicker({
+// 					format : 'yyyy-mm-dd',
+// 					autoclose : true
+// 				});
+// 			}, 0);
+// 		}
+
+		//navButtons
+		$(grid_selector).jqGrid('navGrid', pager_selector, { //navbar options
+			edit : false,
+			editicon : 'ace-icon fa fa-pencil blue',
+			add : false,
+			addicon : 'ace-icon fa fa-plus-circle purple',
+			del : false,
+			delicon : 'ace-icon fa fa-trash-o red',
+			save : false,
+			saveicon : 'ace-icon fa fa-floppy-o blue',
+			search : false,
+			searchicon : 'ace-icon fa fa-search orange',
+			refresh : false,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view : false,
+			viewicon : 'ace-icon fa fa-search-plus grey',
+		})
+
+		function beforeDeleteCallback(e) {
+			var form = $(e[0]);
+			if (form.data('styled'))
+				return false;
+
+			form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+					.wrapInner('<div class="widget-header" />')
+			style_delete_form(form);
+
+			form.data('styled', true);
+		}
+
+		function beforeEditCallback(e) {
+			var form = $(e[0]);
+			form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+					.wrapInner('<div class="widget-header" />')
+			style_edit_form(form);
+		}
+
+		//replace icons with FontAwesome icons like above
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(
+							function() {
+								var icon = $(this);
+								var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+								if ($class in replacement)
+									icon.attr('class', 'ui-icon '+ replacement[$class]);
+							})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	})
+	//查询按钮
+	function findSearch() {
+// 		var tempid = $("#tempid").val();
+// 		var startDate = $("input[name='startDate']").val();
+// 		var endDate = $("input[name='endDate']").val();
+		$("#grid-table").jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : {
+				'argumentName' : $("#argumentName").val()
+			}, //发送数据  
+			page : 1
+		}).trigger("reloadGrid");
+	}
+	//查询条件重置按钮
+	function formRefresh() {
+		$("#serch input").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	$(document).ready(
+			function() {
+				//添加验证
+				//清空表单
+				formRefresh();
+				//姓名自动补全
+				$("#findusername").autocomplete(
+						"${base}/admin/foregrounduser/autouser", {
+							minChars : 1, //用户输入几个字触发
+							max : 100, //最大显示条数
+							autoFill : false,
+							width : 150,
+							delay : 500, //延迟响应
+							dataType : "json", //指定数据类型的渲染方式
+							extraParams : {
+								q : function() {
+									return $("#findusername").val();
+								}
+							}, //获得文本框的值   
+							parse : function(data) {
+								var datavalue = eval(data);
+
+								var rows = [];
+								for (var i = 0; i < datavalue.length; i++) {
+									rows[rows.length] = {
+										data : datavalue[i],
+										value : datavalue[i].name,
+										//result里面显示的是要返回到列表里面的值  
+										result : datavalue[i].name
+									};
+								}
+								return rows;
+							},
+							formatItem : function(item) {
+
+								return item.name;
+							}
+						}).result(function(event, data, formatted) {
+					$("#tempid").val(data.poid);
+
+				})
+				$("#serch input[name='startDate']").datepicker().on(
+						'hide',
+						function(e) {
+							var startdate = $(this).datepicker('getDate');
+							$("#serch input[name='endDate']").datepicker(
+									'setStartDate', startdate);
+						});
+			});
+	//用户表单重置
+	function userFormRefresh() {
+		$("#userForm input[type!='radio']").each(function(a, b) {
+			$(b).val('');
+		});
+	}
+	//根据id修改用户数据
+	function update(id) {
+		$.ajax({
+			url : "${base}/admin/arguments/getdata",
+			data : {
+				poid : id
+			},
+			type : "post",
+			dataType : "JSON",
+			success : function(data) {
+				if (data == "") {
+					return;
+				} else {
+					$("#value").attr("data-validation-engine","");
+					$("#poid").val(data.poid);
+					$("#name").val(data.name);
+					$("#code").val(data.code);
+					validationInit(data);
+					$("#value").attr("data-validation-engine",argValidation(data));
+					$("#argumentType").val(data.argumentType);
+					$("#value").val(data.value);
+					$('#userForm').validationEngine('attach');
+					if (data.isModify == true) {
+						$("#isModify").val("是");
+					} else {
+						$("#isModify").val("否");
+					}
+					$('#myModal').modal('show');
+				}
+			}
+		});
+	}
+	
+	//保存跟新数据
+	function save() {
+		$("#userForm").attr("action", "${base}/admin/arguments/save");
+		$("#userForm").submit();
+	}
+	
+	function validationInit(data){
+		var content = "<label> <input class=\"ace\" type=\"radio\" name=\"value\" "
+			+ "value=\"1\" checked></input> <span class=\"lbl\"> true </span>"
+			+ "</label> <label> <input class=\"ace\" type=\"radio\" name=\"value\" "
+			+ "value=\"0\"></input> <span class=\"lbl\"> false</span>"
+			+ "</label>";
+		var content1 = "<input type=\"text\" id=\"value\" name=\"value\" placeholder=\"参数值\" "
+			+ "data-validation-engine=\"\" class=\"col-xs-10 col-sm-5 input-sm form-control\" />"
+			
+			if(data.argumentType =="boolean_Argument"){
+				//替换成radio
+				$("#valueContent").empty().append(content);
+			}else{
+				 $("#valueContent").empty().append(content1);
+			}
+		
+	}
+	
+ 	function argValidation(data){
+ 		//校验属性值为空
+ 		$("#value").attr("data-validation-engine","");
+ 		var result = "";
+		 switch (data.argumentType) {
+			case "int_Argument":
+				result = "validate[required],custom[integer]"
+				break;
+			case "float_Argument":
+				result = "validate[required],custom[float]"
+				break;
+			case "date_Argument":
+				result = "validate[required],custom[date]"
+				break;
+			case "boolean_Argument":
+				if (data.value == 1) {
+					$("input:radio[name='value']")[0].checked = true;
+					$("input:radio[name='value']")[1].checked = false;
+				} else {
+					$("input:radio[name='value']")[1].checked = true;
+					$("input:radio[name='value']")[0].checked = false;
+				}
+				break;
+			case "string_Argument":
+// 				result = "validate[required],custom[onlyLetterNumber]"
+				result = "validate[required]"
+				break;
+			default:
+				result = "未定义"
+				break;
+		}
+		 return result;
+ 	}
+	
+</script>

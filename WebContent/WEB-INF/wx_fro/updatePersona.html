@@ -1,0 +1,93 @@
+﻿<@p.header />
+<style>
+.btn:active,.btn.active {
+	color: #fff;
+	border-color: #21B7C6;
+	background-color: #21B7C6;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.btn {
+	color: #21B7C6;
+	background-color: #fff;
+	border-color: #21B7C6;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+</style>
+<div class="titleallnews">修改资料</div>
+<#if foregroundUser??>
+<div data-role="content" style="padding: 20px;">
+	<form id="addForm" class="form-horizontal" method="post" role="form">
+		<table width="100%">
+			<tbody>
+				<tr>
+					<td
+						style="color: #21B7C6; vertical-align: middle; height: 100%; width: 80px">
+						姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:</td>
+					<td>
+						<div style="margin: 0px; padding: 0px" class="col-xs-10">
+							${foregroundUser.name!}</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="color: #21B7C6; vertical-align: middle; height: 100%;">
+						<div style="margin-top: 16px">身份证:</div></td>
+					<td>
+						<div style="margin-top: 16px;padding: 0px" class="col-xs-10">
+							${foregroundUser.cardid!}</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="color: #21B7C6; vertical-align: middle; height: 100%;">
+						手机号:</td>
+					<td>
+						<div style="margin: 0px; padding: 0px; float: left"
+							class="col-xs-8"> <input 
+                    type="text"
+                    class="form-control"
+                    id="mobile"
+                    name="mobile"
+                    placeholder="请输入手机号"
+                    value="${foregroundUser.mobile!}"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="col-xs-13" style="margin: 10px 10px;">
+			<div class="center-block">
+				<button type="button" id="btsubmit" class="btn btn-block"
+					disload=true data-loading-text="保存中..."
+					style="background: #21B7C6; color: #fff; border: none; border: 1px solid #21B7C6; line-height: 20px;"
+					onclick="onSubmit();">完成</button>
+			</div>
+		</div>
+		<input type="hidden" name="patietId" id = "patietId" value = "${foregroundUser.patietId!}">
+	</form>
+</div>
+</#if> <@p.footer/>
+<script type="text/javascript">
+	function onSubmit() {
+		var mobile = $("input[name='mobile']").val();
+		if(mobile=="")
+	    {
+	    	 $("input[name='mobile']").val('');
+	         $("input[name='mobile']").attr("placeholder", "手机号码不允许空");
+	         $("input[name='mobile']").focus();
+	         return;	
+	    }
+		 var mobilepatrn=/^[+]{0,1}(\d){1,3}[ ]?([-]?((\d)|[ ]){1,12})+$/;
+		//var mobilepatrn = /^([1]{1}[0-9]{10})$/;
+		 if (!mobilepatrn.test(mobile)){
+		      $("input[name='mobile']").val('');
+		      $("input[name='mobile']").attr("placeholder", "手机号输入不正确");
+		      $("input[name='mobile']").focus();
+		      return;
+		    }
+		$(".spinner").show();
+		$("#btsubmit").button("loading");
+		$("#addForm").attr("action", "${base}/persona/save");
+		$("#addForm").submit();
+	}
+</script>

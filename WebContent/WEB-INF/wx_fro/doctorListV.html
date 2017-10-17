@@ -1,0 +1,55 @@
+<@p.header csshref="" csscode="
+.row {
+	margin-right:0px;
+	margin-left: 0px;
+}
+.list-group-item
+{
+	padding: 10px 0px;
+}
+"/>
+<div class="titleallnews">预约挂号
+<button 
+      type="button" disload=true
+      class="btn btn-default"
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<!-- 正文内容 -->
+<div style="margin:10px">
+	<div class="row">
+		<div class="col-xs-12"><h3 style="color:#21B7C6; padding-bottom:3px; margin-top:5px;">${departmentName!}</h3></div>
+	</div>
+	<div class="list-group">
+		<#if doctorList??>
+			<#list doctorList as doctor>
+			<a onclick="doctorSchedule('${doctor.did}')" class="list-group-item">
+			<div class="row">
+				<div class="col-xs-3">
+					<img class="media-object" style="width: 100%" src="${base}/file/doctor/${doctor.did}?rname=${doctor.imgpath!}" alt="">
+				</div>
+				<div class="col-xs-9" style=" margin-top:7px;">
+					<h4 class="list-group-item-heading"><span>${doctor.name!}</span></h4>
+					<p class="list-group-item-text" style="font-weight:100;"><small>性别：<span>${doctor.sex!}</span></small></p>
+					<p class="list-group-item-text" style="font-weight:100;"><small>职称：<span>${doctor.jobTitle!}</span></small></p>
+				</div>
+			</div>
+			</a>
+			</#list>
+		</#if>
+	</div>
+</div><!-- /content -->
+<form id="doctorForm" name="bookForm" action="${base}/vintroduction/doctorSchedule" method="post">
+	<input type="hidden" id="doctorId" name="doctorId" value="">
+	<input type="hidden" name="departmentId" value="${departmentId!}">
+	<input type="hidden" name="departmentName" value="${departmentName!}">
+</form>
+<@p.footer scriptsrc=""/>
+<script>
+	function doctorSchedule(did) {
+		$("#doctorId").val(did);
+		$("#doctorForm").submit();
+	}
+</script>

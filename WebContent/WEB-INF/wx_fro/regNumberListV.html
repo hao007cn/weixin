@@ -1,0 +1,59 @@
+<@p.header csscode=""/>
+<div class="titleallnews">
+ 预约挂号-选择时间
+ <button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<!-- 正文内容 -->
+<div style="margin-left:6px;">
+	<#if regNumberList??>
+		<#list regNumberList as reg>
+			<#if reg.orderState &gt; 0>
+				<button style="font-weight: 100; margin: 4px " class="btn btn-success disabled">
+					${reg.startTime!}-${reg.endTime!}
+				</button>
+			<#else>
+				<button style="font-weight: 100; margin: 4px " class="btn btn-success" onclick="goBook('${reg.serialNo}', '${reg.date!}', '${reg.startTime}', '${reg.endTime}')">
+					${reg.startTime!}-${reg.endTime!}
+				</button>
+			</#if>
+		</#list>
+		<#if regNumberList?size==0>
+		<div style="font-size: 16px;color:#21B7C6;margin:30px 10px">暂无号源</div>
+		</#if>
+	</#if>
+</div><!-- /content -->
+
+<form id="goBookForm" name="goBookForm" action="${base}/book/go" method="post">
+	<input type="hidden" name="departmentId" value="${departmentId!}">
+	<input type="hidden" name="departmentName" value="${departmentName!}">
+	<input type="hidden" id="doctorId" name="doctorId" value="${doctorId!}"/>
+	<input type="hidden" id="doctorName" name="doctorName" value="${doctorName!}"/>
+	<input type="hidden" id="snum" name="snumber" value="${snumber!}"/>
+	<input type="hidden" id="date" name="date" value="${date!}"/>
+	<input type="hidden" id="week" name="week" value="${week!}"/>
+	<input type="hidden" id="schedules" name="schedules" value="${schedules!}"/>
+	<input type="hidden" id="limitNums" name="limitNums" value="${limitNums!}"/>
+	<input type="hidden" id="fee" name="fee" value="${fee!}"/>
+	<input type="hidden" id="serialNo" name="serialNo"/>
+	<input type="hidden" id="regDate" name="regDate"/>
+	<input type="hidden" id="startTime" name="startTime"/>
+	<input type="hidden" id="endTime" name="endTime"/>
+</form>
+
+<@p.footer scriptsrc="" />
+<script>
+
+function goBook(serialNo, date, startTime, endTime) {
+	$("#serialNo").val(serialNo);
+	$("#regDate").val(date);
+	$("#startTime").val(startTime);
+	$("#endTime").val(endTime);
+	$("#goBookForm").submit();
+}
+</script>

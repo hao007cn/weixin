@@ -1,0 +1,22 @@
+﻿<@p.header csshref="" />
+	<div class="titleallnews">${healthy.wikisCategory}
+	<button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+	</div>
+		<div data-role="content" style="margin: 20px">
+			<h4 style="text-align: center; font-size: 20px; color: #166dc7; line-height: 25px;">${healthy.title!}</h4>
+			<h6>
+				<!-- 日期 和 发布人 -->
+				<span style="text-align: right; font-size: 12px; line-height: 20px; color: #a0a0a0;">
+					${healthy.publishdate!} ${healthy.publisher!} 
+				</span>
+			</h6>
+			<p class="text-left" style="color: #585858; line-height: 26px;">&nbsp;&nbsp;&nbsp;&nbsp;${healthy.content!}</p>
+		</div>
+<!-- 相关js文件 -->
+<@p.footer scriptsrc=""/>

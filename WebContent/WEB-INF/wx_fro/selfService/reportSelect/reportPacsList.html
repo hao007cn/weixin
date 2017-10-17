@@ -1,0 +1,61 @@
+﻿<@p.header />
+<style>
+
+  .btn-default.active { color: #fff; background-color: #21B7C6; border-color: #21B7C6; -webkit-box-shadow: none;
+  box-shadow: none; } .btn-default { color: #21B7C6; background-color: #fff; border-color: #21B7C6; -webkit-box-shadow:
+  none; box-shadow: none; }
+</style>
+<div class="titleallnews">
+  报告查询结果
+  <button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+</div>
+<div style="margin-left: 10px;margin-top: 10px;margin-bottom: 10px">
+  <div class="btn-group" data-toggle="buttons">
+    <label class="btn btn-default " onclick="reportLis('${name!}','${cardid!}')">
+      <input type="radio" name="put1" value="1" >
+      生化检验单
+    </label>
+    <label class="btn btn-default active" onclick="reportPacs('${name!}','${cardid!}')">
+      <input type="radio" name="put1" checked value="2" >
+      影像检验单
+    </label>
+  </div>
+</div>
+<div id="pacsContent" style="margin:0 10px">
+</div>
+	
+<form id="reportForm" name="reportForm" action="${base}/report/lisList" method="post" role="form">
+	<input type="hidden" id="pname" name="name">
+	<input type="hidden" id="pcardid" name="cardid">
+</form>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script type="text/javascript">
+  var listsize=0;
+  <#if pageSum??>
+  listsize=${pageSum!};
+  </#if>
+  $(function(){
+    //执行分页方法
+    ajaxScrollPage("#pacsContent",'${base}/pacsreport/append',listsize,{'cardid':'${cardid!}','name':'${name!}'});
+    });
+	
+	function reportLis(name, cardid) {
+		$("#pname").val(name);
+		$("#pcardid").val(cardid);
+		$("#reportForm").attr("action", "${base}/report/lisList");
+		$("#reportForm").submit();
+	}
+	
+	function reportPacs(name, cardid) {
+		$("#pname").val(name);
+		$("#pcardid").val(cardid);
+		$("#reportForm").attr("action", "${base}/pacsreport");
+		$("#reportForm").submit();
+	}
+  </script>

@@ -1,0 +1,1171 @@
+<@p.header csshref="${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css,
+${base}/assets/css/dropzone/dropzone.css,
+${base}/assets/css/datepicker/datepicker.css" csscode="
+	.ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+	.ztree li ul.level0 {padding:0; background:none;}
+"/>
+
+	<div class="row">
+		<form id="search">
+			<div class="col-sm-4">
+				<div class="row form-group">
+					<label class="col-sm-3 control-label no-padding-right text-right" for="s-name">姓名</label>
+					
+					<div class="col-sm-9">
+						<input type="text" id="s-name" name="name" placeholder="姓名" class="form-control">
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-right text-right" for="s-name">科室</label>
+					
+					<div class="input-group col-sm-9">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								<i class="fa fa-search"></i> <span class="caret"></span>
+							</button>
+							<div id="search-tree-box" class="dropdown-menu" role="menu">
+								<ul id="treeMenu" class="ztree" style="margin-top:0;"></ul>
+							</div>
+						</div><!-- /btn-group -->
+						<input type="text" id="s-departmentName" name="departmentName" value="" data-placeholder="选择科室..." readonly="readonly" class="form-control tree-down-name"/>
+						<input type="hidden" id="s-departmentId" name="departmentId" value="" class="tree-down-id"/>
+					</div><!-- /input-group -->
+				</div>
+			</div><!-- /col-sm-9 -->
+			<div class="form-group">
+			<div class="col-sm-1 col-lg-1">
+				<button type="button" class="btn btn-info btn-sm" id="btn-search">
+					<i class="fa fa-search"></i>查询
+				</button>
+			</div>
+			</div>
+			<div class="col-sm-1 col-lg-1">
+				<button type="reset" class="btn btn-info btn-sm" onclick="resetSearchForm()">
+					<i class="fa fa-refresh"></i>重置
+				</button>
+			</div>
+		</form>
+	</div>
+
+<div class="table-responsive">
+	<table id="grid-table"></table>
+	<div id="grid-pager"></div>
+</div>
+
+<!-- add form modal -->
+<div class="modal fade" id="addFormModal" tabindex="-1" role="dialog" aria-labelledby="doctorModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用于新增、编辑专家时，显示新增、编辑专家表单">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="doctorModalLabel">新增专家</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addForm" class="form-horizontal" role="form" action="${base}/admin/doctor/upload" enctype="multipart/form-data" target="uploadFrame" method="post">
+					<input type="hidden" id="d-poid" name="poid"/>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-department">科室</label>
+						
+						<div class="col-sm-10">
+							<div id="d-input-group-department" class="input-group">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-search"></i> <span class="caret"></span>
+									</button>
+									<div id="modal-tree-box" class="dropdown-menu" role="menu">
+										<ul id="formTreeMenu" class="ztree" style="margin-top:0;"></ul>
+									</div>
+								</div><!-- /btn-group -->
+								<input type="text" id="d-departmentName" name="departmentName" value="" data-placeholder="选择科室..." readonly="readonly" class="form-control tree-down-name" data-validation-engine="validate[required]"/>
+								<input type="hidden" id="d-departmentId" name="departmentId" value="" class="tree-down-id"/>
+							</div><!-- /input-group -->
+						</div><!-- /col-sm-9 -->
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-name">姓名</label>
+						
+						<div class="col-sm-10">
+							<input type="text" id="d-name" name="name" placeholder="姓名" class="form-control" data-validation-engine="validate[required,maxSize[6]]" maxlength="6" autocomplete="off">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-letters">助记码</label>
+						
+						<div class="col-sm-10">
+							<input type="text" id="d-letters" name="letters" placeholder="姓名首字母" class="form-control" data-validation-engine="validate[maxSize[6]]" maxlength="6" autocomplete="off">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq">性别</label>
+						
+						<div class="col-sm-10">
+							<span class="radio">
+								<label>
+									<input id="d-sex-m" type="radio" class="ace" name="sex" value="1" checked />
+									<span class="lbl"> 男 </span>
+								</label>
+								<label>
+									<input id="d-sex-f" type="radio" class="ace" name="sex" value="2" />
+									<span class="lbl"> 女 </span>
+								</label>
+							</span>
+						</div>
+					</div>
+				
+					<!-- <div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-position">职务</label>
+						
+						<div class="col-sm-10">
+							<input type="text" id="d-position" name="position" placeholder="职务" class="form-control" data-validation-engine="validate[required, maxSize[50]]" maxlength="50" autocomplete="off">
+						</div>
+					</div> -->
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="jobTitle">职称</label>
+						
+<!-- 						<div class="col-sm-10"> -->
+<!-- 							<input type="text" id="d-jobTitle" name="jobTitle" placeholder="职称" class="form-control" data-validation-engine="validate[required, maxSize[50]]" maxlength="50" autocomplete="off"> -->
+<!-- 						</div> -->
+						
+						<div class="col-sm-2">
+								<select class="input-sm form-control" id="jobTitle" style="width:auto"
+									data-placeholder="选择职称..." name="jobTitleTemp">
+									<option value="">选择职称...</option>
+									<#if jobTitleList??>
+										<#list jobTitleList as jobTitle>
+											<option value="${jobTitle.name}" fee="${jobTitle.fee}">${jobTitle.name}</option>
+										</#list>
+									</#if>
+								</select>
+								<input type="hidden" value="" id ="d-jobTitle" name ="jobTitle">
+							</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-fee">挂号费</label>
+						
+						<div class="col-sm-10">
+							<input type="text" id="d-fee" name="fee" placeholder="挂号费" class="form-control" data-validation-engine="validate[required, custom[number], min[0.00], max[9999.99]]" maxlength="50" autocomplete="off">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="d-fee">出诊时间</label>
+							<div class="col-sm-10" style="display:none;" id = "checkedDiv">
+								<ul class="list-inline" id="checkedContent">
+									
+								</ul>
+							</div>
+							
+						<label class="col-sm-2 control-label no-padding-right" ></label>
+						<div class="col-sm-10">
+							<button type="button" class="btn btn-primary" onclick="showOutCallTime(this)">添加时间</button>
+							<button type="button" class="btn btn-default" onclick="resetOutCallTime()">重置</button>
+						</div>
+						
+					<input type="hidden" id="d-outCallTime" name="outCallTime" placeholder="出诊时间" class="form-control" data-validation-engine="validate[maxSize[50]]" maxlength="50" autocomplete="off">	
+					</div>
+					
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >启用</label>
+						
+						<div class="col-sm-10">
+							<label>
+								<input id="d-enabled" name="enabled" class="ace ace-switch ace-switch-6" type="checkbox" checked>
+								<span class="lbl"></span>
+							</label>
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-photo">个人照片</label>
+						
+						<div class="col-sm-10">
+							<input type="hidden" id="picPath" name="picPath"/>
+							<img id="d-photo-img" src="" width="80px" /> &nbsp;<input id="deletePhotoBtn" class="btn btn-default" type="button" onclick="deletephoto()"  value="清空照片"><input type="file" id="d-photo" name="photo" />
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-despEditor"> 介绍 </label>
+
+						<div class="col-sm-10">
+							<textarea id="d-despEditor" name="desc" style="width:100%; height:250px" class="autosize-transition form-control" placeholder="介绍" data-validation-engine=""></textarea>
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="d-remarks"> 备注 </label>
+
+						<div class="col-sm-10">
+							<textarea id="d-remarks" name="remarks" class="autosize-transition form-control" placeholder="备注" data-validation-engine="validate[maxSize[200]]"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="save(this)" data-loading-text="正在加载...">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /add form modal -->
+<!-- view modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="doctorViewModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="显示专家详情">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="doctorViewModalLabel"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<input type="hidden" id="v-poid" name="poid"/>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">科室</label>
+						
+						<label class="col-sm-10"><strong id="v-departmentName" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">姓名</label>
+						
+						<label class="col-sm-10"><strong id="v-name" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">性别</label>
+						
+						<label class="col-sm-10"><strong id="v-sex" class=""></strong></label>
+					</div>
+				
+					<!-- <div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">职务</label>
+						
+						<label class="col-sm-10"><strong id="v-position" class=""></strong></label>
+					</div> -->
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">职称</label>
+						
+						<label class="col-sm-10"><strong id="v-jobTitle" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">挂号费</label>
+						
+						<label class="col-sm-10"><strong id="v-fee" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">出诊时间</label>
+						
+						<label class="col-sm-10"><strong id="v-outCallTime" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >启用</label>
+						
+						<label class="col-sm-10"><strong id="v-enabled" class=""></strong></label>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >个人照片</label>
+						
+						<div class="col-sm-10" style="padding-top: 4px">
+							<img id="v-photo" src="" width="80px">
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 介绍 </label>
+
+						<div class="col-sm-10" style="padding-top: 4px">
+							<div id="v-despEditor" class="text-block" style="border-width: 1px;"></div>
+						</div>
+					</div>
+				
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right"> 备注 </label>
+
+						<div class="col-sm-10">
+							<textarea rows="" cols="" id="v-remarks" class="autosize-transition form-control " readonly placeholder="备注">
+							</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info" onclick="gotoEdit()">编辑</button>
+				<button type="button" class="btn btn-danger" onclick="gotoDel()">删除</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /add modal -->
+
+<!-- add checkedTime modal -->
+<div class="modal fade" id="addCheckedModal" tabindex="-1" role="dialog" aria-labelledby="doctorCheckedModalLabel"
+	 aria-hidden="true" remote="false" data-backdrop="static" aria-describedby="用于新增、编辑专家时，显示新增、编辑专家表单">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="false">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="doctorCheckedModalLabel">选择出诊时间</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="form-group">
+							<label class="col-sm-2 control-label no-padding-right">  </label>
+							<div class="col-sm-10">
+								<input type="checkbox" class="ace" id="d-week1" name="weekArr" value="一" data-validation-engine="validate[required]" /><label for="d-week1" class="lbl">周一</label>
+								<input type="checkbox" class="ace" id="d-week2" name="weekArr" value="二" data-validation-engine="validate[required]" /><label for="d-week2" class="lbl">周二</label>
+								<input type="checkbox" class="ace" id="d-week3" name="weekArr" value="三" data-validation-engine="validate[required]" /><label for="d-week3" class="lbl">周三</label>
+								<input type="checkbox" class="ace" id="d-week4" name="weekArr" value="四" data-validation-engine="validate[required]" /><label for="d-week4" class="lbl">周四</label>
+								<input type="checkbox" class="ace" id="d-week5" name="weekArr" value="五" data-validation-engine="validate[required]" /><label for="d-week5" class="lbl">周五</label>
+								<input type="checkbox" class="ace" id="d-week6" name="weekArr" value="六" data-validation-engine="validate[required]" /><label for="d-week6" class="lbl">周六</label>
+								<input type="checkbox" class="ace" id="d-week7" name="weekArr" value="日" data-validation-engine="validate[required]" /><label for="d-week7" class="lbl">周日</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label no-padding-right"></label>
+							<div class="col-sm-10">
+								<input type="radio" class="ace" id="d-am" name="checkedRang" value="上午" checked data-validation-engine="validate[required]" /><label for="d-am" class="lbl">上午</label>
+								<input type="radio" class="ace" id="d-bm" name="checkedRang" value="下午" data-validation-engine="validate[required]" /><label for="d-bm" class="lbl">下午</label>
+								<input type="radio" class="ace" id="d-allDay" name="checkedRang" value="全天" data-validation-engine="validate[required]" /><label for="d-allDay" class="lbl">全天</label>
+							</div>
+						</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="confirmOurCallTime(this)" >确认</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /add checkedTime modal -->
+
+
+<iframe id="uploadFrame" name="uploadFrame" class="hide"></iframe>
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/ztree/js/jquery.ztree.all-3.5.min.js,
+${base}/assets/js/plugins/dropzone/dropzone.min.js,
+${base}/assets/js/plugins/jqueryui/jquery-ui.custom.min.js,
+${base}/assets/js/plugins/jqueryui/jquery.ui.touch-punch.min.js,
+${base}/assets/js/plugins/markdown/markdown.min.js,
+${base}/assets/js/plugins/markdown/bootstrap-markdown.min.js,
+${base}/assets/js/plugins/hotkeys/jquery.hotkeys.min.js,
+${base}/assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js
+"/>
+<!-- inline scripts related to this page -->
+<script>
+	var _rootId = 1;
+	var grid_selector = "#grid-table";
+	var pager_selector = "#grid-pager";
+	
+	$(function(){
+		initGrid();
+		initSearchTreeMenu();
+		initFormTreeMenu();
+		
+		$('#addForm').validationEngine('attach');
+		
+		$("#btn-search").click(function(){
+			gridReload(1);
+		});
+		
+		// 文件上传输入
+		$('#d-photo').ace_file_input({
+			style:'well',
+			btn_choose:'请选择照片...',
+			btn_change:null,
+			no_icon:'ace-icon fa fa-cloud-upload',
+			droppable:true,
+			thumbnail:'small',
+			allowExt: ["jpeg", "jpg", "png", "gif" , "bmp"],
+			allowMime: ["image/jpg", "image/jpeg", "image/png", "image/gif", "image/bmp"]
+
+			//large | fit
+			//,icon_remove:null//set null, to hide remove/reset button
+			/**,before_change:function(files, dropped) {
+				//Check an example below
+
+				//or examples/file-upload.html
+				return true;
+			}*/
+			/**,before_remove : function() {
+				return true;
+			}*/
+			,
+			preview_error : function(filename, error_code) {
+				//name of the file that failed
+				//error_code values
+				//1 = 'FILE_LOAD_FAILED',
+				//2 = 'IMAGE_LOAD_FAILED',
+				//3 = 'THUMBNAIL_FAILED'
+				//alert(error_code);
+				var errmsgs = ['','文件加载失败！','图片加载失败！','缩略图生成失败！'];
+				//S.alert('error', errmsgs[error_code]);
+			}
+	
+		}).on('change', function(){
+			//console.log($(this).data('ace_input_files'));
+			//console.log($(this).data('ace_input_method'));
+			document.forms['addForm'].submit();
+		});
+
+		$('#addFormModal').on('show.bs.modal', function (e) {
+			// 把树移动到modal里
+			//$("#treeMenu").appendTo($("#modal-tree-box"));
+			
+			// 重置树
+			resetTree();
+			
+			// 去掉表单验证信息
+			$('#addForm').validationEngine('hide');
+		}).on('hide.bs.modal', function (e) {
+			// 把树移动到查询区域
+			//$("#treeMenu").appendTo($("#search-tree-box"));
+			
+			// 重置树
+			resetTree();
+			
+			// 去掉表单验证信息
+			$('#addForm').validationEngine('hide');
+			
+			$("#d-poid").val('');
+			$("#d-departmentId").val('');
+			$("#d-departmentName").val('');
+			$("#d-name").val('');
+			$("#d-letters").val('');
+			//$("#d-position").val('');
+			$("#d-jobTitle").val('');
+			$("#d-fee").val('');
+			$("#d-outCallTime").val('');
+			$("#d-enabled")[0].checked = true;
+			$("#d-despEditor").val('');
+			$("#d-remarks").val('');
+			
+			$('#d-photo').ace_file_input().next().next().click();
+		});
+		
+		gridReload(1);
+	})
+	
+	function initGrid() {
+		
+		var minWidth = 800;
+		
+		//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() < minWidth ? minWidth : $(".page-content").width() );
+		})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+			if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() < minWidth ? minWidth : parent_column.width() );
+			}
+		})
+		
+		$(grid_selector).jqGrid({
+			url: '${base}/admin/doctor/list',
+			datatype: "local",
+			mtype : "post",
+			height: '100%',
+			width: 800,
+			colNames: ['', 'ID', '科室', '姓名', '性别', '职务', '职称', '挂号费', '出诊时间', '状态', '备注'],
+			cellEdit: false,
+			colModel: [
+				{name:'act',index:'act', width:100, fixed:true, sortable:false, resize:false},
+				{name:'poid',index:'poid', width:60, sorttype:"int"},
+				{name:'departmentName',index:'department', width:150},
+				{name:'name',index:'name', width:70},
+				{name:'sex',index:'sex', width:50, formatter: S.sexFormatter},
+				{name:'position',index:'position', width:90, hidden: true},
+				{name:'jobTitle',index:'jobTitle', width:90},
+				{name:'fee',index:'fee', width:90},
+				{name:'outCallTime',index:'outCallTime', width:150},
+				{name:'enabled',index:'enabled', width:50, formatter: S.enabledFormatter},
+				{name:'remarks',index:'remarks', width:150}
+			],
+			
+			viewrecords: true,
+			rowNum: 10,
+			rowList: [10,20,30],
+			pager: pager_selector,
+			altRows: true,
+			
+			multiselect: true,
+			//multiboxonly: true,
+			
+			gridComplete : function() {
+				var ids = $(grid_selector).jqGrid('getDataIDs');
+				for ( var i = 0; i < ids.length; i++) {
+					var row = $(grid_selector).jqGrid('getRowData', ids[i]);
+					be = '<div title="" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" '
+						+ ' onclick="edit(\'' + row.poid + '\')" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')" data-original-title="编辑">'
+						+ '<span class="ui-icon ui-icon-pencil"></span></div>'
+					bv = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-search" '
+						+ ' onclick="view(\'' + row.poid + '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="查看">'
+						+ '<span class="ui-icon fa fa-search orange"></span></div>';
+					bd = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-del" '
+						+ ' onclick="del(\'' + row.poid + '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="删除">'
+						+ '<span class="ui-icon ui-icon-trash"></span></div>';
+					$(grid_selector).jqGrid('setRowData', ids[i], {
+						act : '<div style="margin-left:8px;">' + be + bd + bv + '</div>'
+					});
+				}
+			},
+			
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function(){
+					updatePagerIcons(table);
+					enableTooltips(table); 
+				}, 0);
+			},
+			
+			editurl: "${base}/admin/doctor/update",
+			caption: "专家列表"
+		});
+		
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		
+		//navButtons
+		$(grid_selector).jqGrid('navGrid', pager_selector, {	//navbar options
+			edit: false,
+			add: false,
+			del: false,
+			save: false,
+			search: false,
+			refresh: true,
+			refreshicon : 'ace-icon fa fa-refresh green',
+			view: false
+		}).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-trash-o red",
+			onClickButton : batchDel,
+			position : "first",
+			title : "删除所选记录",
+			cursor : "pointer"
+		}).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : addForm,
+			position : "first",
+			title : "新增记录",
+			cursor : "pointer"
+		});
+
+		//replace icons with FontAwesome icons like above
+		function updatePagerIcons(table) {
+			var replacement = {
+				'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+				'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+				'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+				'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+			};
+			$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function() {
+				var icon = $(this);
+				var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+				
+				if ($class in replacement)
+					icon.attr('class', 'ui-icon ' + replacement[$class]);
+			})
+		}
+
+		function enableTooltips(table) {
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			$(table).find('.ui-pg-div').tooltip({
+				container : 'body'
+			});
+		}
+	}
+	
+	function initSearchTreeMenu() {
+		var menusetting = {
+				async: {
+					enable: true,
+					type: 'get',
+					url: '${base}/admin/department/stree',
+					autoParam: ['poid']
+				},
+				data: {
+					simpleData: {
+						enable: true,
+						rootPId: 1,
+						idKey: 'poid',
+						pidKey: 'parentId'
+					},
+					key: {
+					}
+				},
+				view: {
+					selectedMulti: false,
+					dblClickExpand: false
+				},
+				check: {
+					enable: false
+				},
+				callback: {
+					beforeClick: function(treeId, treeNode, clickFlag) {
+						if (treeNode.isParent) {
+							return false;
+						}
+					},
+					onClick: function(event, treeId, treeNode, clickFlag) {
+						var zTree = $.fn.zTree.getZTreeObj("treeMenu"),
+						nodes = zTree.getSelectedNodes(),
+						v = "";
+						id = "";
+						nodes.sort(function compare(a,b){return a.id-b.id;});
+						for (var i=0, l=nodes.length; i<l; i++) {
+							v += nodes[i].name + ",";
+							id += nodes[i].poid + ",";
+						}
+						if (v.length > 0 ) v = v.substring(0, v.length-1);
+						if (id.length > 0 ) id = id.substring(0, id.length-1);
+						//文本框赋值
+						$("#treeMenu").closest(".input-group").find(".tree-down-name").val(v);
+						$("#treeMenu").closest(".input-group").find(".tree-down-id").val(id);
+					},
+					beforeRightClick: function(treeId, treeNode) {
+						return true;
+					},
+					onRightClick: function(event, treeId, treeNode) {
+						event.preventDefault();
+					},
+					onAsyncSuccess: function(event, treeId, treeNode, msg) {
+						var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+						zTree.expandAll(true);
+					},
+					beforeExpand: function() {
+						$("#treeMenu").closest(".input-group-btn").addClass("open");
+					},
+					beforeCollapse: function() {
+						return false;
+					},
+					onExpand: function() {
+						$("#treeMenu").closest(".input-group-btn").addClass("open");
+					},
+					onCollapse: function() {
+						$("#treeMenu").closest(".input-group-btn").addClass("open");
+					}
+				}
+			};
+			
+			$.fn.zTree.init($("#treeMenu"), menusetting);
+	}
+	
+	function initFormTreeMenu() {
+		var menusetting = {
+			async: {
+				enable: true,
+				type: 'get',
+				url: '${base}/admin/department/stree',
+				autoParam: ['poid']/*,
+				dataFilter: function(treeId, parentNode, responseData) {
+					if (responseData) {
+						for(var i =0; i < responseData.length; i++) {
+							var isParent = responseData[i].isParent;
+							responseData[i].nocheck = isParent;
+						}
+					}
+					return responseData;
+				}*/
+			},
+			simpleData: {
+				enable: true,
+				rootPId: 1,
+				idKey: 'poid',
+				pidKey: 'parentId'
+			},
+			view: {
+				selectedMulti: false,
+				dblClickExpand: false
+			},
+			check: {
+				enable: true
+			},
+			callback: {
+				beforeClick: function(treeId, treeNode, clickFlag) {
+					//return false;
+				},
+				onClick: function(event, treeId, treeNode, clickFlag) {
+				},
+				onCheck: function(event, treeId, treeNode, clickFlag) {
+					var zTree = $.fn.zTree.getZTreeObj("formTreeMenu"),
+					nodes = zTree.getCheckedNodes(true),
+					v = "";
+					id = "";
+					nodes.sort(function compare(a,b){return a.id-b.id;});
+					for (var i=0, l=nodes.length; i<l; i++) {
+						v += nodes[i].name + ",";
+						id += nodes[i].poid + ",";
+					}
+					if (v.length > 0 ) v = v.substring(0, v.length-1);
+					if (id.length > 0 ) id = id.substring(0, id.length-1);
+					
+					$("#formTreeMenu").closest(".input-group").find(".tree-down-name").val(v);
+					$("#formTreeMenu").closest(".input-group").find(".tree-down-id").val(id);
+					
+					//$("#d-parent-name").val(v);
+					//$("#d-parent-id").val(id);
+					//resetTree();
+				},
+				beforeRightClick: function(treeId, treeNode) {
+					return true;
+				},
+				onRightClick: function(event, treeId, treeNode) {
+					event.preventDefault();
+				},
+				onAsyncSuccess: function(event, treeId, treeNode, msg) {
+					var zTree = $.fn.zTree.getZTreeObj("formTreeMenu");
+					zTree.expandAll(true);
+				},
+				beforeExpand: function() {
+					$("#formTreeMenu").closest(".input-group-btn").addClass("open");
+				},
+				beforeCollapse: function() {
+					//$("#treeMenu").closest(".input-group-btn").addClass("open");
+					return false;
+				},
+				onExpand: function() {
+					$("#formTreeMenu").closest(".input-group-btn").addClass("open");
+				},
+				onCollapse: function() {
+					$("#formTreeMenu").closest(".input-group-btn").addClass("open");
+				}
+			}
+		};
+		
+		$.fn.zTree.init($("#formTreeMenu"), menusetting);
+	}
+	
+	function resetTree() {
+		var zTree = $.fn.zTree.getZTreeObj("formTreeMenu");
+		zTree.expandAll(true);
+		zTree.checkAllNodes(false);
+	}
+	
+	function initEditor() {
+		// 专家介绍文本编辑框
+		$('#d-despEditor').ace_wysiwyg({
+			toolbar:
+			[
+				'font',
+				null,
+				'fontSize',
+				null,
+				{name:'bold', className:'btn-info'},
+				{name:'italic', className:'btn-info'},
+				{name:'strikethrough', className:'btn-info'},
+				{name:'underline', className:'btn-info'},
+				null,
+				{name:'insertunorderedlist', className:'btn-success'},
+				{name:'insertorderedlist', className:'btn-success'},
+				{name:'outdent', className:'btn-purple'},
+				{name:'indent', className:'btn-purple'},
+				null,
+				{name:'justifyleft', className:'btn-primary'},
+				{name:'justifycenter', className:'btn-primary'},
+				{name:'justifyright', className:'btn-primary'},
+				{name:'justifyfull', className:'btn-inverse'},
+				null,
+				'foreColor',
+				null,
+				{name:'undo', className:'btn-grey'},
+				{name:'redo', className:'btn-grey'}
+			],
+			'wysiwyg': {
+			}
+		}).prev().addClass('wysiwyg-style2');
+		
+		var toolbar = $('#d-despEditor').prev().get(0);
+		toolbar.className = toolbar.className.replace(/wysiwyg\-style(1|2)/g , '');
+		$(toolbar).addClass('wysiwyg-style2');
+	}
+	
+	function gridReload(pageNo) {
+		$(grid_selector).setGridParam({datatype:'json', postData:null});
+		
+		var param = $("#search").serializeJson();
+		if (pageNo || pageNo == 0) {
+			param.page = pageNo;
+		}
+		$(grid_selector).jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : param,
+			page : param.page
+		}).trigger("reloadGrid");
+	}
+	
+	function addForm() {
+		$("#d-photo-img").hide();
+		$("#deletePhotoBtn").hide();
+		$("#doctorModalLabel").html("新增专家");
+		resetOutCallTime();
+		$("#addFormModal").modal("show");
+		
+		
+	}
+	
+	function batchDel() {
+		var slarrrow = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+		var ids = "";
+		for (var i = 0; i < slarrrow.length; i++) {
+			ids += "" + $(grid_selector).jqGrid('getRowData', slarrrow[i]).poid + ",";
+		}
+		dis = ids.substring(0, ids.length-1);
+		del(ids);
+	}
+	
+	function del(id) {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: '${base}/admin/doctor/delete',
+					type: 'post',
+					dataType: 'json',
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function edit(id) {
+		S.ajax({
+			url: '${base}/admin/doctor/detail',
+			data: {id: id},
+			success: function(data) {
+				if (!data) {
+					return;
+				}
+				$("#jobTitle").val("");
+				$("#d-poid").val(data.poid);
+				$("#d-departmentId").val(data.departmentId);
+				$("#d-departmentName").val(data.departmentName);
+				$("#d-name").val(data.name);
+				$("#d-letters").val(data.letters);
+				//$("#d-position").val(data.position);
+				$("#jobTitle").val(data.jobTitle);
+				$("#d-jobTitle").val(data.jobTitle);
+				$("#d-fee").val(data.fee);
+				$("#d-outCallTime").val(data.outCallTime);
+				showEidtOutCall(data.outCallTime);
+				$("#d-enabled")[0].checked = data.enabled;
+				$("#d-despEditor").val(data.desc);
+				$("#d-remarks").val(data.remarks);
+				
+				$("#d-photo-img").attr("src" , '${base}/admin/file/doctor/' + data.poid).show();
+				$("#deletePhotoBtn").show();
+				if (data.sex) {
+					var sex = data.sex.toLowerCase();
+					if (sex == "male") {
+						$("#addForm input:radio[name='sex']")[0].checked = true;
+						$("#addForm input:radio[name='sex']")[1].checked = false;
+					} else if (sex == "female") {
+						$("#addForm input:radio[name='sex']")[1].checked = true;
+						$("#addForm input:radio[name='sex']")[0].checked = false;
+					}
+				}
+				
+				$("#doctorModalLabel").html("编辑专家");
+				
+				$("#addFormModal").modal("show");
+				
+				var deptIds = data.departmentId.split(",");
+				
+				var zTree = $.fn.zTree.getZTreeObj("formTreeMenu");
+				
+				for (var i = 0 ; i < deptIds.length; i++) {
+					zTree.checkNode(zTree.getNodeByParam("poid", deptIds[i]), true);
+				}
+			}
+		});
+	}
+	
+	function view(id) {
+		S.ajax({
+			url: '${base}/admin/doctor/detail',
+			data: {id: id},
+			success: function(data) {
+				if (!data) {
+					return;
+				}
+				
+				$("#v-poid").val(data.poid);
+				$("#v-departmentId").html(data.departmentId);
+				$("#v-departmentName").html(data.departmentName);
+				$("#v-name").html(data.name);
+				$("#v-letters").html(data.letters);
+				$("#v-sex").html(S.sexFormatter(data.sex));
+				$("#v-jobTitle").html(data.jobTitle);
+				$("#v-fee").html(data.fee);
+				$("#v-outCallTime").html(data.outCallTime);
+				$("#v-enabled").html(S.enabledFormatter(data.enabled));
+				$("#v-despEditor").html(data.desc);
+				$("#v-remarks").html(data.remarks);
+
+				$("#v-photo").attr("src" , '${base}/admin/file/doctor/' + data.poid);
+				
+				$("#doctorViewModalLabel").html(data.name);
+				
+				$("#viewModal").modal("show");
+			}
+		});
+	}
+	
+	function save(btn) {
+		if($('#addForm').validationEngine('validate')) {
+			var doctor = {};
+			doctor = $("#addForm").serializeJson();
+			doctor.letters = doctor.letters.toLowerCase();
+			
+			$(btn).button("loading");
+			S.ajax({
+				url: '${base}/admin/doctor/save',
+				data: doctor,
+				type: 'post',
+				success: function(res) {
+					S.ajaxSuccess(res);
+					
+					$(btn).button("reset");
+					$("#addFormModal").modal("hide");
+					
+					gridReload();
+					
+				}
+			});
+		}
+	}
+	
+	function gotoEdit() {
+		$('#viewModal').modal('hide');
+		edit($('#v-poid').val());
+	}
+	
+	function gotoDel() {
+		$('#viewModal').modal('hide');
+		del($('#v-poid').val());
+	}
+	
+	function resetSearchForm() {
+		$("#s-name").val('');
+		$("#s-departmentName").val('');
+		$("#s-departmentId").val('');
+	}
+	
+	function callback(resFlg, msg, picUrlPath) {
+		if (resFlg != "1") {
+			S.alert("error", msg);
+			return ;
+		}
+		$("#d-photo-img").attr("src", "${base}/admin/" + picUrlPath);
+		$("#picPath").val(picUrlPath);
+	}
+
+	
+	//出诊时间可选
+	//弹出出诊时间对话框
+	$(function(){
+		$('#addCheckedModal').on('hide.bs.modal', function (e) {
+			$("#addCheckedModal").find("input[type='radio']").prop("checked", false).eq(0).prop("checked", true);
+			$("#addCheckedModal").find("input[type='checkbox']").prop("checked", false);
+		});
+	})
+	
+	function initCheckedTimeDialog(){
+		$("#addCheckedModal").modal("show");
+	}
+	
+	function showOutCallTime(){
+		initCheckedTimeDialog();
+	}
+	
+	//确认出诊时间
+	function confirmOurCallTime(obj){
+		//星期几
+		var selectedWeek = $("input[name='weekArr']:checked");
+		//shijianduan
+		var selectedTimeValue = $("input[name='checkedRang']:checked").val();
+		
+		if (selectedWeek.length <= 0 || selectedTimeValue.length <= 0) {
+			return ;
+		}
+		
+		var checkedContentModal = "<li class=\"bg-info\" style=\"margin:5px\">"
+								 +"<button type=\"button\" class=\"close\" data-dismiss=\"\" style=\"position: relative;top:0px; right: 0px;\" onclick=\"removeSpan(this)\">"
+								 +"<span aria-hidden=\"false\" style=\"font-size: 10px\">&times;</span><span class=\"sr-only\">Close</span> </button>"
+								 +"<span  style=\"display:block;\" class= \"flagV\"> </span></li>"
+	  
+	 	$("#checkedContent").append(checkedContentModal);
+		var values = "周";
+		var selectedWeekValues = selectedWeek.each(function(index,entity){
+			if((selectedWeek.length-1) == index){
+				return values += $(this).val();
+			}
+			return values += $(this).val() + "、";
+		});
+		var valuesTemp = values + selectedTimeValue;
+		$("#checkedContent").find("li:last").find("span.flagV").html(valuesTemp);
+		addOutCallValue();
+		$("#addCheckedModal").modal("hide");
+		showCheckedDiv();
+	} 
+	
+	//移除click
+	function removeSpan(obj){
+		$(obj).closest("li").remove();
+		addOutCallValue();
+		var liLength = $("#checkedContent").find("li").length;
+		if(liLength == 0){
+			hideCheckedDiv();
+		}
+	}
+	
+	//重置
+	function resetOutCallTime(obj){
+		$("#checkedContent").empty();
+		$("#d-outCallTime").val("");
+		hideCheckedDiv();
+		$("#jobTitle").val("");
+	}
+	//隐藏
+	function hideCheckedDiv(){
+		$("#checkedDiv").hide();
+	}
+	
+	function showCheckedDiv(){
+		$("#checkedDiv").show();
+	}
+	//向隐藏域添加所选值
+	function addOutCallValue(){
+		$("#d-outCallTime").val("");
+		var outCallValues = "";
+		var elements = $("#checkedContent").find("li").find("span.flagV");
+		elements.each(function(index,entity){
+			outCallValues += $(this).html() + ","
+		});
+		var outCallValue =  outCallValues.substring(0, outCallValues.length-1);
+		$("#d-outCallTime").val(outCallValue);
+	}
+	
+
+	function deletephoto() {
+		var id=$("#d-poid").val();
+		if(id!=""){
+			S.ajax({
+				url: '${base}/admin/doctor/deletephoto',
+				data: {id: id},
+				success: function(data) {
+					if (data == true) {
+					//成功删掉照片
+						$("#d-photo-img").attr("src" , '${base}/assets/images/default');
+						$('#d-photo').ace_file_input('reset_input');
+						return;
+					}
+				}
+			});
+		}
+	}
+	
+	//编辑回选显示
+	function showEidtOutCall(values){
+		$("#checkedContent").empty();
+		if(values){
+			var outCallTimes = values.split(",");
+			var checkedContentModal = "<li class=\"bg-info\" style=\"margin:5px\">"
+				 +"<button type=\"button\" class=\"close\" data-dismiss=\"\" style=\"position: relative;top:0px; right: 0px;\" onclick=\"removeSpan(this)\">"
+				 +"<span aria-hidden=\"false\" style=\"font-size: 10px\">&times;</span><span class=\"sr-only\">Close</span> </button>"
+				 +"<span  style=\"display:block;\" class= \"flagV\"> </span></li>";
+			$.each(outCallTimes,function(index,entity){
+				$("#checkedContent").append(checkedContentModal);
+				$("#checkedContent").find("li:last").find("span.flagV").html(entity);
+			})
+			showCheckedDiv();
+		}
+	}
+	
+	$(function(){
+		//设置职称和挂号费
+		$("#jobTitle").on("change",function(e){
+			var jobTitle = $(this).val();
+			var opt = $(this).find(":selected");
+			//var jobTitle = $("#jobTitle option:selected").html();
+			$("#d-jobTitle").val(jobTitle);
+			$("#d-fee").val(opt.attr("fee"));
+		});
+	})
+	
+</script>

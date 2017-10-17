@@ -1,0 +1,221 @@
+<@p.header csshref=""/>
+							<!-- PAGE CONTENT BEGINS -->
+								<div class="widget-box" style="width: 380px;position: relative;margin: 0 auto;">
+									<div class="widget-header">
+										<h4 class="widget-title lighter">医院基本信息设置</h4>
+
+										<div class="widget-toolbar no-border">
+											<a href="#" data-action="reload">
+												<i class="ace-icon fa fa-refresh"></i>
+											</a>
+
+											<a href="#" data-action="collapse">
+												<i class="ace-icon fa fa-chevron-up"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="widget-body">
+										<div id="deptEdit" >
+											<form id="hospitalSettingForm" class="form-horizontal" method="post">
+												<div class="space-4"></div>
+												<div class="form-group">
+													<div class="col-xs-12 col-sm-12">
+														<div class="wysiwyg-editor" id="deptEditor"  style="border-width: 1px;">
+														<#if hospitalSetting??>
+															${hospitalSetting.hospitalContent!}
+														</#if>
+														</div>
+													</div>
+												</div>
+
+												<div class="space-4"></div>
+												<input type="hidden" id="hospitalContent" name="hospitalContent">
+												<div class="clearfix form-actions">
+													<div class="col-xs-12 text-center">
+														<button class="btn btn-info btn-sm" type="button" onclick="save();">
+															<i class="ace-icon fa fa-check bigger-110"></i>
+															保存
+														</button>
+														<button class="btn btn-sm" type="reset" onclick="btnResult();">
+															<i class="ace-icon fa fa-undo bigger-110"></i>
+															重置
+														</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							<!-- PAGE CONTENT ENDS -->
+<@p.footer scriptsrc="${base}/assets/js/plugins/hotkeys/jquery.hotkeys.min.js,${base}/assets/js/plugins/bootstrap/bootstrap-wysiwyg.min.js"/>
+	<script type="text/javascript">
+	$(document).ready(function () {
+
+		function showErrorAlert(reason, detail) {
+			var msg = '';
+			if (reason === 'unsupported-file-type') { msg = "Unsupported format " + detail; }
+			else {
+				//console.log("error uploading file", reason, detail);
+			}
+			$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>' +
+			 '<strong>File upload error</strong> ' + msg + ' </div>').prependTo('#alerts');
+		};
+	$('#deptEditor').ace_wysiwyg({
+		toolbar:
+		[
+			'font',
+			null,
+			'fontSize',
+			null,
+			{ name: 'bold', className: 'btn-info' },
+			{ name: 'italic', className: 'btn-info' },
+			{ name: 'strikethrough', className: 'btn-info' },
+			{ name: 'underline', className: 'btn-info' },
+			null,
+			{ name: 'insertunorderedlist', className: 'btn-success' },
+			{ name: 'insertorderedlist', className: 'btn-success' },
+			{ name: 'outdent', className: 'btn-purple' },
+			{ name: 'indent', className: 'btn-purple' },
+			null,
+			{ name: 'justifyleft', className: 'btn-primary' },
+			{ name: 'justifycenter', className: 'btn-primary' },
+			{ name: 'justifyright', className: 'btn-primary' },
+			{ name: 'justifyfull', className: 'btn-inverse' },
+			null,
+			{ name: 'insertImage', className: 'btn-success' },
+			null,
+			'foreColor',
+			null,
+			{ name: 'undo', className: 'btn-grey' },
+			{ name: 'redo', className: 'btn-grey' }
+		],
+		'wysiwyg': {
+			fileUploadError: showErrorAlert
+		}
+	}).prev().addClass('wysiwyg-style2');
+
+	var toolbar = $('#deptEditor').prev().get(0);
+	toolbar.className = toolbar.className.replace(/wysiwyg\-style(1|2)/g, '');
+	$(toolbar).addClass('wysiwyg-style2');
+	if (typeof jQuery.ui !== 'undefined' && ace.vars['webkit']) {
+
+		var lastResizableImg = null;
+		function destroyResizable() {
+			if (lastResizableImg == null) return;
+			lastResizableImg.resizable("destroy");
+			lastResizableImg.removeData('resizable');
+			lastResizableImg = null;
+		}
+
+		var enableImageResize = function () {
+			$('.wysiwyg-editor')
+			.on('mousedown', function (e) {
+				var target = $(e.target);
+				if (e.target instanceof HTMLImageElement) {
+					if (!target.data('resizable')) {
+						target.resizable({
+							aspectRatio: e.target.width / e.target.height,
+						});
+						target.data('resizable', true);
+
+						if (lastResizableImg != null) {
+							//disable previous resizable image
+							lastResizableImg.resizable("destroy");
+							lastResizableImg.removeData('resizable');
+						}
+						lastResizableImg = target;
+					}
+				}
+			})
+			.on('click', function (e) {
+				if (lastResizableImg != null && !(e.target instanceof HTMLImageElement)) {
+					destroyResizable();
+				}
+			})
+			.on('keydown', function () {
+				destroyResizable();
+			});
+		}
+
+		enableImageResize();
+	}
+	});
+			function initTable() {
+				$("#delAll").click(function () {
+					var that = this;
+					$(this).closest('table').find('tr > td:first-child input:checkbox')
+					.each(function () {
+						this.checked = that.checked;
+						$(this).closest('tr').toggleClass('selected');
+					});
+				});
+
+				$("#grid-table").find('tbody > tr > td:first-child input:checkbox').each(function () {
+					var that = this;
+					$(that).click(function () {
+						var uncheckedItems = $("#grid-table").find('tbody > tr > td:first-child input:checkbox').not("input:checked");
+						if (uncheckedItems.length > 0) {
+							var chkAll = $("#delAll");
+							chkAll.get(0).checked = false;
+							chkAll.closest('tr').removeClass('selected');
+						} else {
+							var chkAll = $("#delAll");
+							chkAll.get(0).checked = true;
+							chkAll.closest('tr').addClass('selected');
+						}
+					})
+				});
+
+				$("#addBtn").click(function () {
+					var tr = $('#tempTr').clone().appendTo("#grid-table tbody");
+				});
+			}
+
+			function edit() {
+				$("#deptList").hide();
+				$("#deptEdit").show();
+			}
+
+			function cancelEdit() {
+				$("#deptList").show();
+				$("#deptEdit").hide();
+			}
+
+			function del(obj) {
+				bootbox.confirm("确定删除吗？", function (result) {
+					if (result) {
+						$(obj).closest('tr').remove();
+
+						bootbox.alert("操作成功！");
+					}
+				});
+			}
+
+			function delbatch() {
+				bootbox.confirm("确定删除吗？", function (result) {
+					if (result) {
+						bootbox.alert("操作成功！");
+					}
+				});
+			}
+
+			function saveNew() {
+				bootbox.alert("操作成功！", function () {
+					$("#deptList").show();
+					$("#deptEdit").hide();
+				});
+			}
+			function btnResult()
+			{
+				$("#deptEditor").html("");
+				$("#hospitalContent").val("");
+			}
+			
+			function save()
+			{
+				$("#hospitalContent").val($("#deptEditor").html());
+				$("#hospitalSettingForm").attr("action","${base}/admin/hospitalSetting/save");
+				$("#hospitalSettingForm").submit();
+			}
+		</script>

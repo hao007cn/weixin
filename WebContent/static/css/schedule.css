@@ -1,0 +1,28 @@
+.datetimepicker .table-condensed td {
+	border: 1px solid #3792f1;
+}
+
+.hasSche {
+	background-color: #6bb4ff;
+	color: white;
+}
+
+.hasSche:hover {
+	background-color: #ffc600;
+	color: #3792f1;
+	cursor: pointer;
+}
+
+.table>thead>tr>th {
+	border: none;
+	text-align: center;
+}
+
+.table>tbody>tr>td {
+	text-align: center;
+}
+
+.dropdown-menu {
+	box-shadow: none;
+}
+

@@ -1,0 +1,117 @@
+﻿<@p.header />
+<style>
+  .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td
+  { border-top: 0px solid #ddd; }
+</style>
+<div>
+  <div class="titleallnews">
+    PACS报告
+    <button 
+      type="button"
+      class="btn btn-default" disload=true
+      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+      onclick="javascript:history.back();">
+     返回
+  	</button>
+  </div>
+  <#if pacsitem??>
+    <div style="height: 20px; color: #21B7C6; margin-bottom: 8px;">
+      <div style="padding: 0; margin: 0 0 20px 10px; font-size: 14px;">
+        <h4>
+          诊断报告单
+        </h4>
+      </div>
+    </div>
+
+    <table class="table" style="font-size: 14px">
+      <thead>
+        <tr style="background-color: #21B7C6; color: white">
+          <td>
+            检查号：
+            <br/>
+            ${pacsitem.studyid!}
+          </td>
+          <td>
+            检查日期：
+            <br/>
+            ${pacsitem.studytime!}
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            姓名：${pacsitem.patientname!}
+          </td>
+          <td>
+            性别：${pacsitem.patientgender!}
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            年龄：${pacsitem.patientage!}
+          </td>
+          <td>
+            门诊号：${pacsitem.patientoutpatientid!}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            科室：${pacsitem.applydepartment!}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            检查仪器：${pacsitem.devicename!}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            检查项目：${pacsitem.studydescribe!}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background-color: #21B7C6; color: white">
+            影像描述：
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div style="margin: 10px 20px">
+              ${pacsitem.reportdesc!}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background-color: #21B7C6; color: white">
+            诊断意见：
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div style="margin: 10px 20px">
+              ${pacsitem.reportdiagnose!}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background-color: #21B7C6; color: white">
+            报告日期：${pacsitem.reporttime!}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="font-size: 12px; color: #BEBEBE">
+            <div style="margin: 10px 20px">
+              注:
+              <br />
+              本报告内容仅供参考，以医院发放的正式报告为准。
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </#if>
+</div>
+<@p.footer />
+

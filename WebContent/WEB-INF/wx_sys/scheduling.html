@@ -1,0 +1,793 @@
+<@p.header csshref="
+${base}/assets/css/jqgrid/ui.jqgrid.css,
+${base}/assets/css/jqueryui/jquery-ui.custom.min.css,
+${base}/assets/js/plugins/ztree/css/zTreeStyle/zTreeStyle.css,
+${base}/assets/css/datepicker/datepicker.css,
+${base}/assets/css/daterangepicker/daterangepicker.css,
+${base}/assets/css/chosen/chosen.css
+"/>
+<form id="search" class="form-view-data" role="form">
+	<div class="form-group">
+		<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right" for="s-name"> 姓名 </label>
+
+		<div class="col-sm-2 col-lg-2">
+			<input type="text" id="s-name" name="name" placeholder="专家姓名" class="form-control">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right"> 科室</label>
+
+		<div class="col-sm-2 col-lg-2">
+			<div id="d-input-group-department" class="input-group">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<i class="fa fa-search"></i> <span class="caret"></span>
+					</button>
+					<div id="modal-tree-box" class="dropdown-menu" role="menu">
+						<ul id="treeMenu" class="ztree" style="margin-top:0;"></ul>
+					</div>
+				</div><!-- /btn-group -->
+				<input type="text" id="s-departmentName" name="departmentName" value="" data-placeholder="选择科室..." readonly="readonly" class="form-control tree-down-name" data-validation-engine="validate[required]"/>
+				<input type="hidden" id="s-departmentId" name="departmentId" value="" class="tree-down-id"/>
+			</div><!-- /input-group -->
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 col-lg-1 control-label no-padding-right text-right" for="form-field-1-1"> 日期 </label>
+
+		<div class="col-sm-3 col-lg-3">
+			<div class="input-daterange input-group">
+				<input type="text" id="s-dateStart" class="form-control" data-date-format="YYYY-MM-DD" name="dateStart" value="${dateStart?string("yyyy-MM-dd")}">
+				<span class="input-group-addon">
+					<i class="fa fa-exchange"></i>
+				</span>
+
+				<input type="text" id="s-dateEnd" class="form-control" data-date-format="YYYY-MM-DD" name="dateEnd">
+			</div>
+		</div>
+	</div> 
+	<div class="form-group">
+		<div class="col-sm-1 col-lg-1">
+			<button type="button" id="btn-search" class="btn btn-info btn-sm">
+				<i class="fa fa-search"></i>
+				查询
+			</button>
+		</div>
+		<div class="col-sm-1 col-lg-1">
+			<button type="reset" class="btn btn-info btn-sm" onclick="resetSearchForm()">
+				<i class="fa fa-refresh"></i>重置
+			</button>
+		</div>
+	</div>
+</form>
+		<div class="row"></div>
+		<div class="space-4"></div>
+<div class="row">
+	<div class="col-sm-8"></div>
+	<div class="col-sm-4"><a href="#" class="label label-info" onclick="customeSearch(1)">最近两周</a>&nbsp;<a href="#" class="label label-info" onclick="customeSearch(2)">未来所有排班</a></div>
+</div>
+		<div class="row"></div>
+		<div class="space-4"></div>
+<div id="div1" class="table-responsive">
+	<table id="scheduling-table"></table>
+
+	<div id="scheduling-pager"></div>
+</div>
+
+<!-- <div class="row">
+	<div class="col-xs-12">
+		<a id="addBtn" href="#" class="text-danger" data-toggle="modal" data-target="#addModal">
+			+批量新增
+		</a>
+	</div>
+</div> -->
+
+<div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true"
+	 data-backdrop="static" aria-describedby="用于新增排班">
+	<div class="modal-dialog modal-lg" style="z-index: 1040">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="addModalLabel">新增排班</h4>
+			</div>
+	
+			<div class="modal-body">
+				<form id="addForm" class="form-horizontal" role="form">
+					<input type="hidden" name="poid" value="1"/>
+					
+		<!--			<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="form-field-1-1">科室</label>
+						
+						<div class="col-sm-10">
+							<select class="form-control" id="form-field-select-3" data-placeholder="选择上级科室...">
+								<option value="0">&gt;总部</option>
+								<option value="1">&nbsp;&nbsp;&nbsp;&nbsp;&gt;妇科内分泌</option>
+							</select>
+						</div>
+					</div>-->
+					<div class="form-group">
+						<label
+							class="col-sm-2 control-label no-padding-right myreq">
+							科室</label>
+						<div class="col-sm-10">
+							<div id="d-input-group-department" class="input-group">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle"
+										data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-search"></i> <span class="caret"></span>
+									</button>
+									<div id="modal-tree-box" class="dropdown-menu" role="menu">
+										<ul id="treeMenu_addSchedule" class="ztree" style="margin-top: 0;"></ul>
+									</div>
+								</div>
+								<!-- /btn-group -->
+								<input type="text" id="d-departmentName" name="departmentName"
+									value="" data-placeholder="选择科室..." readonly="readonly"
+									class="form-control tree-down-name"
+									data-validation-engine="validate[required]" />
+									
+									<input
+									type="hidden" id="d-departmentId" name="departmentId" value=""
+									class="tree-down-id" />
+							</div>
+							<!-- /input-group -->
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="doctors"> 专家 </label>
+
+						<div class="col-sm-10">
+							<div id="doctors-container" class="input-group" style="z-index: 800">
+								<span class="input-group-addon">
+									<i class="ace-icon fa fa-users"></i>
+								</span>
+								<select name="doctorIds" id="doctors" class="chosen-select" multiple data-placeholder="选择专家" data-validation-engine="validate[required]">
+									
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq" for="dateStart">日期</label>
+						
+						<div class="col-sm-10" id = "newPicker">
+							<div class="input-daterange input-group">
+								<input type="text" class="input-sm form-control" data-date-format="YYYY-MM-DD" id="dateStart" name="dateStart" data-validation-engine="validate[required]">
+								<span class="input-group-addon">
+									<i class="fa fa-exchange"></i>
+								</span>
+								<input type="text" class="input-sm form-control" data-date-format="YYYY-MM-DD" id="dateEnd" name="dateEnd" data-validation-engine="validate[required]">
+							</div>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right">  </label>
+
+						<div class="col-sm-10">
+							<input type="checkbox" class="ace" id="week1" name="weekArr" value="2" data-validation-engine="validate[required]" /><label for="week1" class="lbl">星期一</label>
+							<input type="checkbox" class="ace" id="week2" name="weekArr" value="3" data-validation-engine="validate[required]" /><label for="week2" class="lbl">星期二</label>
+							<input type="checkbox" class="ace" id="week3" name="weekArr" value="4" data-validation-engine="validate[required]" /><label for="week3" class="lbl">星期三</label>
+							<input type="checkbox" class="ace" id="week4" name="weekArr" value="5" data-validation-engine="validate[required]" /><label for="week4" class="lbl">星期四</label>
+							<input type="checkbox" class="ace" id="week5" name="weekArr" value="6" data-validation-engine="validate[required]" /><label for="week5" class="lbl">星期五</label>
+							<input type="checkbox" class="ace" id="week6" name="weekArr" value="7" data-validation-engine="validate[required]" /><label for="week6" class="lbl">星期六</label>
+							<input type="checkbox" class="ace" id="week7" name="weekArr" value="1" data-validation-engine="validate[required]" /><label for="week7" class="lbl">星期日</label>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" >  </label>
+
+						<div class="col-sm-10">
+							<input type="checkbox" class="ace" id="am" name="aps" value="am" data-validation-engine="validate[required]" onclick="controlChosen(this)"/><label for="am" class="lbl">上午</label>
+							<input type="checkbox" class="ace" id="pm" name="aps" value="pm" data-validation-engine="validate[required]" onclick="controlChosen(this)"/><label for="pm" class="lbl">下午</label>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq"> 上午号数 </label>
+						<div class="col-sm-10">
+							<input type="text" class="input-mini" id="amCounts" name="amCounts" value="1"  data-validation-engine="validate[required, min[1], max[99]]"/>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right myreq"> 下午号数 </label>
+						<div class="col-sm-10">
+							<input type="text" class="input-mini" id="pmCounts" name="pmCounts" value="1"  data-validation-engine="validate[required, min[1], max[99]]" />
+						</div>
+					</div>
+					
+					
+
+					<div class="space-4"></div>
+				</form>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="addScheduling()">提交</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="msgModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myLargeModalLabel">系统提示</h4>
+			</div>
+	
+			<div class="modal-body">
+				<p class="alert alert-success" style="padding:0 10px;font-size:14px;line-height:30px;border-radius:6px;-webkit-border-radius:6px;-moz-border-radius:6px;">操作成功！</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<@p.footer scriptsrc="
+${base}/assets/js/plugins/jqGrid/jquery.jqGrid.min.js,
+${base}/assets/js/plugins/jqGrid/i18n/grid.locale-cn.js,
+${base}/assets/js/plugins/ztree/js/jquery.ztree.all-3.5.min.js,
+${base}/assets/js/plugins/date-time/bootstrap-datepicker.min.js,
+${base}/assets/js/plugins/date-time/daterangepicker.min.js,
+${base}/assets/js/plugins/chosen/chosen.jquery.min.js,
+${base}/assets/js/plugins/fuelux/fuelux.spinner.min.js
+"/>
+<!-- inline scripts related to this page -->
+<script>
+	var grid_selector = "#scheduling-table";
+	var pager_selector = "#scheduling-pager";
+	
+	$(function(){
+		initGrid();
+		
+		initTreeMenu();
+		
+		$('#addForm').validationEngine('attach');
+		
+		$("#btn-search").click(function(){
+			gridReload(1);
+		});
+		
+		//or change it into a date range picker
+		$('.input-daterange').datepicker({autoclose:true});
+		
+		$('.chosen-select').chosen({
+			//allow_single_deselect:true,
+			no_results_text: "无匹配结果!",
+			search_contains: true
+		});
+		//resize the chosen on window resize
+		$(window).on('resize.chosen', function() {
+			var w = $('.chosen-select').parent().width();
+			$('.chosen-select').next().css({'width': '100%'});
+		}).trigger('resize.chosen');
+		
+		$('#addModal').on('show.bs.modal', function () {
+			
+		});
+		
+		$('#addModal').on('shown.bs.modal', function () {
+			clearAddForm();
+			$('#dateStart').datepicker('remove');
+			$('#dateEnd').datepicker('remove');
+			//$('.input-daterange').datepicker({startDate : "+30d",});
+			$('#dateStart').datepicker({
+				autoclose : true,
+				format : 'yyyy-mm-dd'
+			});
+			
+			$('#dateEnd').datepicker({
+				autoclose : true,
+				format : 'yyyy-mm-dd'
+			});
+			
+		});
+		
+		//上下箭头
+		$('#amCounts').ace_spinner({value:0,min:0,max:200,step:10, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+		.on('change', function(){
+			//alert(this.value)
+		});
+		
+		$('#pmCounts').ace_spinner({value:0,min:0,max:200,step:10, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+		.on('change', function(){
+			//alert(this.value)
+		});
+		
+		
+		$("#doctors").chosen().next().find("input").on('focus', function(){
+			$("#doctors-container").css('z-index', 1011);
+			
+			$('#addForm').validationEngine('hide');
+		}).on('blur', function(){
+			$("#doctors-container").css('z-index', 800);
+		}); 
+		
+		gridReload(1);
+	
+	})
+	
+	function initGrid() {
+		var minWidth = 800;
+		
+		//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() < minWidth ? minWidth : $(".page-content").width() );
+		})
+		//resize on sidebar collapse/expand
+		var parent_column = $(grid_selector).closest('[class*="col-"]');
+		$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+			if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+				$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() < minWidth ? minWidth : parent_column.width() );
+			}
+		})
+		
+		$(grid_selector).jqGrid({
+			url: "${base}/admin/schedule/list",
+			datatype: "local",
+			mtype : "post",
+			height: '100%',
+			width: 900,
+			colNames: [' ', 'ID', '时间', '上下午', '人数', '科室', '姓名', '性别', '职务', '职称', '备注'],
+			cellEdit: false,
+			colModel: [
+				{name:'act',index:'act', width:60, fixed:true, sortable:false, resize:false},
+				{name:'poid',index:'poid', width:60, sorttype:"int", editable: false, hidden: true},
+				{name:'date',index:'date', width:100, editable: false},
+				{name:'ap',index:'ap', width:50, editable: false, formatter:function(value){if(value=="am")return "上午";else if(value=="pm")return "下午";}},
+				{name:'counts',index:'counts', width:50, editable: false},
+				{name:'departmentName',index:'departmentName', width:150, editable: false},
+				{name:'doctor.name',index:'name', width:70, editable: false},
+				{name:'doctor.sex',index:'sex', width:50, editable: false, formatter:S.sexFormatter},
+				{name:'doctor.position',index:'position', width:90, editable: false, hidden: true},
+				{name:'doctor.jobTitle',index:'jobTitle', width:90, editable: false},
+				{name:'remarks',index:'remarks', width:150, editable: false}
+			],
+			
+			viewrecords : true,
+			rowNum: 10,
+			rowList: [10,20,30],
+			pager: pager_selector,
+			altRows: true,
+			
+			multiselect: true,
+			
+			gridComplete : function() {
+				var ids = $(grid_selector).jqGrid('getDataIDs');
+				for ( var i = 0; i < ids.length; i++) {
+					var row = $(grid_selector).jqGrid('getRowData', ids[i]);
+					bd = '<div title="" style="float:left;margin-left:5px;" class="ui-pg-div ui-inline-del" '
+						+ ' onclick="del(\'' + row.poid + '\');" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\');" data-original-title="删除">'
+						+ '<span class="ui-icon ui-icon-trash"></span></div>';
+					$(grid_selector).jqGrid('setRowData', ids[i], {
+						act : '<div style="margin-left:8px;">' + bd + '</div>'
+					});
+				}
+			},
+			
+			loadComplete : function() {
+				var table = this;
+				setTimeout(function(){
+					updatePagerIcons(table);
+					enableTooltips(table);
+				}, 0);
+			},
+			caption: "排班明细"
+		});
+		$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+		
+		//navButtons
+		$(grid_selector).jqGrid('navGrid',pager_selector,
+			{ //navbar options
+				edit: false,
+				add: false,
+				del: false,
+				save: false,
+				search: false,
+				refresh: true,
+				refreshicon : 'ace-icon fa fa-refresh green',
+				view: false
+			}
+		).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-trash-o red",
+			onClickButton : batchDel,
+			position : "first",
+			title : "删除所选记录",
+			cursor : "pointer"
+		}).jqGrid('navButtonAdd', pager_selector , {
+			caption : "",
+			buttonicon : "ace-icon fa fa-plus-circle purple",
+			onClickButton : addForm,
+			position : "first",
+			title : "批量新增",
+			cursor : "pointer"
+		});
+	}
+
+	//replace icons with FontAwesome icons like above
+	function updatePagerIcons(table) {
+		var replacement = {
+			'ui-icon-seek-first' : 'ace-icon fa fa-angle-double-left bigger-140',
+			'ui-icon-seek-prev' : 'ace-icon fa fa-angle-left bigger-140',
+			'ui-icon-seek-next' : 'ace-icon fa fa-angle-right bigger-140',
+			'ui-icon-seek-end' : 'ace-icon fa fa-angle-double-right bigger-140'
+		};
+		$('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function() {
+			var icon = $(this);
+			var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+			
+			if ($class in replacement)
+				icon.attr('class', 'ui-icon ' + replacement[$class]);
+		})
+	}
+
+	function enableTooltips(table) {
+		$('.navtable .ui-pg-button').tooltip({container:'body'});
+		$(table).find('.ui-pg-div').tooltip({container:'body'});
+	}
+	
+	function initTreeMenu() {
+		var menusetting = {
+			async: {
+				enable: true,
+				type: 'get',
+				url: '${base}/admin/department/stree',
+				autoParam: ['poid']
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					rootPId: 1,
+					idKey: 'poid',
+					pidKey: 'parentId'
+				},
+				key: {
+				}
+			},
+			view: {
+				selectedMulti: false,
+				dblClickExpand: false
+			},
+			check: {
+				enable: false
+			},
+			callback: {
+				beforeClick: function(treeId, treeNode, clickFlag) {
+				},
+				onClick: function(event, treeId, treeNode, clickFlag) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu"),
+					nodes = zTree.getSelectedNodes(),
+					v = "";
+					id = "";
+					nodes.sort(function compare(a,b){return a.id-b.id;});
+					for (var i=0, l=nodes.length; i<l; i++) {
+						v += nodes[i].name + ",";
+						id += nodes[i].poid + ",";
+					}
+					if (v.length > 0 ) v = v.substring(0, v.length-1);
+					if (id.length > 0 ) id = id.substring(0, id.length-1);
+					
+					$("#treeMenu").closest(".input-group").find(".tree-down-name").val(v);
+					$("#treeMenu").closest(".input-group").find(".tree-down-id").val(id);
+				},
+				beforeRightClick: function(treeId, treeNode) {
+					return true;
+				},
+				onRightClick: function(event, treeId, treeNode) {
+					event.preventDefault();
+				},
+				onAsyncSuccess: function(event, treeId, treeNode, msg) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu");
+					zTree.expandAll(true);
+				},
+				beforeExpand: function() {
+					$("#treeMenu").closest(".input-group-btn").addClass("open");
+				},
+				beforeCollapse: function() {
+					return false;
+				},
+				onExpand: function() {
+					$("#treeMenu").closest(".input-group-btn").addClass("open");
+				},
+				onCollapse: function() {
+					$("#treeMenu").closest(".input-group-btn").addClass("open");
+				}
+			}
+		};
+		
+		$.fn.zTree.init($("#treeMenu"), menusetting);
+	}
+	
+	//添加预约_科室的树选择
+	function initTreeMenu_addSchedule() {
+		var menusetting = {
+			async: {
+				enable: true,
+				type: 'get',
+				url: '${base}/admin/department/stree',
+				autoParam: ['poid']
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					rootPId: 1,
+					idKey: 'poid',
+					pidKey: 'parentId'
+				},
+				key: {
+				}
+			},
+			view: {
+				selectedMulti: false,
+				dblClickExpand: false
+			},
+			check: {
+				enable: false
+			},
+			callback: {
+				beforeClick: function(treeId, treeNode, clickFlag) {
+					if (treeNode.isParent) {
+						return false;
+					}
+				},
+				onClick: function(event, treeId, treeNode, clickFlag) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu_addSchedule"),
+					nodes = zTree.getSelectedNodes(),
+					v = "";
+					id = "";
+					nodes.sort(function compare(a,b){return a.id-b.id;});
+					for (var i=0, l=nodes.length; i<l; i++) {
+						v += nodes[i].name + ",";
+						id += nodes[i].poid + ",";
+					}
+					if (v.length > 0 ) v = v.substring(0, v.length-1);
+					if (id.length > 0 ) id = id.substring(0, id.length-1);
+					//文本框赋值
+					$("#treeMenu_addSchedule").closest(".input-group").find(".tree-down-name").val(v);
+					$("#treeMenu_addSchedule").closest(".input-group").find(".tree-down-id").val(id);
+					//获取专家列表
+					getDoctorList(id);
+				},
+				beforeRightClick: function(treeId, treeNode) {
+					return true;
+				},
+				onRightClick: function(event, treeId, treeNode) {
+					event.preventDefault();
+				},
+				onAsyncSuccess: function(event, treeId, treeNode, msg) {
+					var zTree = $.fn.zTree.getZTreeObj("treeMenu_addSchedule");
+					zTree.expandAll(true);
+				},
+				beforeExpand: function() {
+					$("#treeMenu_addSchedule").closest(".input-group-btn").addClass("open");
+				},
+				beforeCollapse: function() {
+					return false;
+				},
+				onExpand: function() {
+					$("#treeMenu_addSchedule").closest(".input-group-btn").addClass("open");
+				},
+				onCollapse: function() {
+					$("#treeMenu_addSchedule").closest(".input-group-btn").addClass("open");
+				}
+			}
+		};
+		
+		$.fn.zTree.init($("#treeMenu_addSchedule"), menusetting);
+	}
+	
+	function gridReload(pageNo) {
+		$(grid_selector).setGridParam({datatype:'json', postData:null});
+		
+		var param = $("#search").serializeJson();
+		if (pageNo || pageNo == 0) {
+			param.page = pageNo;
+		}
+		$(grid_selector).jqGrid('setGridParam', {
+			datatype : 'json',
+			postData : param,
+			page : param.page
+		}).trigger("reloadGrid");
+	}
+	
+	function addScheduling(btn) {
+		if($('#addForm').validationEngine('validate')) {
+			var schedule = {};
+			schedule = $("#addForm").serializeJson();
+			
+			$(btn).button("loading");
+			S.ajax({
+				url: '${base}/admin/schedule/save',
+				data: schedule,
+				type: 'post',
+				success: function(res) {
+					S.ajaxSuccess(res);
+					
+					$(btn).button("reset");
+					
+					if (res.success == '1') {
+						$("#addModal").modal("hide");
+						
+						gridReload();
+						
+						clearAddForm();
+					}
+				}
+			});
+		}
+	}
+	
+	function addForm() {
+		//上午号下午号样式
+		initCountsStyle();
+		initTreeMenu_addSchedule();
+		$("#addModal").modal("show");
+	}
+	
+	function batchDel() {
+		var slarrrow = $(grid_selector).jqGrid('getGridParam', 'selarrrow');
+		var ids = "";
+		for (var i = 0; i < slarrrow.length; i++) {
+			ids += "" + $(grid_selector).jqGrid('getRowData', slarrrow[i]).poid + ",";
+		}
+		dis = ids.substring(0, ids.length-1);
+		del(ids);
+	}
+	
+	function del(id) {
+		bootbox.confirm("确定删除吗？", function(result) {
+			if (result) {
+				S.ajax({
+					url: '${base}/admin/schedule/delete',
+					type: 'post',
+					dataType: 'json',
+					data: {id: id},
+					success: function(data) {
+						S.ajaxSuccess(data);
+						
+						gridReload();
+					}
+				});
+			}
+		});
+	}
+	
+	function resetSearchForm() {
+		$("#s-name").val('');
+		$("#s-departmentName").val('');
+		$("#s-departmentId").val('');
+		$("#s-dateStart").val('${dateStart?string("yyyy-MM-dd")}');
+		$("#s-dateEnd").val('');
+	}
+	
+	function addDate11(dt, num) {
+		var ope = "+";
+		if (num < 0) {
+			ope = "-";
+		}
+
+		var reDT = dt;
+		for ( var i = 0; i < Math.abs(num); i++) {
+			reDT = addOneDay(reDT, ope);
+		}
+
+		return reDT;
+	}
+
+	function addDate(dt, days) {
+		dt = dt.valueOf()
+		dt = dt + days * 24 * 60 * 60 * 1000;
+		dt = new Date(dt)
+		return dt;
+	}
+	
+	function getLastDay(y, m) {
+		var lastDay = 28;
+		m++;
+		if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10
+				|| m == 12) {
+			lastDay = 31;
+		} else if (m == 4 || m == 6 || m == 9 || m == 11) {
+			lastDay = 30;
+		} else if (isLeapYear(y) == true) {
+			lastDay = 29;
+		}
+		return lastDay;
+	}
+
+	function customeSearch(type) {
+		if (type == 1) {
+			var now = new Date();
+			$("#s-dateStart").val(
+					now.getFullYear() + "-" + (now.getMonth() + 1) + "-"
+					+ now.getDate());
+			var dt = addDate(now, 14);
+			$("#s-dateEnd").val(
+					dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-"
+					+ dt.getDate());
+			
+			gridReload(1);
+		} else if (type == 2) {
+			var now = new Date();
+			$("#s-dateStart").val(
+					now.getFullYear() + "-" + (now.getMonth() + 1) + "-"
+					+ now.getDate());
+			var dt = addDate(now, 14);
+			$("#s-dateEnd").val('');
+			
+			gridReload(1);
+		}
+	}
+	
+	function clearAddForm() {
+		$("#doctors").val('');
+		$("#doctors").trigger("chosen:updated");
+		$("#dateStart").val('');
+		$("#dateEnd").val('');
+		$("#addForm input[name='weekArr']").prop('checked', false);
+		$("#addForm input[name='aps']").prop('checked', false);
+		$("#addForm input[name='amcounts']").val(1);
+		
+		$('#addForm').validationEngine('hide');
+	}
+	
+	function controlChosen(obj){
+		var checked = obj.checked;
+		var flagId = $(obj).attr("id") + "Counts";
+		if(checked){
+	 		$("#"+ flagId).prop("disabled",false).next().show();
+		}else{
+			$("#"+ flagId).prop("disabled",true).next().hide();
+		}
+		
+	}
+	//初始化上下无预约号数
+	function initCountsStyle(){
+		$("#amCounts").prop("disabled",true).val(1);
+		$("#pmCounts").prop("disabled",true).val(1);
+		$(".spinner-buttons").hide();
+		$("#d-departmentName").add("#d-departmentId").val("");
+		$("#doctors").html('');
+		$("#doctors").trigger("chosen:updated");
+	}
+	//根据科室或许专家列表
+	function getDoctorList(departmentId){
+		//清空
+		//var  departmentId = $("#addSchedule_departmentId").val();
+		$.ajax({
+			url: '${base}/admin/schedule/getDoctorList',
+			type: 'post',
+			dataType: 'json',
+			data: {departmentId: departmentId},
+			success: function(data) {
+				var selected = $("#doctors");
+				selected.empty().append("<option value=\""  +"" +  "\">" + "" + "</option>");
+				$.each(data,function(index,entity){
+					selected.append("<option value=\""  +entity.poid +  "\">" + entity.name + "</option>");   
+				})
+				$("#doctors").trigger("chosen:updated");
+			}
+		});
+	}
+	
+// 	$('.datepicker').datepicker().on(picker_event, function(e){
+//         # `e` here contains the extra attributes
+//     });
+	
+	
+</script>

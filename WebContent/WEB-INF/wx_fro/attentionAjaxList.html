@@ -1,0 +1,19 @@
+<#if attList??>
+	<#list attList as attention>
+		<div class="list-group-item" id="att_${attention.doctor.poid!}">
+		<table>
+			<tr>
+				<td colspan="2">
+					<div style="width:80px; margin-right:10px;"><img src="${base}/file/doctor/${attention.doctor.poid}" class="img-rounded" width="100%" /></div>
+				</td>
+				<td style="font-size:15px; color:#383838">
+					<div style="margin:10px;width:100%">姓名：${attention.doctor.name!}<button type="button" disload="true" class="btn btn-xs" style="border:1px solid #21B7C6; float:right;color:#21B7C6;background-color:#fff;font-size:8px;" onclick="cancelIt(${attention.doctor.poid!}, this)">取消关注</button></div>
+					<div style="margin:10px">职称：${attention.doctor.jobTitle!}</div>
+					<div style="margin:10px">出诊时间：周二上午</div>
+					<div style="margin:10px"><h4><small>患者数：<span style="color:red">${attention.doctor.patientCount!}</span></small></h4></div>
+				</td>
+			</tr>
+		</table>
+		</div>
+	</#list>
+</#if>

@@ -1,0 +1,28 @@
+﻿<@p.header/>
+		<!-- 正文内容 -->
+		<div class="titleallnews">
+			我的关注
+		</div>
+
+		<div id="attentionList" style="margin:10px;">
+		</div>
+<@p.footer scriptsrc="${base}/static/js/scrollpagination.js" />
+<script>
+var listsize = 0;
+<#if pageSum??>
+	listsize = ${pageSum!};
+</#if>
+$(function(){
+	//执行分页方法
+	ajaxScrollPage("#attentionList",'${base}/attention/list', listsize);
+});
+function cancelIt(docId) {
+	S.ajax({
+		url: '${base}/attention/cancel',
+		data: {id: docId},
+		success: function(data) {
+			$("#att_"+docId).remove();
+		}
+	});
+}
+</script>

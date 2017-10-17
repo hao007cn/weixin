@@ -1,0 +1,135 @@
+<@p.header />
+<style>
+.s-table .th {
+	color: #21B7C6;
+	vertical-align: middle;
+	height: 100%;
+	border-top: none;
+	padding-right: 10px;
+	text-align: right
+}
+
+.s-table td span {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	text-align: left;
+}
+</style>
+
+<!-- 正文内容 -->
+<div data-role="content">
+	<div class="titleallnews">我的预约
+		 <button 
+	      type="button"
+	      class="btn btn-default" disload=true
+	      style="border: none; float: right; margin-right: 10px; margin-top: 10px; color: #21B7C6"
+	      onclick="javascript:history.back();">
+	     返回
+	  	</button>
+  	</div>
+
+	<div class="well">
+		<table class="table s-table" style="margin-bottom: 0;">
+			<tbody>
+				<tr>
+					<td class="th">就诊人:</td>
+					<td style="border-top: none"><span>${order.patientName!}</span>
+					</td>
+				</tr>
+				<!-- <tr>
+					<td class="th">身份证:</td>
+					<td style="border-top: none"><span>
+							</span></td>
+				</tr> -->
+<!-- 				<tr>
+					<td class="th">健康卡:</td>
+					<td style="border-top: none"><span
+						style="margin: 0px; padding: 0px; width: 100%; text-align: left;">
+							${order.patientHcardid!}</span></td>
+				</tr> -->
+				<tr>
+					<td class="th">科室:</td>
+					<td style="border-top: none"><span
+						style="margin: 0px; padding: 0px; width: 100%; text-align: left;">
+							${order.departmentName!}</span></td>
+				</tr>
+				<tr>
+					<td class="th">医生:</td>
+					<td style="border-top: none"><span>
+							${order.doctorName!}</span></td>
+				</tr>
+				<tr>
+					<td class="th">就诊日期:</td>
+					<td style="border-top: none;"><span>${order.aplTime!string("yyyy-MM-dd HH:mm")}</span></td>
+				</tr>
+				<tr>
+					<td class="th">提交日期:</td>
+					<td style="border-top: none;"><span>${order.createDate!string("yyyy-MM-dd HH:mm:ss")}</span></td>
+				</tr>
+				<tr>
+					<td class="th">订单状态:</td>
+					<td style="border-top: none;"><span>
+						<#if orderInfo ??>
+							${orderInfo.stateLabel!}
+						<#else>
+							已取消
+						</#if>
+					</span>
+					</td>
+				</tr>
+				<#if orderInfo ??>
+					<#if orderInfo.executeState <= 0>
+					<tr>
+						<td colspan="2">
+							<div class=" col-xs-11" style="margin:10px 20px 0px 20px">
+								<button class="btn btn-block" type="button" disload=true
+									style="background: #21B7C6; color: #fff; border: none; border: 1px solid #21B7C6;"
+									onclick="cancelOrder()">取 消</button>
+							</div>
+						</td>
+					</tr>
+					</#if>
+				</#if>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h3 class="panel-title">温馨提示</h3>
+		</div>
+		<div class="panel-body">
+			<p>
+				1、预约挂号不扣费，在取号时扣除，<br>
+				请在就诊时间前30分钟取号！过期作废
+			</p>
+			<p>
+				2、实际就诊时间以叫号时间为准
+			</p>
+		</div>
+	</div>
+</div>
+<@p.footer scriptsrc="" />
+<script>
+	function cancelOrder() {
+		S
+				.confirm(
+						"确定取消吗？",
+						function() {
+							S
+									.ajax({
+										url : "${base}/myorders/cancel/${order.formNo}",
+										type : "get",
+										success : function(data) {
+											S.ajaxSuccess(data);
+											if (data.success == '1') {
+												window.location = "${base}/myorders/detail/${order.poid}?d="
+														+ (new Date())
+																.getTime();
+											}
+										}
+									})
+						});
+	};
+</script>

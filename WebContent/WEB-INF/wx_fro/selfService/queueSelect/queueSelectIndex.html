@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
+    
+    <link href="../../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/mobile/jquery.mobile-1.4.5.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../static/mmenu/css/jquery.mmenu.all.css" rel="stylesheet" type="text/css" />
+    <link href="../../static/css/stylesenyint.css" rel="stylesheet" type="text/css" />
+    <!-- 相关js文件 -->
+    <script src="../../static/js/jquery.min.js"></script>
+    <script src="../../static/mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../static/mmenu/js/jquery.mmenu.min.all.js" type="text/javascript"></script>
+    
+    <script src="../../static/mmenu/js/hammer.min.js"></script>
+    
+    <script src="../../static/js/common.js"></script>
+    <title></title>
+</head>
+<body>
+<!-- 主页面一 -->
+<div id="queueSelectIndexPage" data-role="page">
+    <div class="titleallnews">
+        叫号查询
+    </div>
+    <!-- 正文内容 -->
+    <div data-role="content" style="margin:10px">
+
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+		  <div class="panel panel-default">
+		    <div class="panel-heading">
+                <a data-toggle="collapse" disload="true" style=" text-decoration: none" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h4 class="panel-title">
+                        B超检查
+                        <span style="float:right" class="glyphicon glyphicon-chevron-down"></span>
+                    </h4>
+
+                </a>
+		    </div>
+		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel">
+		      <div class="panel-body">
+		      	彩超当前叫到1003号，<br>
+		      	前面等待4人，<br>
+		      	请注意及时就诊！
+		      </div>
+		    </div>
+		  </div>
+		  <div class="panel panel-default">
+		    <div class="panel-heading">
+                <a data-toggle="collapse" disload="true" style=" text-decoration: none" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <h4 class="panel-title">
+                        CT排队
+                        <span style="float:right" class="glyphicon glyphicon-chevron-down"></span>
+                    </h4>
+                </a>
+		    </div>
+		    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel">
+		      <div class="panel-body">
+		      	彩超当前叫到1003号，<br>
+		      	前面等待4人，<br>
+		      	请注意及时就诊！
+		      </div>
+		    </div>
+		  </div>
+		  <div class="panel panel-default">
+		    <div class="panel-heading">
+                <a data-toggle="collapse" disload="true" style=" text-decoration: none" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <h4 class="panel-title">
+                        胃镜排队
+                        <span style="float:right" class="glyphicon glyphicon-chevron-down"></span>
+                    </h4>
+                </a>
+		    </div>
+		    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel">
+		      <div class="panel-body">
+		      	彩超当前叫到1003号，<br>
+		      	前面等待4人，<br>
+		      	请注意及时就诊！
+		      </div>
+		    </div>
+		  </div>
+		</div>
+    	
+        <script>
+            
+            $('#collapseOne').on('show.bs.collapse', function () {
+            	
+			})
+            
+            $('#collapseTwo').on('show.bs.collapse', function () {
+            	
+			})
+            
+            $('#collapseThree').on('show.bs.collapse', function () {
+            	
+			})
+        </script>
+    </div><!-- /content -->
+
+    <!-- 页脚 -->
+    <div data-role="footer" data-position="fixed" data-fullscreen="false" data-tap-toggle="false"  data-visible-on-page-show="true" data-theme="a">
+        <!-- 底部导航 -->
+        <div data-role="navbar">
+            <ul>
+                <!--<li><a href="#"  onclick="javascript: history.back();"><span style=" font-size: 20px;color: #888888;margin-top:3px" class="glyphicon glyphicon-chevron-left"><abbr class="center-block" style="font-family:微软雅黑;font-size:14px;margin-top:6px">返回</abbr></span></a></li>-->
+                <li><a href="../../index.html"  ><span style=" font-size: 20px;color: #888888;margin-top:3px" class="glyphicon glyphicon-home"><abbr class="center-block" style="font-family:微软雅黑;font-size:14px;margin-top:6px">主页</abbr></span></a></li><li><a href="../../persona.html" ><span style=" font-size: 20px;color: #888888;margin-top:3px" class="glyphicon glyphicon-user"><abbr class="center-block" style="font-family:微软雅黑;font-size:14px;margin-top:6px">个人中心</abbr></span></a></li>
+                <li><a href="#menu" disload="true"><span style=" font-size: 20px;color: #888888;margin-top:3px" class="glyphicon glyphicon-th-large"><abbr class="center-block" style="font-family:微软雅黑;font-size:14px;margin-top:6px">更多</abbr></span></a></li>
+            </ul><!-- /navbar ul -->
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<!-- 页面左菜单 -->
+    <nav id="menu">
+        <ul>
+            <li><span onclick="href('../../activities.html')"><img class="animation delaytime1" src="../../static/image/icons/icotg.png" /> 医院活动</span></li>
+            <li><span onclick="href('../../introduction.html')"><img class="animation delaytime2" src="../../static/image/icons/icoth.png" /> 科室/专家介绍</span></li>
+            <li><span onclick="href('../../stopDiagnosis.html')"><img class="animation delaytime3" src="../../static/image/icons/icoti.png" />   停诊信息</span></li>
+            <li><span onclick="href('../../selfService/bookRegister/departmentList.html')"><img class="animation delaytime4" src="../../static/image/icons/icotc.png" /> 预约挂号</span></li>
+            <!--<li><em href="href('../../selfService/queueSelect/queueSelectIndex.html')">叫号查询</span></li>-->
+            <li><span onclick="href('../../selfService/scheduleSelect/scheduleIndex.html')"><img class="animation delaytime5" src="../../static/image/icons/icote.png" />    排班查询</span></li>
+            <li><span onclick="href('../../persona.html')"><img class="animation delaytime6" src="../../static/image/icons/icotf.png" /> 个人中心</span></li>
+            <li><span onclick="href('../../healthy.html')"><img class="animation delaytime7" src="../../static/image/icons/icota.png" /> 健康百科</span></li>
+            <li><span onclick="href('../../IntelligentNavigation.html')"><img class="animation delaytime8" src="../../static/image/icons/icotd.png" />   智能导诊</span></li>
+            <!--<li><em href="registration.html"  >注册用户</span></li>-->
+        </ul>
+    </nav>
+    <script src="../../static/js/showbody.js" defer="defer"></script>
+</body>
+</html>
