@@ -7,5 +7,5 @@ public class AnnotationDaoImpl implements AnnotationDao {
 	public void insert() {
 			System.out.println(this.getClass());
 	}
-	
+	//zengj
 }
